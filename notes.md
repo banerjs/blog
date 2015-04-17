@@ -34,3 +34,26 @@ At this point the webapp is deploy worthy. Once this milestone is reached:
   - Figure out authentication
   - Utilize apps perhaps
 - Docker-ize webapp
+
+# Data Model
+
+- Travelogue
+
+	[
+		{
+			id,
+			abbr,
+			name,
+			properties,
+			geometry (GEOJSON),
+			has_been_visited,
+			articles: [{
+				title,
+				location,
+				year,
+				month,
+				day,
+				content: [{ type, data, properties }, ...]
+			}, ... ]
+		}, ...
+	]
