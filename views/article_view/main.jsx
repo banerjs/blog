@@ -1,11 +1,3 @@
-/*
-This is the basic page of a travelogue entry. It requires the presence of marked:
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js" type="text/javascript"></script>
-
-This needs to be up in the head portion of the html
-*/
-
 var article = {
 	"title": "Lorem Ipsum",
 	"location": "Budapest",
