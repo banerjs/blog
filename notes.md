@@ -43,17 +43,13 @@ At this point the webapp is deploy worthy. Once this milestone is reached:
 # Data Model
 
 	countries: {
-		urlname: {
+		url: {
 			name,
 			abbr,
 			properties,
 			geometry (geo),
 			has_been_visited,
-			posts: [{
-				title,
-				link,
-				year
-			}, ... ]
+			posts: [full_url, ...]
 		}, ...
 	},
 	posts: {
