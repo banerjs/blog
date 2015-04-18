@@ -19,6 +19,11 @@
   - Create Navigation
 - Create isomorphic webapp
   - Create modular models. Includes configuring data source(s)
+    - [Firebase](https://www.firebase.com/) - Excellent API and libraries
+    - [MyJSON](http://myjson.com/) - Free and very easy to use
+    - MongoDB - this comes free(ish) with hosting
+    - Postgres - harder to model flexible data. But also free-ish
+    - Filesystem - cheapest option. Probably not the most performant though
   - Create modular React components
 - Wrap style and required scripts together
   - Separate out styles into CSS files, etc.
@@ -37,23 +42,37 @@ At this point the webapp is deploy worthy. Once this milestone is reached:
 
 # Data Model
 
-- Travelogue
-
-	[
-		{
-			id,
-			abbr,
+	countries: {
+		urlname: {
 			name,
+			abbr,
 			properties,
-			geometry (GEOJSON),
+			geometry (geo),
 			has_been_visited,
-			articles: [{
+			posts: [{
 				title,
-				location,
-				year,
-				month,
-				day,
-				content: [{ type, data, properties }, ...]
+				link,
+				year
 			}, ... ]
 		}, ...
-	]
+	},
+	posts: {
+		year: {
+			month: {
+				day: {
+					url: {
+						title,
+						content: [{
+							type,
+							data,
+							properties (obj)
+						}, ...],
+						locations(?): [{
+							name,
+							country
+						}, ...]
+					}, ...
+				}, ...
+			}, ...
+		}, ...
+	}
