@@ -1,5 +1,5 @@
-var Map = React.createClass({
-	initializeMap: function() {
+var MapCanvas = React.createClass({
+    initializeMap: function() {
         // In the case of SSR, we do not want the map to be rendered (I think).
         // In the future change this so that it is map agnostic as well
         if (!google) {
@@ -55,7 +55,7 @@ var Map = React.createClass({
         });
 
         return map;
-	},
+    },
 
     refreshMapData: function() {
         this.state.map.data.addGeoJson(this.state.countries);
@@ -75,26 +75,62 @@ var Map = React.createClass({
         // fetching the data
         return {
             countries: { "type": "FeatureCollection", "features": [] },
-            maps: null
+            map: null,
+            cssClass: {
+                "map-container": true,
+                "hidden": true
+            }
         };
     },
 
-	componentDidMount: function() {
+    componentDidMount: function() {
         this.setState({ map: this.initializeMap() });
-	},
+    },
 
     shouldComponentUpdate: function(nextProps, nextState) {
+        // Update the data for Google maps to handle the update (not React!)
         setTimeout(this.refreshMapData, 0);
 
-        // This component never needs to change. Only the data passed to maps
-        // needs to be updated
+        // Update the CSS class associations
+        this.getDOMNode().className = classNames(this.state.cssClass);
+
+        // All updates to this node are either manually handled or by the maps
+        // provider. Do not allow React to update the node
         return false;
     },
 
+    render: function() {
+        return (
+            <div className={ classNames(this.state.cssClass) } id="map-canvas" ref="map"></div>
+        );
+    }
+});
+
+var MapLoader = React.createClass({
+    getInitialState: function() {
+        return {
+            cssClass: {
+                "map-container": true,
+                "map-loader": true,
+                "hidden": false
+            }
+        }
+    },
+
+    render: function() {
+        return (
+            <div className={ classNames(this.state.cssClass) }>
+            </div>
+        );
+    }
+});
+
+var Map = React.createClass({
 	render: function() {
 		return (
-			<section id="map" data-start="opacity: 0.75;" data-top="opacity: 1;" data-bottom="opacity: 1;" data-top-bottom="opacity: 0.1;">
-				<div id="map-canvas"></div>
+			<section className="map-container" data-start="opacity: 0.75;" data-top="opacity: 1;" data-bottom="opacity: 1;" data-top-bottom="opacity: 0.1;">
+				<MapLoader ref="loader" />
+                <MapCanvas ref="canvas" />
 			</section>
 		);
 	}

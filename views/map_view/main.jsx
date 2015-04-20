@@ -74,18 +74,38 @@ var ArticleLink = React.createClass({
 });
 
 var CountryList = React.createClass({
+	getCountryId: function() {
+		return this.props.country.toLowerCase().replace(/\s+/, "-");
+	},
+
+	getInitialState: function() {
+		return { backgroundImage: "url('/public/images/" + this.getCountryId() + ".JPG')" };
+	},
+
+	componentDidMount: function() {
+		// This is a hack for making skrollr work with React. References:
+		// Issue: https://github.com/facebook/react/issues/2329
+		// Hack: http://stackoverflow.com/questions/21648347/true-custom-attributes-e-g-microdata-in-react
+		this.refs.countryNameHeader.getDOMNode().setAttribute("data--100-bottom", "opacity: 1");
+		this.refs.articleListCurtain.getDOMNode().setAttribute("data-200-top", "opacity: 0");
+	},
+
 	render: function() {
-		var sectionId = this.props.country.toLowerCase().replace(/\s+/, "-");
+		var sectionId = this.getCountryId();
 		return (
-			<section id={sectionId} className="bcg" data-bottom-top="background-position: 50% 40%" data-top-bottom="background-position: 50% 60%" data-anchor-target={"#" + sectionId + " .country-article-list"}>
-				<div className="curtain">
-					<div className="country-article-list col-xs-12 col-sm-offset-2 col-sm-8">
-						<h3 className="text-center country-name">{this.props.country}</h3>
-						<ul className="list-group">
-							{this.props.articles.map(function(article, idx) {
-								return <li key={article.title} className="list-group-item"><ArticleLink article={article} /></li>;
-							})}
-						</ul>
+			<section id={sectionId} className="country-section">
+				<div className="country-name">
+					<h3 className="text-center" data-bottom="opacity: 0" data-anchor-target={"#" + sectionId + " .country-name"} ref="countryNameHeader">{this.props.country}</h3>
+				</div>
+				<div style={{ backgroundImage: this.state.backgroundImage }} className="bcg" data-bottom-top="background-position: 50% 40%" data-top-bottom="background-position: 50% 60%" data-anchor-target={"#" + sectionId + " .country-article-list"}>
+					<div className="curtain" data-top="opacity: 1" data-anchor-target={"#" + sectionId + " .country-name"} ref="articleListCurtain">
+						<div className="country-article-list col-xs-12 col-sm-offset-2 col-sm-8">
+							<ul className="list-group">
+								{this.props.articles.map(function(article, idx) {
+									return <li key={article.title} className="list-group-item"><ArticleLink article={article} /></li>;
+								})}
+							</ul>
+						</div>
 					</div>
 				</div>
 			</section>

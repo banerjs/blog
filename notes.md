@@ -8,15 +8,19 @@
 - Not using this yet... but perhaps I should? [fullPage](https://github.com/alvarotrigo/fullPage.js)
 - [HTML Semantic Tags](http://html5doctor.com/downloads/h5d-sectioning-flowchart.pdf)
 - [Parallax Scrolling](https://ihatetomatoes.net/how-to-create-a-parallax-scrolling-website/)
+- GIF Creation - [Spiffygif](http://spiffygif.com/)
 
 # Todo
 
 - Create page design
   - ~~Travelogue Mock~~
-  - Skrollr-ize the mocks. Easy addition of skrollr pages
-    - Add better animation for country name & image entry (slide 6 in examples)
+  - ~~Skrollr-ize the mocks. Easy addition of skrollr pages~~
+    - ~~Add better animation for country name & image entry (slide 6 in examples)~~
+    - Auto hide and show map when data loads
+      - Use Flux pattern
   - Create mocks for general blog
   - Create Navigation
+  - Enable mobile-UI
 - Create isomorphic webapp
   - Create modular models. Includes configuring data source(s)
     - [Firebase](https://www.firebase.com/) - Excellent API and libraries
@@ -25,6 +29,7 @@
     - Postgres - harder to model flexible data. But also free-ish
     - Filesystem - cheapest option. Probably not the most performant though
   - Create modular React components
+    - Build on Flux pattern in page mocks
 - Wrap style and required scripts together
   - Separate out styles into CSS files, etc.
   - Include ability to require CSS (webpack)
@@ -36,7 +41,7 @@ At this point the webapp is deploy worthy. Once this milestone is reached:
   - Non-render of Google Maps on the server side (trivial?)
 - Use [Mapstraction](http://mapstraction.com/) to ensure agnostic maps
 - Edit API/UI
-  - Figure out authentication
+  - Authentication
   - Utilize apps perhaps
 - Docker-ize webapp
 
@@ -49,7 +54,12 @@ At this point the webapp is deploy worthy. Once this milestone is reached:
 			properties,
 			geometry (geo),
 			has_been_visited,
-			posts: [full_url, ...]
+			posts: [{
+				title,
+				url,
+				date,
+				blurb
+			}, ...]
 		}, ...
 	},
 	posts: {
