@@ -1,3 +1,59 @@
+// THIS SECTION IS TERRIBLE CODING
+var CHANGE_EVENT = 'change';
+var GEOJSON_UPDATE = 'geojson-update';
+
+var MapStore = objectAssign({}, EventEmitter.prototype);
+MapStore['_countriesGeoJSON'] = {
+    "type": "FeatureCollection",
+    "features": []
+};
+
+MapStore['getCountries'] = function() {
+    return MapStore._countriesGeoJSON;
+};
+
+MapStore['emitChange'] = function() {
+    this.emit(CHANGE_EVENT);
+};
+
+MapStore['addChangeListener'] = function(callback) {
+    this.on(CHANGE_EVENT, callback);
+};
+
+MapStore['removeChangeListener'] = function(callback) {
+    this.off(CHANGE_EVENT, callback);
+},
+
+MapStore['handleDispatch'] = function(payload) {
+    var action = payload.action;
+
+    switch(action.actionType) {
+        case GEOJSON_UPDATE:
+            MapStore._countriesGeoJSON = action.data;
+            MapStore.emitChange();
+            break;
+        // Add in other case statements
+    }
+
+    // Ensure that the promises of the Dispatcher properly resolve
+    return true;
+}
+
+Dispatcher.register(MapStore.handleDispatch);
+
+// Fix coding above this line of text
+
+// This should be in its own set of classes
+var MapActions = {
+    notifyServerUpdate: function(data) {
+        Dispatcher.handleXHRData({
+            actionType: GEOJSON_UPDATE,
+            data: data
+        });
+    }
+}
+
+// This is the actual map
 var MapCanvas = React.createClass({
     initializeMap: function() {
         // In the case of SSR, we do not want the map to be rendered (I think).
@@ -61,12 +117,22 @@ var MapCanvas = React.createClass({
         this.state.map.data.addGeoJson(this.state.countries);
     },
 
+    handleXHRData: function() {
+        this.setState({
+            countries: MapStore.getCountries(),
+            cssClass: {
+                "map-container": true,
+                "hidden": false
+            }
+        });
+    },
+
     getInitialState: function() {
         var firebase = new Firebase('https://incandescent-fire-5437.firebaseio.com/countries');
         firebase.once("value", function(response) {
             var countries = response.val();
             var geojson = createCountriesGeoJSON(countries);
-            this.setState({ countries: geojson });
+            MapActions.notifyServerUpdate(geojson);
         }, function(error) {
             console.error(error)
         }, this);
@@ -74,7 +140,7 @@ var MapCanvas = React.createClass({
         // Send in a default set of values while firebase is dealing with
         // fetching the data
         return {
-            countries: { "type": "FeatureCollection", "features": [] },
+            countries: MapStore.getCountries(),
             map: null,
             cssClass: {
                 "map-container": true,
@@ -84,29 +150,46 @@ var MapCanvas = React.createClass({
     },
 
     componentDidMount: function() {
+        MapStore.addChangeListener(this.handleXHRData);
         this.setState({ map: this.initializeMap() });
+    },
+
+    componentWillUnmount: function() {
+        MapStore.removeChangeListener(this.handleXHRData);
     },
 
     shouldComponentUpdate: function(nextProps, nextState) {
         // Update the data for Google maps to handle the update (not React!)
         setTimeout(this.refreshMapData, 0);
 
-        // Update the CSS class associations
-        this.getDOMNode().className = classNames(this.state.cssClass);
+        // // Update the CSS class associations
+        // this.getDOMNode().className = classNames(this.state.cssClass);
 
         // All updates to this node are either manually handled or by the maps
         // provider. Do not allow React to update the node
-        return false;
+        return this.state.countries !== nextState.countries;
     },
 
     render: function() {
         return (
-            <div className={ classNames(this.state.cssClass) } id="map-canvas" ref="map"></div>
+            <div className={ classNames(this.state.cssClass) }>
+                <div id="map-canvas" className="map-container"></div>
+            </div>
         );
     }
 });
 
 var MapLoader = React.createClass({
+    handleXHRData: function() {
+        this.setState({
+            cssClass: {
+                "map-container": true,
+                "map-loader": true,
+                "hidden": true
+            }
+        });
+    },
+
     getInitialState: function() {
         return {
             cssClass: {
@@ -115,6 +198,14 @@ var MapLoader = React.createClass({
                 "hidden": false
             }
         }
+    },
+
+    componentDidMount: function() {
+        MapStore.addChangeListener(this.handleXHRData);
+    },
+
+    componentWillUnmount: function() {
+        MapStore.removeChangeListener(this.handleXHRData);
     },
 
     render: function() {
@@ -129,7 +220,6 @@ var Map = React.createClass({
 	render: function() {
 		return (
 			<section className="map-container" data-start="opacity: 0.75;" data-top="opacity: 1;" data-bottom="opacity: 1;" data-top-bottom="opacity: 0.1;">
-				<MapLoader ref="loader" />
                 <MapCanvas ref="canvas" />
 			</section>
 		);
@@ -139,7 +229,7 @@ var Map = React.createClass({
 // This is a style a-la Snazzy Maps
 var styles = [{"featureType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","stylers":[{"visibility":"on"},{"lightness": 100}]},{"featureType":"landscape","stylers":[{"visibility": "on"},{"lightness":-100},{"saturation": 0}]}];
 
-// This is a helper function to convert Firebase data to GEOJSON
+// This is a helper function to convert Firebase data to GeoJSON
 function createCountriesGeoJSON(data) {
     var json = { "type": "FeatureCollection", "features": [] };
     Object.keys(data).map(function(country_url, idx) {

@@ -20,7 +20,7 @@
       - Use Flux pattern
   - Create mocks for general blog
   - Create Navigation
-  - Enable mobile-UI
+  - Make responsive
 - Create isomorphic webapp
   - Create modular models. Includes configuring data source(s)
     - [Firebase](https://www.firebase.com/) - Excellent API and libraries

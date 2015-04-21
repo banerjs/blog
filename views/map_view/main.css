@@ -42,7 +42,7 @@
 	color: #ff9800;
 	background-color: rgba(0,0,0,1);
 	width: 100%;
-	min-height: 100px;
+	height: 100px;
 	display: table;
 }
 
@@ -64,7 +64,16 @@
 	font-size: 150%;
 }
 
+#map-canvas {
+	height: 100%;
+}
 
 .map-container {
 	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+.map-loader {
+	opacity: 0;
 }
