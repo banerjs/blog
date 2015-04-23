@@ -5,4 +5,4 @@ FROM node:slim
 # do nothing
 
 # Future commands to keep in mind:
-# npm install -g react-tools webpack
+# npm install -g react-tools webpack grunt-cli

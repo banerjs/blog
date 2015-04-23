@@ -1,3 +1,8 @@
+# Last action performed
+
+- Could not load react-starter due to incompatibilities of the build system with windows. Not going to spend too much time debugging this.
+- Going to revert back to old version of code and begin making everything from scratch there
+
 # Resources
 
 - Google Maps styling: [SnazzyMaps](https://snazzymaps.com/)
@@ -9,6 +14,7 @@
 - [HTML Semantic Tags](http://html5doctor.com/downloads/h5d-sectioning-flowchart.pdf)
 - [Parallax Scrolling](https://ihatetomatoes.net/how-to-create-a-parallax-scrolling-website/)
 - GIF Creation - [Spiffygif](http://spiffygif.com/)
+- React Starter [Docs](https://github.com/webpack/react-starter/blob/master/NOTES/HowStuffWorks.md)
 
 # Todo
 
