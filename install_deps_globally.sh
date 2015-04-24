@@ -28,6 +28,13 @@ tail -n +2 | \
 head -n -1 \
 > $TEMP_FILE
 
+# Concatenate all the devDependencies to that previous list
+cat $FILE | \
+awk '/devDependencies/ { show=1 } show; /\}/ { show=0 }' | \
+tail -n +2 | \
+head -n -1 \
+>> $TEMP_FILE
+
 # Iterate through the dependencies
 PACKAGES=""
 while read line ; do
@@ -44,7 +51,5 @@ npm install -g $PACKAGES
 
 # Make sure that require can find these dependencies
 export NODE_PATH="/usr/local/lib/node_modules"
-
-exit $?
 
 # If node changes the console colour, run echo -e '\e[0m'
