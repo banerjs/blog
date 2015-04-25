@@ -12,9 +12,9 @@ EXPOSE 8000
 WORKDIR /usr/src/
 
 # Run the commands needed to get node running
-RUN npm install
+RUN npm install && gulp deploy
 
-# Future commands to keep in mind:
-# npm install -g react-tools webpack grunt-cli
+# Setup environment variables as needed
+ENV NODE_ENV=production
 
-ENTRYPOINT ["npm", "run", "debug"]
+ENTRYPOINT ["npm", ""]

@@ -38,6 +38,11 @@ head -n -1 \
 # Iterate through the dependencies
 PACKAGES=""
 while read line ; do
+	if [[ -z "$line" ]]; then
+		echo "empty"
+		continue
+	fi
+
 	line=${line//,}
 	name=$( echo $line | cut -d\: -f1 | tr -d '[[:space:]]' | sed -e 's/^"//' -e 's/"$//' )
 	semver=$( echo $line | cut -d\: -f2 | tr -d '[[:space:]]' | sed -e 's/^"//' -e 's/"$//' )

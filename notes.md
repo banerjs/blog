@@ -1,7 +1,7 @@
-# Last action performed
+# Current Action items
 
-- Could not load react-starter due to incompatibilities of the build system with windows. Not going to spend too much time debugging this.
-- Going to revert back to old version of code and begin making everything from scratch there
+- Create an isomorphic react ecosystem to render JS, CSS and images on the client.
+- Get this ecosystem running with Gulp
 
 # Resources
 
