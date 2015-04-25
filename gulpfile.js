@@ -45,13 +45,13 @@ var tasks = {
 	// Copy static files - images, favicon, etc.
 	assets: function() {
 		return gulp.src('./assets/**')
-					.pipe(gulp.dest('public/assets/'));
+					.pipe(gulp.dest('public/'));
 	},
 
 	// SASS
 	sass: function() {
 		var start = new Date();
-		return gulp.src('./src/**/*.scss')
+		return gulp.src(['./src/css/**/*.scss', './src/css/**/*.css'])
 					// Source maps + sass + error handling
 					.pipe(gulpif(!production, sourcemaps.init()))
 					.pipe(sass({
