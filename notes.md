@@ -1,7 +1,16 @@
-# Current Action items
+# Activity Notes
 
-- Create an isomorphic react ecosystem to render JS, CSS and images on the client.
-- Get this ecosystem running with Gulp
+### Just completed
+
+- Gulp build system
+- Integration of Twitter Bootstrap SASS components for sitewide styling
+
+### Left to complete
+
+- Creation of React Router
+- Creation of isomorphic components
+- SSR of components
+- Creation of Stores and Actions for this SSR
 
 # Resources
 
@@ -16,6 +25,7 @@
 - GIF Creation - [Spiffygif](http://spiffygif.com/)
 - React Starter [Docs](https://github.com/webpack/react-starter/blob/master/NOTES/HowStuffWorks.md)
 - Gulp Starters - [Gist](https://gist.github.com/mlouro/8886076), [Boilerplate](https://github.com/christianalfoni/react-app-boilerplate/blob/master/gulpfile.js)
+- According to the React best practices, it is preferable to use inline styles with react than to have classes. I quite agree, except, it's MUCH easier to affect classes equally with cross browser support with bootstrap than it is with React. Therefore, for this blog, I'm choosing a hybrid approach
 
 # Todo
 
