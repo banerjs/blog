@@ -8,7 +8,9 @@
   },
   "scripts": {
     "start": "node ./bin/www",
-    "debug": "DEBUG=blog:server NODE_ENV=development node ./bin/www"
+    "debug": "DEBUG=blog:server NODE_ENV=development node ./bin/www",
+    "deploy": "gulp deploy",
+    "clean": "gulp clean"
   },
   "devDependencies": {
   },
@@ -23,6 +25,7 @@
     "gulp-if": "^1.2.4",
     "gulp-notify": "^1.4.2",
     "gulp-postcss": "^5.1.3",
+    "gulp-react": "^3.0.1",
     "gulp-sass": "^1.3.3",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-streamify": "^0.0.5",

@@ -9,6 +9,8 @@ var notify = require('gulp-notify');
 var watchify = require('watchify');
 var del = require('del');
 
+var react = require('gulp-react');
+
 var browserify = require('browserify');
 var reactify = require('reactify');
 var eslint = require('gulp-eslint');
@@ -39,13 +41,20 @@ var production = (process.env.NODE_ENV === 'production'
 var tasks = {
 	// Delete the build folder
 	clean: function(cb) {
-		del(['public/*'], cb);
+		del(['public/*', 'build/*'], cb);
 	},
 
 	// Copy static files - images, favicon, etc.
+	// Assumption: there will never be assets folders with the names css and js
 	assets: function() {
 		return gulp.src('./assets/**')
 					.pipe(gulp.dest('public/'));
+	},
+
+	// Templates
+	templates: function() {
+		return gulp.src('./src/templates/**/*.html')
+					.pipe(gulp.dest('build/templates/'));
 	},
 
 	// SASS
@@ -82,10 +91,17 @@ var tasks = {
 					}));
 	},
 
+	// JSX Transform
+	reactify: function() {
+		return gulp.src(['./src/**/*.js', './src/**/*.jsx'])
+					.pipe(react())
+					.pipe(gulp.dest('build/'));
+	},
+
 	// Browserify
 	browserify: function() {
 		var bundler = browserify({
-			entries: './src/routes.js',
+			entries: './build/routes.js',
 			transform: [reactify],
 			debug: !production,
 			fullPaths: !production,
@@ -98,6 +114,7 @@ var tasks = {
 
 		var rebundle = function() {
 			var start = new Date();
+			console.log('APP bundle started at ' + start);
 			return bundler.bundle()
 							.on('error', handleError('Browserify'))
 							.pipe(source('application.js'))
@@ -144,7 +161,9 @@ var tasks = {
 gulp.task('clean', tasks.clean);
 gulp.task('assets', tasks.assets);
 gulp.task('sass', tasks.sass);
-gulp.task('browserify', tasks.browserify);
+gulp.task('templates', tasks.templates);
+gulp.task('reactify', ['templates'], tasks.reactify);
+gulp.task('browserify', ['reactify'], tasks.browserify);
 gulp.task('optimize', tasks.optimize);
 gulp.task('lint:js', tasks.lintjs);
 gulp.task('test', tasks.test);
@@ -161,9 +180,8 @@ gulp.task('strict', ['assets', 'sass', 'lint:js', 'browserify'], function() {
 	gulp.watch('./src/**/*.scss', ['sass']);
 	gulp.watch([
 		'./src/**/*.js',
-		'./src/**/*.jsx',
-		'./app.js'
-	], ['lint:js', 'browserify']);
+		'./src/**/*.jsx'
+	], ['lint:js', 'reactify']);
 	gulp.watch('./assets/**', ['assets']);
 });
 
@@ -172,9 +190,8 @@ gulp.task('watch', ['assets', 'sass', 'browserify'], function() {
 	gulp.watch('./assets/**', ['assets']);
 	gulp.watch([
 		'./src/**/*.js',
-		'./src/**/*.jsx',
-		'./app.js'
-	], ['browserify']);
+		'./src/**/*.jsx'
+	], ['reactify']);
 });
 
 gulp.task('default', ['watch']);

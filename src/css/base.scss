@@ -1,3 +1,15 @@
 @import "variables";
 @import "bootstrap";
 @import "bootswatch";
+
+// These are global settings to ensure the application fills out our viewport
+html, body, #content {
+	height: 100%;
+	min-height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	overflow-x: hidden;
+}

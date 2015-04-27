@@ -1,15 +1,24 @@
+# To start
+
+- startup a new container with the following command: ` docker run -i -t -v /c/Users/Siddhartha/Documents/Personal/Code/blog/:/usr/src/ -w /usr/src/ -p 8000:8000 --rm node:slim bash`
+- Run the npm installer to get all project dependencies: `. install_deps_globally.sh package.json`
+- Clean and start gulp in watch mode: `gulp clean; gulp &`
+- Start the server in debug: `npm run debug`
+
 # Activity Notes
 
 ### Just completed
 
-- Gulp build system
-- Integration of Twitter Bootstrap SASS components for sitewide styling
+- Initial SSR of a webpage through browserify, gulp, express and React.
+- Build system made more robust
+- All files are now served through the webserver
 
 ### Left to complete
 
+- Make SSR robust - right now components rendered on the client are not recognized. Need to have react init code for the client so that when the JS is loaded the client is aware of which components have been rendered.
+
 - Creation of React Router
 - Creation of isomorphic components
-- SSR of components
 - Creation of Stores and Actions for this SSR
 
 # Resources
@@ -26,6 +35,7 @@
 - React Starter [Docs](https://github.com/webpack/react-starter/blob/master/NOTES/HowStuffWorks.md)
 - Gulp Starters - [Gist](https://gist.github.com/mlouro/8886076), [Boilerplate](https://github.com/christianalfoni/react-app-boilerplate/blob/master/gulpfile.js)
 - According to the React best practices, it is preferable to use inline styles with react than to have classes. I quite agree, except, it's MUCH easier to affect classes equally with cross browser support with bootstrap than it is with React. Therefore, for this blog, I'm choosing a hybrid approach
+- Tried using [gulp-reacss](https://github.com/yodairish/gulp-reacss). Failed. I believe the API is not fully fleshed out yet. However, it does give me the means of trying to use the [css](https://github.com/reworkcss/css) library should I desire to do so.
 
 # Todo
 
@@ -50,6 +60,7 @@
 - Wrap style and required scripts together
   - Separate out styles into CSS files, etc.
   - Include ability to require CSS (webpack)
+- Create a Travis CI build hook
 
 At this point the webapp is deploy worthy. Once this milestone is reached:
 
@@ -61,6 +72,7 @@ At this point the webapp is deploy worthy. Once this milestone is reached:
   - Authentication
   - Utilize apps perhaps
 - Docker-ize webapp
+- Create Error Pages
 
 # Data Model
 
