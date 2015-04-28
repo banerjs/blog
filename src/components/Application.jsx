@@ -1,17 +1,27 @@
 // Main page of the application
 var React = require('react');
+var RouteHandler = require('react-router').RouteHandler;
+
+var Header = require('./Header');
 
 var Application = React.createClass({
 	contextTypes: {
 		router: React.PropTypes.func
 	},
 
+	// For now declaratively define the style within the react class
+	style: {
+		height: "100%",
+		margin: 0,
+		padding: 0
+	},
+
 	render: function() {
 		return (
-			<main>
-				<h1>Hello World. <small>This is SSR...</small></h1>
-				<p>This is some random text</p>
-			</main>
+			<div style={this.style}>
+				<Header/>
+				<RouteHandler />
+			</div>
 		);
 	}
 });
