@@ -34,8 +34,12 @@ var handleError = function(task) {
 	};
 }
 
+// Figure out if this is going to be a production build
 var production = (process.env.NODE_ENV === 'production'
 				  || (!!process.argv.length && process.argv[process.argv.length-1] === "deploy"));
+
+// Then try to determine if this is a build requiring hot reload
+var watch = !production && (!!process.argv.length && process.argv[process.argv.length-1] !== "build");
 
 // Define the subtasks that are needed by the app
 var tasks = {
@@ -108,7 +112,7 @@ var tasks = {
 			cache: {}, packageCache: {} // apparently needed for watchify
 		});
 
-		if (!production) {
+		if (watch) {
 			bundler = watchify(bundler);
 		}
 
@@ -155,8 +159,6 @@ var tasks = {
 	}
 };
 
-// TODO: Install BrowserSync?
-
 // Mini tasks
 gulp.task('clean', tasks.clean);
 gulp.task('assets', tasks.assets);
@@ -169,24 +171,21 @@ gulp.task('lint:js', tasks.lintjs);
 gulp.task('test', tasks.test);
 
 // Macro tasks
+
+// This is the main task for production - deploys the code with minification
 gulp.task('deploy', [
-	'clean',
 	'assets',
 	'sass',
+	'templates',
 	'browserify'
 ]);
 
-gulp.task('strict', ['assets', 'sass', 'lint:js', 'browserify'], function() {
-	gulp.watch('./src/**/*.scss', ['sass']);
-	gulp.watch([
-		'./src/**/*.js',
-		'./src/**/*.jsx'
-	], ['lint:js', 'reactify']);
-	gulp.watch('./assets/**', ['assets']);
-	gulp.watch('./src/templates/**/*.html', ['templates']);
-});
+// Unlike deploy which is production ready, this command builds with source maps
+gulp.task('build', ['deploy']);
 
-gulp.task('watch', ['assets', 'sass', 'browserify'], function() {
+// While developing, this is perhaps the most useful for small changes. Larger
+// changes might cause compilation errors and should thus be avoided
+gulp.task('watch', ['deploy'], function() {
 	gulp.watch('./src/**/*.scss', ['sass']);
 	gulp.watch('./assets/**', ['assets']);
 	gulp.watch('./src/templates/**/*.html', ['templates']);
@@ -196,4 +195,5 @@ gulp.task('watch', ['assets', 'sass', 'browserify'], function() {
 	], ['reactify']);
 });
 
+// Set the default task for gulp to be the watch
 gulp.task('default', ['watch']);
