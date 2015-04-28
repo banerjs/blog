@@ -1,6 +1,6 @@
 # To start
 
-- startup a new container with the following command: ` docker run -i -t -v /c/Users/Siddhartha/Documents/Personal/Code/blog/:/usr/src/ -w /usr/src/ -p 8000:8000 --rm node:slim bash`
+- startup a new container with the following command: `docker run -i -t -v /c/Users/Siddhartha/Documents/Personal/Code/blog/:/usr/src/ -w /usr/src/ -p 8000:8000 --rm node:slim bash`
 - Run the npm installer to get all project dependencies: `. install_deps_globally.sh package.json`
 - Clean and start gulp in watch mode: `gulp clean; gulp &`
 - Start the server in debug: `npm run debug`
@@ -15,8 +15,7 @@
 
 ### Left to complete
 
-- Make SSR robust - right now components rendered on the client are not recognized. Need to have react init code for the client so that when the JS is loaded the client is aware of which components have been rendered.
-
+- Allow modification of the title in the server
 - Creation of React Router
 - Creation of isomorphic components
 - Creation of Stores and Actions for this SSR

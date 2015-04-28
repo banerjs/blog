@@ -101,7 +101,7 @@ var tasks = {
 	// Browserify
 	browserify: function() {
 		var bundler = browserify({
-			entries: './build/routes.js',
+			entries: './build/clientRouter.js',
 			transform: [reactify],
 			debug: !production,
 			fullPaths: !production,
@@ -183,11 +183,13 @@ gulp.task('strict', ['assets', 'sass', 'lint:js', 'browserify'], function() {
 		'./src/**/*.jsx'
 	], ['lint:js', 'reactify']);
 	gulp.watch('./assets/**', ['assets']);
+	gulp.watch('./src/templates/**/*.html', ['templates']);
 });
 
 gulp.task('watch', ['assets', 'sass', 'browserify'], function() {
 	gulp.watch('./src/**/*.scss', ['sass']);
 	gulp.watch('./assets/**', ['assets']);
+	gulp.watch('./src/templates/**/*.html', ['templates']);
 	gulp.watch([
 		'./src/**/*.js',
 		'./src/**/*.jsx'
