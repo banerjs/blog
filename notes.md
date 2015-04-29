@@ -5,18 +5,6 @@
 - Clean and start gulp in watch mode: `gulp clean; gulp &`
 - Start the server in debug: `npm run debug`
 
-# Activity Notes
-
-### Just completed
-
-- Isomorphic application is ready
-
-### Left to complete
-
-- Create data and stubs that can be served through this router
-- Allow modification of the title in the server
-- Creation of Stores and Actions for this SSR
-
 # Resources
 
 - Google Maps styling: [SnazzyMaps](https://snazzymaps.com/)
@@ -32,45 +20,67 @@
 - Gulp Starters - [Gist](https://gist.github.com/mlouro/8886076), [Boilerplate](https://github.com/christianalfoni/react-app-boilerplate/blob/master/gulpfile.js)
 - Tried using [gulp-reacss](https://github.com/yodairish/gulp-reacss). Failed. I believe the API is not fully fleshed out yet. However, it does give me the means of trying to use the [css](https://github.com/reworkcss/css) library should I desire to do so.
 - Setting up PG - [node-postgres](https://github.com/brianc/node-postgres) and [pg-promise](https://github.com/vitaly-t/pg-promise) alongwith [pg-monitor](https://github.com/vitaly-t/pg-monitor). The reason I'm not using firebase/mongo are because of pricing, lookup latencies and storage restrictions when deploying on Heroku. On Openshift, this would not be a problem, but the setup there takes longer.
+- For posterity's sake, here were a few data sources that I was considering a while back:
+  - [Firebase](https://www.firebase.com/) - Excellent API and libraries
+  - [MyJSON](http://myjson.com/) - Free and very easy to use
+  - MongoDB - this comes free(ish) with hosting
+  - Postgres - harder to model flexible data. But also free-ish
+  - Filesystem - cheapest option. Probably not the most performant though
 
 # Todo
 
-- Create page design
-  - ~~Travelogue Mock~~
-  - ~~Skrollr-ize the mocks. Easy addition of skrollr pages~~
-    - ~~Add better animation for country name & image entry (slide 6 in examples)~~
-    - Auto hide and show map when data loads
-      - Use Flux pattern
-  - Create mocks for general blog
-  - Create Navigation
-  - Make responsive
-- Create isomorphic webapp
-  - Create modular models. Includes configuring data source(s)
-    - [Firebase](https://www.firebase.com/) - Excellent API and libraries
-    - [MyJSON](http://myjson.com/) - Free and very easy to use
-    - MongoDB - this comes free(ish) with hosting
-    - Postgres - harder to model flexible data. But also free-ish
-    - Filesystem - cheapest option. Probably not the most performant though
-  - Create modular React components
-    - Build on Flux pattern in page mocks
-- Wrap style and required scripts together
-  - Separate out styles into CSS files, etc.
-  - Include ability to require CSS (webpack)
-- Create a Travis CI build hook
+- Create Postgres hookups
+  - Initiate a DB connection (pool) when the app starts so that requests can utilize this pool
+  - Initiate and close transactions for the API section automatically. Be careful to do this only when routes match
+  - Initialize the data in the databases
+- Create Stores and Actions
+  - Needed for easy update through the APIs
+  - Would help cement the Flux model
+- Recreate Blog and Travelogue design
+  - Includes the addition of Skrollr
+  - Includes preserving the responsiveness that the mocks lacked
+- Curate actual content for the blog
+- Create unit tests and setup the Travis CI build hook
 
 At this point the webapp is deploy worthy. Once this milestone is reached:
 
-- Allow easy SSR
-  - Webpack include of scripts and CSS
-  - Non-render of Google Maps on the server side (trivial?)
+- Create mongo/firebase and file system hookups
+  - Needed (in the long run) for the places data and arbitrary schema documents that we want to query using a *single key*
+  - Associations and multiple lookup methods can be stored on postgres
+  - Migration to OpenShift is also an option
 - Use [Mapstraction](http://mapstraction.com/) to ensure agnostic maps
-- Edit API/UI
-  - Authentication
-  - Utilize apps perhaps
+- Enhance API/UI
+  - Include authorization
+  - Include ability to create new content
 - Docker-ize webapp
 - Create Error Pages
+- Modify document title on the server
 
 # Data Model
+
+With the use of PG, the old data model has been invalidated. Time to now create data models (and stores that the application can actually use).
+
+There will be 3 kinds of stores:
+
+1. PostStore - this store will contain all the data in the blog post/page that needs to be rendered from markdown
+1. PostListStore - this store will contain the available list of posts segregated based on arbitrary criteria
+1. PlaceStore - this store will contain the metadata about the countries/places that a travelogue section article may talk about
+
+The format of the data for each of these stores is thus as follows:
+
+PostStore:
+
+// TODO
+
+PostListStore:
+
+// TODO
+
+PlaceStore:
+
+// TODO
+
+**OLD CONTENT**
 
 	countries: {
 		url: {
