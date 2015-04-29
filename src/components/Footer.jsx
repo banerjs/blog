@@ -1,5 +1,6 @@
 // Page Footer
 var React = require('react');
+var STYLES = require('../constants/styles');
 
 var Footer = React.createClass({
 	style: {
@@ -7,7 +8,7 @@ var Footer = React.createClass({
 			position: "absolute",
 			bottom: 0,
 			width: "100%",
-			height: 50,		// This value is linked with the padding in Application.jsx
+			height: STYLES.footerHeight,
 			borderTop: "solid 1px #ddd"
 		}
 	},
@@ -16,8 +17,9 @@ var Footer = React.createClass({
 		return (
 			<footer style={this.style.root}>
 				<div className="container-fluid text-muted">
-					<div className="row">
-						<h5 className="col-xs-11 text-right">Contact</h5>
+					<div className="row text-center">
+						<h5 className="col-sm-offset-8 col-sm-2">Contact</h5>
+						<h5 className="col-sm-2">Github</h5>
 					</div>
 				</div>
 			</footer>

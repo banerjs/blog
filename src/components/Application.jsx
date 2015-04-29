@@ -4,13 +4,14 @@ var RouteHandler = require('react-router').RouteHandler;
 
 var Header = require('./Header');
 var Footer = require('./Footer');
+var STYLES = require('../constants/styles');
 
 var Application = React.createClass({
 	style: {
 		root: {
 			display: "table-cell",
 			position: "relative",
-			paddingBottom: 50	// This value is linked with the height of Footer.jsx
+			paddingBottom: STYLES.footerHeight
 		}
 	},
 
