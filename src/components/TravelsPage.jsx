@@ -1,17 +1,17 @@
-// Homepage
+// Page showing the different travelogue posts available
 var React = require('react');
 
-var Homepage = React.createClass({
+var TravelsPage = React.createClass({
 	contextTypes: {
 		router: React.PropTypes.func
 	},
 
 	render: function() {
 		return (
-			<main className="container-fluid">
+			<main>
 			</main>
 		);
 	}
 });
 
-module.exports = Homepage;
+module.exports = TravelsPage;

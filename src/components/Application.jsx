@@ -10,7 +10,7 @@ var Application = React.createClass({
 		root: {
 			display: "table-cell",
 			position: "relative",
-			paddingBottom: 60
+			paddingBottom: 50	// This value is linked with the height of Footer.jsx
 		}
 	},
 

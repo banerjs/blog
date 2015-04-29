@@ -9,9 +9,9 @@ var SubsiteName = React.createClass({
 
 	getSubsiteName: function() {
 		switch(this.props.subsite) {
-			case "blog":
+			case "blogs":
 				return " blog";
-			case "travel":
+			case "travels":
 				return " travelogue";
 			default:
 				return "";
@@ -65,11 +65,11 @@ var Header = React.createClass({
 						<h1 className="text-center">Siddhartha Banerjee<SubsiteName subsite={this.getSubsite()} /></h1>
 					</Link>
 				</div>
-				<nav className="row">
-					<ul className="col-xs-offset-3 col-xs-6 list-inline text-center">
-						<li><Link to="home" style={this.style.nav.ul.li.Link}><h2><small>Home</small></h2></Link></li>
-						<li><Link to="travel" style={this.style.nav.ul.li.Link}><h2><small>Travelogue</small></h2></Link></li>
-						<li><Link to="blog" style={this.style.nav.ul.li.Link}><h2><small>Blog</small></h2></Link></li>
+				<nav>
+					<ul className="row list-inline text-center">
+						<li className="col-sm-offset-3 col-sm-2"><Link to="home" style={this.style.nav.ul.li.Link}><h2><small>Home</small></h2></Link></li>
+						<li className="col-sm-2"><Link to="blogs" style={this.style.nav.ul.li.Link}><h2><small>Blog</small></h2></Link></li>
+						<li className="col-sm-2"><Link to="travels" style={this.style.nav.ul.li.Link}><h2><small>Travelogue</small></h2></Link></li>
 					</ul>
 				</nav>
 			</header>

@@ -7,8 +7,8 @@ var Footer = React.createClass({
 			position: "absolute",
 			bottom: 0,
 			width: "100%",
-			height: 60,
-			borderTop: "#ddd"
+			height: 50,		// This value is linked with the padding in Application.jsx
+			borderTop: "solid 1px #ddd"
 		}
 	},
 
@@ -17,8 +17,7 @@ var Footer = React.createClass({
 			<footer style={this.style.root}>
 				<div className="container-fluid text-muted">
 					<div className="row">
-						<span className="col-xs-6" dangerouslySetInnerHTML={{__html: '&copy; Siddhartha Banerjee'}}></span>
-						<span className="col-xs-5 text-right">Contact</span>
+						<h5 className="col-xs-11 text-right">Contact</h5>
 					</div>
 				</div>
 			</footer>

@@ -1,7 +1,7 @@
-// Homepage
+// Page showing the different blog posts available
 var React = require('react');
 
-var Homepage = React.createClass({
+var BlogsPage = React.createClass({
 	contextTypes: {
 		router: React.PropTypes.func
 	},
@@ -14,4 +14,4 @@ var Homepage = React.createClass({
 	}
 });
 
-module.exports = Homepage;
+module.exports = BlogsPage;
