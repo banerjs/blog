@@ -7,16 +7,16 @@ var Footer = require('./Footer');
 
 var Application = React.createClass({
 	style: {
-		minHeight: "100%",
-		display: "inherit",
-		width: "100%",
-		position: "relative",
-		padding: "0 0 60px"
+		root: {
+			display: "table-cell",
+			position: "relative",
+			paddingBottom: 60
+		}
 	},
 
 	render: function() {
 		return (
-			<div>
+			<div style={this.style.root}>
 				<Header/>
 				<RouteHandler />
 				<Footer />

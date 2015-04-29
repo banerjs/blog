@@ -37,7 +37,7 @@ var Homepage = React.createClass({
 
 	render: function() {
 		return (
-			<main>
+			<main className="container-fluid">
 				<section>
 					<p>This is some random text</p>
 				</section>

@@ -16,10 +16,10 @@ var Footer = React.createClass({
 		return (
 			<footer style={this.style.root}>
 				<div className="container-fluid text-muted">
-					<p className="row">
+					<div className="row">
 						<span className="col-xs-6" dangerouslySetInnerHTML={{__html: '&copy; Siddhartha Banerjee'}}></span>
 						<span className="col-xs-5 text-right">Contact</span>
-					</p>
+					</div>
 				</div>
 			</footer>
 		);
