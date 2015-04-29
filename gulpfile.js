@@ -12,7 +12,6 @@ var del = require('del');
 var react = require('gulp-react');
 
 var browserify = require('browserify');
-var reactify = require('reactify');
 var eslint = require('gulp-eslint');
 var uglify = require('gulp-uglify');
 
@@ -69,7 +68,7 @@ var tasks = {
 					.pipe(gulpif(!production, sourcemaps.init()))
 					.pipe(sass({
 						sourceComments: !production,
-						outputStyle: 'nested'
+						outputStyle: (production) ? 'compressed' : 'nested'
 					}))
 					.on('error', handleError('SASS'))
 					// generate .maps for debugging
@@ -106,14 +105,13 @@ var tasks = {
 	browserify: function() {
 		var bundler = browserify({
 			entries: './build/clientRouter.js',
-			transform: [reactify],
 			debug: !production,
 			fullPaths: !production,
 			cache: {}, packageCache: {} // apparently needed for watchify
 		});
 
 		if (watch) {
-			bundler = watchify(bundler);
+			bundler = watchify(bundler, { delay: 8000 }); // Give reactify time
 		}
 
 		var rebundle = function() {

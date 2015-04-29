@@ -3,24 +3,23 @@ var React = require('react');
 var RouteHandler = require('react-router').RouteHandler;
 
 var Header = require('./Header');
+var Footer = require('./Footer');
 
 var Application = React.createClass({
-	contextTypes: {
-		router: React.PropTypes.func
-	},
-
-	// For now declaratively define the style within the react class
 	style: {
-		height: "100%",
-		margin: 0,
-		padding: 0
+		minHeight: "100%",
+		display: "inherit",
+		width: "100%",
+		position: "relative",
+		padding: "0 0 60px"
 	},
 
 	render: function() {
 		return (
-			<div style={this.style}>
+			<div>
 				<Header/>
 				<RouteHandler />
+				<Footer />
 			</div>
 		);
 	}

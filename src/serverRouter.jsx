@@ -14,7 +14,7 @@ fs.readFile(__dirname + '/templates/base.html', function(err, data) {
 
 var router = function(req, res, next) {
 	Router.run(routes, req.url, function(Handler, state) {
-		response = template.replace("TITLE", "Test")
+		response = template.replace("TITLE", "Siddhartha Banerjee")
 						   .replace("CONTENT", React.renderToString(<Handler />));
 		res.contentType = "text/html; charset=utf8";
 		res.end(response);

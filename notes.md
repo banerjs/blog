@@ -33,7 +33,6 @@
 - GIF Creation - [Spiffygif](http://spiffygif.com/)
 - React Starter [Docs](https://github.com/webpack/react-starter/blob/master/NOTES/HowStuffWorks.md)
 - Gulp Starters - [Gist](https://gist.github.com/mlouro/8886076), [Boilerplate](https://github.com/christianalfoni/react-app-boilerplate/blob/master/gulpfile.js)
-- According to the React best practices, it is preferable to use inline styles with react than to have classes. I quite agree, except, it's MUCH easier to affect classes equally with cross browser support with bootstrap than it is with React. Therefore, for this blog, I'm choosing a hybrid approach
 - Tried using [gulp-reacss](https://github.com/yodairish/gulp-reacss). Failed. I believe the API is not fully fleshed out yet. However, it does give me the means of trying to use the [css](https://github.com/reworkcss/css) library should I desire to do so.
 
 # Todo
