@@ -9,15 +9,12 @@
 
 ### Just completed
 
-- Initial SSR of a webpage through browserify, gulp, express and React.
-- Build system made more robust
-- All files are now served through the webserver
+- Isomorphic application is ready
 
 ### Left to complete
 
+- Create data and stubs that can be served through this router
 - Allow modification of the title in the server
-- Creation of React Router
-- Creation of isomorphic components
 - Creation of Stores and Actions for this SSR
 
 # Resources

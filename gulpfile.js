@@ -146,11 +146,6 @@ var tasks = {
 			.pipe(eslint.failOnError());
 	},
 
-	// Optimize Assets
-	optimize: function() {
-		// TODO
-	},
-
 	// Test
 	test: function() {
 		// TODO
