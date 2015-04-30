@@ -28,11 +28,13 @@
   - Filesystem - cheapest option. Probably not the most performant though
 - Free Stock Photos - [Unsplash](https://unsplash.com/)
 - Online Image Compression - [CompressJPEG](http://compressjpeg.com/) and [TinyPNG](https://tinypng.com/)
+- Glyphs from [WebHostingHub](http://www.webhostinghub.com/glyphs/)
 
 # Todo
 
 - Create Homepage
   - Design the activities and landing page
+    - Fix the CSS
     - Content
     - Images (Stock photos for now)
   - Get the design vetted by Mike

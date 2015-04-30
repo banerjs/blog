@@ -2,7 +2,6 @@
 @import "bootstrap/variables";
 
 html, body, #content {
-	display: table;
 	height: 100%;
 	width: 100%;
 	margin: 0;
@@ -11,4 +10,8 @@ html, body, #content {
 
 body {
 	overflow-x: hidden;
+}
+
+#content {
+	position: "relative";
 }
