@@ -26,9 +26,21 @@
   - MongoDB - this comes free(ish) with hosting
   - Postgres - harder to model flexible data. But also free-ish
   - Filesystem - cheapest option. Probably not the most performant though
+- Free Stock Photos - [Unsplash](https://unsplash.com/)
+- Online Image Compression - [CompressJPEG](http://compressjpeg.com/) and [TinyPNG](https://tinypng.com/)
 
 # Todo
 
+- Create Homepage
+  - Design the activities and landing page
+    - Content
+    - Images (Stock photos for now)
+  - Get the design vetted by Mike
+- Deploy to Heroku
+
+This will be the new face of banerjs.com. However, it will still not be "deploy worthy at this point"
+
+- Curate personal HQ images
 - Create Postgres hookups
   - Initiate a DB connection (pool) when the app starts so that requests can utilize this pool
   - Initiate and close transactions for the API section automatically. Be careful to do this only when routes match

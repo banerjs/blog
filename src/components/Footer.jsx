@@ -18,7 +18,8 @@ var Footer = React.createClass({
 			<footer style={this.style.root}>
 				<div className="container-fluid text-muted">
 					<div className="row text-center">
-						<h5 className="col-sm-offset-8 col-sm-2">Contact</h5>
+						<p className="col-sm-2 text-left">Images from <a href="https://unsplash.com/" target="_blank">Unsplash</a></p>
+						<h5 className="col-sm-offset-6 col-sm-2">Contact</h5>
 						<h5 className="col-sm-2">Github</h5>
 					</div>
 				</div>
