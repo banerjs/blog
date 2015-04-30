@@ -2,6 +2,8 @@
 var React = require('react');
 var Link = require('react-router').Link;
 
+var Footer = require('./Footer');
+
 // Mixin for a HomepageSectionHandler
 var HandlerMixin = {
 	style: {
@@ -135,7 +137,20 @@ var HealthHandler = React.createClass({
 
 	getBody: function() {
 		return (
-			<span>My routines are uploaded to my <Link to="blogs">Blog</Link></span>
+			<span>Data has been uploaded to my <Link to="blogs">Blog</Link></span>
+		);
+	}
+});
+
+// Component for the internals of the About section
+var AboutHandler = React.createClass({
+	statics: {
+		image: "gaze.jpg"
+	},
+
+	render: function() {
+		return (
+			<div />
 		);
 	}
 });
@@ -202,7 +217,8 @@ var Homepage = React.createClass({
 				<PageSection handler={<NatureHandler />} image={NatureHandler.image} />
 				<PageSection handler={<TravelsHandler />} image={TravelsHandler.image} />
 				<PageSection handler={<HealthHandler />} image={HealthHandler.image} />
-				<PageSection image="gaze.jpg" />
+				<PageSection handler={<AboutHandler />} image={AboutHandler.image} />
+				<Footer />
 			</main>
 		);
 	}
