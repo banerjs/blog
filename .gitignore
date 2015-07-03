@@ -3,3 +3,4 @@ node_modules/
 *.sublime-*
 public/**
 build/**
+scratch/justin/
