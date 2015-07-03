@@ -116,7 +116,7 @@ var TravelsHandler = React.createClass({
 
 	getBody: function() {
 		return (
-			<span>Check them out in my <Link to="travels">Travelogue</Link></span>
+			<span>I have a <Link to="travels">Travelogue</Link></span>
 		);
 	}
 });

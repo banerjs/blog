@@ -9,7 +9,12 @@
 # Resources
 
 - Google Maps styling: [SnazzyMaps](https://snazzymaps.com/)
-- Blog styles: [CMarsh](http://www.crmarsh.com/script/), [Justin](http://www.justinyan.com/posts/2015/self-esteem/)
+- Blog styles:
+  - [CMarsh](http://www.crmarsh.com/script/)
+  - [Justin](http://www.justinyan.com/posts/2015/self-esteem/)
+  - [Paravel Founder Sites](http://paravelinc.com/about.php)
+    - [Trent Walton](http://trentwalton.com/)
+    - [Dave Rupert](http://daverupert.com/)
 - Bootstrap Themes: [Bootswatch](https://bootswatch.com/)
 - Online Shapefile Viewer: [Mapshaper](http://www.mapshaper.org/)
 - Countries Data: [Data OKFN](http://data.okfn.org/data/datasets/geo-boundaries-world-110m), [Google Groups](https://groups.google.com/forum/#!topic/d3-js/cTVo0Uci5x4), **[Stack Overflow](http://stackoverflow.com/questions/9542834/geojson-world-database)**
