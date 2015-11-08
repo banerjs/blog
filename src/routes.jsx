@@ -1,7 +1,8 @@
 var React = require('react');
-var Router = require('react-router');
-var Route = Router.Route;
-var DefaultRoute = Router.DefaultRoute;
+var ReactRouter = require('react-router');
+var Router = ReactRouter.Router;
+var Route = ReactRouter.Route;
+var IndexRoute = ReactRouter.IndexRoute;
 var NotFoundRoute = Router.NotFoundRoute;
 
 var Application = require('./components/Application');
@@ -10,19 +11,19 @@ var BlogsPage = require('./components/BlogsPage');
 var TravelsPage = require('./components/TravelsPage');
 
 module.exports = (
-	<Route path="/" handler={Application}>
+	<Route path="/" component={Application}>
 
 		// Routes for the travelogue
 		<Route path="/travels" name="travels">
-			<DefaultRoute handler={TravelsPage} />
+			<IndexRoute component={TravelsPage} />
 		</Route>
 
 		// Routes for the blog
 		<Route path="/blogs" name="blogs">
-			<DefaultRoute handler={BlogsPage} />
+			<IndexRoute component={BlogsPage} />
 		</Route>
 
 		// Routes for the rest of banerjs.com
-		<DefaultRoute name="home" handler={Homepage} />
+		<IndexRoute name="home" component={Homepage} />
 	</Route>
 );

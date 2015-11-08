@@ -3,7 +3,7 @@
 - startup a new container with the following command: `docker run -i -t -v /c/Users/Siddhartha/Documents/Code/blog/:/usr/src/ -w /usr/src/ -p 8000:8000 --rm node bash`
 - Get and start screen: `apt-get update && apt-get install screen dialog` followed by `screen`
 - Run the npm installer to get all project dependencies: `. install_deps_globally.sh package.json`
-- Clean and start gulp in watch mode: `gulp clean; gulp &`
+- Clean and start gulp in watch mode: `npm run clean; npm run gulp &`
 - Start the server in debug: `npm run debug`
 
 # Resources

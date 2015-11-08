@@ -1,5 +1,5 @@
-# First specify that we need the slim node image
-FROM node:slim
+# First specify that we start with the node image
+FROM node
 
 # Set Maintainer
 MAINTAINER Siddhartha Banerjee, banerjs@banerjs.com
@@ -8,11 +8,11 @@ MAINTAINER Siddhartha Banerjee, banerjs@banerjs.com
 EXPOSE 8000
 
 # Copy the source code into the /usr/src section and make that the workdir
-# COPY . /usr/src/
+COPY . /usr/src/
 WORKDIR /usr/src/
 
 # Run the commands needed to get node running
-RUN npm install && gulp deploy
+RUN npm install && npm run deploy
 
 # Setup environment variables as needed
 ENV NODE_ENV=production

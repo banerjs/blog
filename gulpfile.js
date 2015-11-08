@@ -18,7 +18,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var postcss = require('gulp-postcss');
 var nano = require('gulp-cssnano');
 var sass = require('gulp-sass');
-var autoprefixer = require('autoprefixer-core')
+var autoprefixer = require('autoprefixer')
 
 // Define task helper variables and functions
 var handleError = function(task) {

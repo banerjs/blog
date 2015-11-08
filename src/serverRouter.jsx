@@ -1,6 +1,8 @@
 var fs = require('fs');
 var React = require('react');
-var Router = require('react-router');
+var ReactRouter = require('react-router');
+var match = ReactRouter.match;
+var RoutingContext = ReactRouter.RoutingContext;
 var routes = require('./routes');
 
 // Make sure to load up the template HTML file at startup
@@ -13,16 +15,19 @@ fs.readFile(__dirname + '/templates/base.html', function(err, data) {
 });
 
 var router = function(req, res, next) {
-	Router.run(routes, req.url, function(Handler, state) {
-		if (!state.routes.length) {	// If no matching routes were found, raise 404
-			var err = new Error('Not Found');
-			err.status = 404;
-			next(err);
+	match({ routes, location: req.url }, function(error, redirectLocation, renderProps) {
+		if (error) {
+			next(error)
+		} else if (redirectLocation) {
+			res.redirect(302, redirectLocation.pathname + redirectLocation.search);
+		} else if (renderProps) {
+			response = template.replace("TITLE", "Siddhartha Banerjee")
+							   .replace("CONTENT", React.renderToString(<RoutingContext {...renderProps} />));
+			res.contentType = "text/html; charset=utf8";
+			res.status(200).end(response);
+		} else {
+			res.status(404)
 		}
-		response = template.replace("TITLE", "Siddhartha Banerjee")
-						   .replace("CONTENT", React.renderToString(<Handler />));
-		res.contentType = "text/html; charset=utf8";
-		res.end(response);
 	});
 }
 
