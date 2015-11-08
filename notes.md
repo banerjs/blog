@@ -38,4 +38,5 @@
 
 # Todo
 
-- Restart the project. Begin by creating a simple react+fullpage.js page.
+- Restart the project. Begin by creating a simple react+fullpage.js page. I have a few notes regarding this:
+  - The `normalScrollElements` and `autoScrolling` options could come in handy

@@ -1,0 +1,35 @@
+<<!DOCTYPE html>
+<html>
+<head>
+	<title>Blog Test</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.7.4/jquery.fullPage.css">
+    <link rel="stylesheet" type="text/css" href="test.css">
+
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.2/react.js"></script> -->
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.2/react-dom.js"></script> -->
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script> -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.7.4/jquery.fullPage.js"></script>
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react-router/0.13.5/ReactRouter.js"></script> -->
+</head>
+<body style="background-color: black; color: white; text-align: center">
+<div id="fullpage">
+	<div class="section active" id="home"><h1>Home</h1></div>
+	<div class="section">
+		<div class="slide" id="about"><h1>About</h1></div>
+		<div class="slide" id="contact"><h1>Contact</h1></div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#fullpage').fullpage({
+			navigation: true,
+			slidesNavigation: true,
+			continuousVertical: true,
+			loopHorizontal: true,
+			recordHistory: false
+		});
+	});
+</script>
+</body>
+</html>
