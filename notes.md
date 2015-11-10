@@ -38,5 +38,9 @@
 
 # Todo
 
-- Restart the project. Begin by creating a simple react+fullpage.js page. I have a few notes regarding this:
-  - The `normalScrollElements` and `autoScrolling` options could come in handy
+- Ideate data model for the project. Need to have the following requirements:
+  - Specify the internal HTML for a section
+  - Affect the CSS for a section (most notably background colour)
+  - Send this HTML through AJAX requests
+  - Differentiate between section and slide
+- Create content for the about page

@@ -1,17 +1,10 @@
 @import "variables";
 @import "bootstrap/variables";
 
-html, body, #content {
-	height: 100%;
-	width: 100%;
-	margin: 0;
-	padding: 0;
-}
-
-body {
-	overflow-x: hidden;
-}
-
-#content {
-	position: "relative";
+#navigation {
+	width: 100px;
+	height: 60px;
+	position: fixed;
+	bottom: 0;
+	right: 0;
 }

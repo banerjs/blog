@@ -41,11 +41,13 @@
     "express": "^4.13.3",
     "fullpage.js": "^2.7.4",
     "history": "^1.12.0",
+    "jquery": "^2.1.4",
     "morgan": "^1.6.1",
     "pg-promise": "^2.2.5",
     "promise": "^7.0.4",
     "pg-monitor": "^0.3.4",
     "react": "^0.14.2",
+    "react-dom": "^0.14.2",
     "react-router": "^1.0.0-rc4",
     "serve-favicon": "^2.3.0",
     "skrollr": "^0.6.26"
