@@ -36,11 +36,57 @@
 - Online Image Compression - [CompressJPEG](http://compressjpeg.com/) and [TinyPNG](https://tinypng.com/)
 - Glyphs from [WebHostingHub](http://www.webhostinghub.com/glyphs/)
 
+# Feature Requests
+
+- Continuous scrolling of fullpage.js slides (might need to hack internals)
+- Switch scroll direction of sections and slides. Again, might require a hack and could be really hard simply because of the way HTML was originally set up to be used as a standard
+
 # Todo
 
-- Ideate data model for the project. Need to have the following requirements:
-  - Specify the internal HTML for a section
-  - Affect the CSS for a section (most notably background colour)
-  - Send this HTML through AJAX requests
-  - Differentiate between section and slide
 - Create content for the about page
+
+# Data Model
+
+The data model does the following:
+
+- Specify the internal HTML for a section
+- Affect the CSS for a section (most notably background colour)
+- Send this HTML through AJAX requests
+- Differentiate between section and slide
+
+The following JSON is available to the client. Based on the type of query, we can return with the appropriate sections populated.
+
+    [{
+      /** section */
+      styles,
+      slides: [{
+        /** slide */
+        url (pkey),
+        html,
+        styles
+      }, ...]
+    }, ...]
+
+The storage model in the DB however is different. We're using PG (easiest on Heroku) so the following denotes the columns for each row in the DB:
+
+    id(serial)
+    url(str)
+    section(int)
+    slide(int)
+    html(str)
+    styles(str)
+    section_styles(str)
+    created(date)
+    updated(date)
+
+The constraints on this storage are:
+
+    unique(url)
+    unique(section, slide)
+
+Notes on the styles objects:
+
+- The styles parameter is stored as a JSON str in the database. It is a JSON object
+- Styling for the slide or section is done with `styles.root`. All other children of the styles object are style objects for the stored html and can be referenced by their `styles.html_tag_name.root`.
+- As alluded to earlier, the styles object may be hierarchical in nature
+- The section_styles (should there exist any) are copied over multiple rows. This is to save storage space on Heroku.
