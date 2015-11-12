@@ -14,7 +14,7 @@ var Section = React.createClass({
 		// Ensure that the args to this component are correctly parsed
 		className = "section ".concat(!!this.props.htmlClassName ? this.props.htmlClassName : "");
 		idName = !!this.props.idName ? this.props.idName : "";
-		stylesheet = !!this.props.stylesheet ? this.props.stylesheet : "";
+		stylesheet = !!this.props.stylesheet ? this.props.stylesheet : {};
 
 		// Return the computed section
 		return (

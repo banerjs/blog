@@ -13,7 +13,7 @@ var Slide = React.createClass({
 		// Ensure that the args to this component are correctly parsed
 		className = "slide ".concat(!!this.props.htmlClassName ? this.props.htmlClassName : "");
 		idName = !!this.props.idName ? this.props.idName : "";
-		stylesheet = !!this.props.stylesheet ? this.props.stylesheet : "";
+		stylesheet = !!this.props.stylesheet ? this.props.stylesheet : {};
 
 		// Return the computed slide
 		return (

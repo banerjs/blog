@@ -35,15 +35,27 @@
 - Free Stock Photos - [Unsplash](https://unsplash.com/)
 - Online Image Compression - [CompressJPEG](http://compressjpeg.com/) and [TinyPNG](https://tinypng.com/)
 - Glyphs from [WebHostingHub](http://www.webhostinghub.com/glyphs/)
+- [Paletton](http://paletton.com/) allows for an easy way to generate colour palettes. The colours that go with the text colour for the Readable Bootstrap theme are:
+  - #030303
+  - #020202
+  - #646464
+  - #393939
+  - #020101
+- [Pixlr](https://pixlr.com/) is an excellent online image editing platform
 
 # Feature Requests
 
-- Continuous scrolling of fullpage.js slides (might need to hack internals)
+- Continuous scrolling of fullpage.js slides (might need to hack internals). Not too continuous though, might want to make it selective in terms of directions that are allowed to scroll
 - Switch scroll direction of sections and slides. Again, might require a hack and could be really hard simply because of the way HTML was originally set up to be used as a standard
+- Still need to procure images. For now, let's just work with 0 images.
 
 # Todo
 
 - Create content for the about page
+- Create a Flux style of store and dispatcher
+  - Figure out the actions that take place and how they should be handled
+  - Seems like there should be 1 store for the data and 1 dispatcher
+  - Not really sure where the eventing system to deal with the current state of the app should go. I think it should be a store of its own. Need to flesh out this store
 
 # Data Model
 

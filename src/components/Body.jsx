@@ -17,7 +17,6 @@ var Body = React.createClass({
 						<h1>Siddhartha Banerjee<br/><small>Robotics Ph.D. candidate at Georgia Tech</small></h1>
 					</Slide>
 					<Slide idName="about"><div className="container"><h2>About</h2></div></Slide>
-					<Slide idName="contact"><div className="container"><h2>Contact</h2></div></Slide>
 				</Section>
 			</div>
 		);
