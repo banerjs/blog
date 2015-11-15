@@ -42,6 +42,7 @@
   - #393939
   - #020101
 - [Pixlr](https://pixlr.com/) is an excellent online image editing platform
+- [Fluxible](http://fluxible.io/) seems like a promising place for creating a Flux data flow
 
 # Feature Requests
 
@@ -52,7 +53,7 @@
 # Todo
 
 - Create content for the about page
-- Create a Flux style of store and dispatcher
+- Create a Flux style of store and dispatcher. Use Fluxible
   - Figure out the actions that take place and how they should be handled
   - Seems like there should be 1 store for the data and 1 dispatcher
   - Not really sure where the eventing system to deal with the current state of the app should go. I think it should be a store of its own. Need to flesh out this store
