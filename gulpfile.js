@@ -20,6 +20,15 @@ var nano = require('gulp-cssnano');
 var sass = require('gulp-sass');
 var autoprefixer = require('autoprefixer')
 
+// Define all the vendor libs that don't really change all that much. Be careful
+// though. According to https://github.com/vigetlabs/gulp-starter/issues/75,
+// there could be issues with vendor dependencies if they're not fully specified
+// in this list.
+var vendors = [
+	'jquery',
+	'fullpage.js'
+]
+
 // Define task helper variables and functions
 var handleError = function(task) {
 	return function(err) {

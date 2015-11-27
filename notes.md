@@ -42,21 +42,21 @@
   - #393939
   - #020101
 - [Pixlr](https://pixlr.com/) is an excellent online image editing platform
-- [Fluxible](http://fluxible.io/) seems like a promising place for creating a Flux data flow
+- [Fluxible](http://fluxible.io/) seems like a promising place for creating a Flux data flow. [This](https://github.com/yahoo/fluxible/blob/master/docs/blog/2014-11-06-bringing-flux-to-the-server.md) seems like a decent tutorial on using Fluxible
 
 # Feature Requests
 
-- Continuous scrolling of fullpage.js slides (might need to hack internals). Not too continuous though, might want to make it selective in terms of directions that are allowed to scroll
-- Switch scroll direction of sections and slides. Again, might require a hack and could be really hard simply because of the way HTML was originally set up to be used as a standard
-- Still need to procure images. For now, let's just work with 0 images.
+- Animate slide transitions
+- Migrate to ES6 and Babel
+- Create 2 JS bundles using Browserify - one for the app which changes often, and another for the libraries that don't change as often. [This](https://github.com/vigetlabs/gulp-starter/issues/75) gives hints on how to accomplish this.
+- Reactify the navigation component and add "Jump capabilities" for faster browsing.
 
 # Todo
 
 - Create content for the about page
-- Create a Flux style of store and dispatcher. Use Fluxible
-  - Figure out the actions that take place and how they should be handled
-  - Seems like there should be 1 store for the data and 1 dispatcher
-  - Not really sure where the eventing system to deal with the current state of the app should go. I think it should be a store of its own. Need to flesh out this store
+- Incorporate history. Needs to be correctly incorporated for the server side. Flesh out the interplay between Page, Body and the Actions
+- Create a proper loader for the client, server and API routers
+- Common CSS for different sections should go into a sections folder in CSS. Files in here should be included using SASS for the individual pages.
 
 # Data Model
 

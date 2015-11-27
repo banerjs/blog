@@ -1,23 +1,56 @@
+var $ = require('jquery');
 var React = require('react');
-var Section = require('./Section');
-var Slide = require('./Slide');
+var AppStateStore = require('../stores/AppStateStore');
+
+// Fetch the page component
+var Page = require('./Page');
 
 /**
- * This is the main page of the website. It preloads the different sections and
- * slides of the website, but it leaves the fetch of the content upto the
- * individual section or slide. Periodically, the body updates its cache of the
- * different sections and slides present on the website through AJAX requests.
+ * This is the main Body of the application. Use this to manage the skeleton of
+ * the App. Currently, Body displays a single page only; in the future we might
+ * have to preload the sections surrounding the current page in order to get the
+ * animations to work properly.
  */
 var Body = React.createClass({
+	// TODO: Create docstrings for all of these
+	contextTypes: {
+		getStore: React.PropTypes.func.isRequired,
+		executeAction: React.PropTypes.func.isRequired
+	},
+
+	getInitialState: function() {
+		store = this.context.getStore(AppStateStore);
+		return {
+			url: store.getCurrentURL(),
+			css_tag: store.getPageCSSTag()
+		};
+	},
+
+	_updateCSS: function() {
+		$("#page_style").replaceWith($(this.state.css_tag));
+	},
+
+	_onNewPage: function() {
+		store = this.context.getStore(AppStateStore);
+		this.setState({
+			url: store.getCurrentURL(),
+			css_tag: store.getPageCSSTag()
+		});
+	},
+
+	componentDidMount: function() {
+		this.context.getStore(AppStateStore).addChangeListener(this._onNewPage);
+	},
+
+	componentWillUnmount: function() {
+		this.context.getStore(AppStateStore).removeChangeListener(this._onNewPage);
+	},
+
 	render: function() {
+		this._updateCSS();
 		return (
 			<div id="fullpage">
-				<Section>
-					<Slide htmlClassName="text-center" idName="home">
-						<h1>Siddhartha Banerjee<br/><small>Robotics Ph.D. candidate at Georgia Tech</small></h1>
-					</Slide>
-					<Slide idName="about"><div className="container"><h2>About</h2></div></Slide>
-				</Section>
+				<Page url={this.state.url} />
 			</div>
 		);
 	}

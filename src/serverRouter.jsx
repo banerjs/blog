@@ -1,11 +1,15 @@
 var fs = require('fs');
 var React = require('react');
 var ReactDOMServer = require('react-dom/server');
+var serialize = require('serialize-javascript');
+var createElementWithContext = require('fluxible-addons-react/createElementWithContext');
+
+// Personal JS
 var Body = require('./components/Body');
-// var ReactRouter = require('react-router');
-// var match = ReactRouter.match;
-// var RoutingContext = ReactRouter.RoutingContext;
-// var routes = require('./routes');
+var DataSource = require('./sources/pg');
+var BlogActions = require('./actions/BlogActions');
+
+var fluxibleApp = require('./createApp')(DataSource, { component: Body });
 
 // Make sure to load up the template HTML file at startup
 var template;
@@ -17,24 +21,23 @@ fs.readFile(__dirname + '/templates/base.html', function(err, data) {
 });
 
 var router = function(req, res, next) {
-	response = template.replace("TITLE", "Siddhartha Banerjee")
-					   .replace("CONTENT", ReactDOMServer.renderToString(<Body />));
-	res.contentType = "text/html; charset=utf8";
-	res.status(200).end(response);
-	// match({ routes, location: req.url }, function(error, redirectLocation, renderProps) {
-	// 	if (error) {
-	// 		next(error)
-	// 	} else if (redirectLocation) {
-	// 		res.redirect(302, redirectLocation.pathname + redirectLocation.search);
-	// 	} else if (renderProps) {
-	// 		response = template.replace("TITLE", "Siddhartha Banerjee")
-	// 						   .replace("CONTENT", React.renderToString(<RoutingContext {...renderProps} />));
-	// 		res.contentType = "text/html; charset=utf8";
-	// 		res.status(200).end(response);
-	// 	} else {
-	// 		res.status(404)
-	// 	}
-	// });
+	// Create a context for this request and populate stores
+	var context = fluxibleApp.createContext();
+	var moveAction = context.executeAction(BlogActions.moveToNewPage, { url: req.url });
+	var fetchAction = context.executeAction(BlogActions.fetchBlogPost, { url: req.url });
+
+	// Respond to the user only once the store promises have been fulfilled
+	Promise.all([moveAction, fetchAction]).then(function() {
+		var exposed_state = 'window.App=' + serialize(fluxibleApp.dehydrate(context)) + ';';
+		var appStore = context.getStore(AppStateStore);
+
+		response = template.replace("TITLE", "Siddhartha Banerjee")
+						   .replace("CONTENT", ReactDOMServer.renderToString(createElementWithContext(context, {})))
+						   .replace("PAGE_CSS", appStore.getPageCSSTag())
+						   .replace("EXPOSED_STATE", exposed_state);
+		res.contentType = "text/html; charset=utf8";
+		res.status(200).end(response);
+	});
 }
 
 module.exports = router;

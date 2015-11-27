@@ -1,23 +1,36 @@
-// var React = require('react');
-// var ReactRouter = require('react-router');
-// var Router = ReactRouter.Router;
-// var routes = require('./routes');
-// var createBrowserHistory = require('history/lib/createBrowserHistory');
-
-// var history = createBrowserHistory();
-// React.render(<Router history={history}>{routes}</Router>, document.getElementById("content"));
+// Libraries required on the client side
+var $ = require('jquery');
+// var fullpage = require('fullpage.js');
 var React = require('react');
 var ReactDOM = require('react-dom');
-var $ = require('jquery');
-var fullpage = require('fullpage.js');
-var Body = require('./components/Body');
+var Fluxible = require('fluxible');
+var createHistory = require('history/lib/createBrowserHistory');
+var createElementWithContext = require('fluxible-addons-react/createElementWithContext');
 
-ReactDOM.render(<Body />, document.getElementById('container'));
-$('#fullpage').fullpage({
-	controlArrows: false,
-	// navigation: true,
-	// slidesNavigation: true,
-	continuousVertical: true,
-	loopHorizontal: true,
-	recordHistory: false
+// Own JS code required on the client side
+var Body = require('./components/Body');
+var DataSource = require('./sources/xhr');
+var BlogStore = require('./stores/BlogStore');
+var AppStateStore = require('./stores/AppStateStore');
+var BlogActions = require('./actions/BlogActions');
+
+// Initialize libraries as needed
+var fluxibleApp = require('./createApp')(DataSource, { component: Body });
+
+// Retrieve the server state
+const dehydratedState = window.App;
+fluxibleApp.rehydrate(dehydratedState, function(err, context) {
+	if (err) { throw err; }
+	window.context = context;
+
+	//TODO Need to initialize better. But this is the gist of it
+	ReactDOM.render(createElementWithContext(context, {}), document.getElementById('container'));
+
+    // Initialize the history API and execute update actions on the store when
+    // when the URL changes
+    history = createHistory();
+    history.listen(function(location) {
+        context.executeAction(BlogActions.moveToNewPage, { url: location, direction: null });
+        context.executeAction(BlogActions.updateSections, {});
+    });
 });
