@@ -25,16 +25,16 @@ var Page = React.createClass({
 	},
 
 	_onBlogPostFetch: function() {
-		store = this.context.getStore(BlogStore);
+		store = this.context.getStore(BlogStore.constructor);
 		this.setState({ html: store.getPostHTML(this.props.url) });
 	},
 
 	componentDidMount: function() {
-		this.context.getStore(BlogStore).addChangeListener(this._onBlogPostFetch);
+		this.context.getStore(BlogStore.constructor).addChangeListener(this._onBlogPostFetch);
 	},
 
 	componentWillUnmount: function() {
-		this.context.getStore(BlogStore).removeChangeListener(this._onBlogPostFetch);
+		this.context.getStore(BlogStore.constructor).removeChangeListener(this._onBlogPostFetch);
 	},
 
 	render: function() {

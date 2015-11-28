@@ -1,6 +1,9 @@
 // This data source gets the data from PG. TODO
 var Promise = require('promise');
 
+// Debug
+var debug = require('debug')('blog:server');
+
 var PG = {
 	/**
 	 * This retrieves the post associated with a URL.

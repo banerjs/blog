@@ -4,9 +4,13 @@ var ReactDOMServer = require('react-dom/server');
 var serialize = require('serialize-javascript');
 var createElementWithContext = require('fluxible-addons-react/createElementWithContext');
 
+// Debug
+var debug = require('debug')('blog:server');
+
 // Personal JS
 var Body = require('./components/Body');
 var DataSource = require('./sources/pg');
+var AppStateStore = require('./stores/AppStateStore');
 var BlogActions = require('./actions/BlogActions');
 
 var fluxibleApp = require('./createApp')(DataSource, { component: Body });
@@ -25,11 +29,13 @@ var router = function(req, res, next) {
 	var context = fluxibleApp.createContext();
 	var moveAction = context.executeAction(BlogActions.moveToNewPage, { url: req.url });
 	var fetchAction = context.executeAction(BlogActions.fetchBlogPost, { url: req.url });
+	debug("Promises have been created");
 
 	// Respond to the user only once the store promises have been fulfilled
 	Promise.all([moveAction, fetchAction]).then(function() {
+		debug("Done with promises");
 		var exposed_state = 'window.App=' + serialize(fluxibleApp.dehydrate(context)) + ';';
-		var appStore = context.getStore(AppStateStore);
+		var appStore = context.getStore(AppStateStore.constructor);
 
 		response = template.replace("TITLE", "Siddhartha Banerjee")
 						   .replace("CONTENT", ReactDOMServer.renderToString(createElementWithContext(context, {})))

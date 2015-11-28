@@ -19,7 +19,7 @@ var Body = React.createClass({
 	},
 
 	getInitialState: function() {
-		store = this.context.getStore(AppStateStore);
+		store = this.context.getStore(AppStateStore.constructor);
 		return {
 			url: store.getCurrentURL(),
 			css_tag: store.getPageCSSTag()
@@ -31,7 +31,7 @@ var Body = React.createClass({
 	},
 
 	_onNewPage: function() {
-		store = this.context.getStore(AppStateStore);
+		store = this.context.getStore(AppStateStore.constructor);
 		this.setState({
 			url: store.getCurrentURL(),
 			css_tag: store.getPageCSSTag()
@@ -39,11 +39,11 @@ var Body = React.createClass({
 	},
 
 	componentDidMount: function() {
-		this.context.getStore(AppStateStore).addChangeListener(this._onNewPage);
+		this.context.getStore(AppStateStore.constructor).addChangeListener(this._onNewPage);
 	},
 
 	componentWillUnmount: function() {
-		this.context.getStore(AppStateStore).removeChangeListener(this._onNewPage);
+		this.context.getStore(AppStateStore.constructor).removeChangeListener(this._onNewPage);
 	},
 
 	render: function() {

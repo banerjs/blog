@@ -3,6 +3,9 @@ var BaseStore = require('fluxible/addons/BaseStore');
 var assign = require('object-assign');
 var labels = require('../actions');
 
+// Debug
+var debug = require('debug')('blog:server');
+
 // First create the store prototype by extending the BaseStore prototype
 var BlogStore = assign({}, BaseStore.prototype, {
 
@@ -13,6 +16,7 @@ var BlogStore = assign({}, BaseStore.prototype, {
 	 *	data.url and data.post
 	 */
 	handleFetchedPost: function(data) {
+		debug("Posts have been fetched");
 		this._posts[data.url] = data.post;
 		this.emitChange();
 	},
@@ -55,9 +59,8 @@ var BlogStore = assign({}, BaseStore.prototype, {
 // Instantiate a new BlogStore and set its private variables as required by the
 // Fluxible dispatcher
 BlogStore.storeName = 'BlogStore';
-BlogStore.handlers = {
-	labels.FETCH_POST: 'handleFetchedPost'
-};
+BlogStore.handlers = {};
+BlogStore.handlers[labels.FETCH_POST] = 'handleFetchedPost';
 
 // Initialize the BlogStore with no data. The data in this store has the form
 // { url: { html, css } }

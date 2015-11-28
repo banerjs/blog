@@ -10,8 +10,6 @@ var createElementWithContext = require('fluxible-addons-react/createElementWithC
 // Own JS code required on the client side
 var Body = require('./components/Body');
 var DataSource = require('./sources/xhr');
-var BlogStore = require('./stores/BlogStore');
-var AppStateStore = require('./stores/AppStateStore');
 var BlogActions = require('./actions/BlogActions');
 
 // Initialize libraries as needed

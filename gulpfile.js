@@ -8,7 +8,7 @@ var notify = require('gulp-notify');
 var watchify = require('watchify');
 var del = require('del');
 
-var react = require('gulp-react');
+var babel = require('gulp-babel');
 
 var browserify = require('browserify');
 var eslint = require('gulp-eslint');
@@ -105,7 +105,9 @@ var tasks = {
 	// JSX Transform
 	reactify: function() {
 		return gulp.src(['./src/**/*.js', './src/**/*.jsx'])
-					.pipe(react())
+					.pipe(babel({
+						presets: ['react']
+					}))
 					.pipe(gulp.dest('build/'));
 	},
 

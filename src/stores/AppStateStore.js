@@ -3,6 +3,9 @@ var BaseStore = require('fluxible/addons/BaseStore');
 var assign = require('object-assign');
 var labels = require('../actions');
 
+// Debug
+var debug = require('debug')('blog:server');
+
 // First create the store prototype by extending the BaseStore prototype
 var AppStateStore = assign({}, BaseStore.prototype, {
 	/**
@@ -17,6 +20,7 @@ var AppStateStore = assign({}, BaseStore.prototype, {
 			this._appState.page_css = data.post.css;
 			this.emitChange();
 		}
+		debug("Post fetched to app state");
 	},
 
 	/**
@@ -29,6 +33,7 @@ var AppStateStore = assign({}, BaseStore.prototype, {
 		// TODO: In the future, add more logic so that we can have transitions
 		// between pages in a logically consistent manner (store previous state
 		// for example)
+		debug("New Page has been created")
 		this._appState.current_url = data.url;
 		this._appState.page_css = data.css;
 		this.emitChange();
@@ -98,11 +103,11 @@ var AppStateStore = assign({}, BaseStore.prototype, {
 // Instantiate a new AppStateStore and set its private variables as required by
 // the Fluxible dispatcher
 AppStateStore.storeName = 'AppStateStore';
-AppStateStore.handlers = {
-	labels.FETCH_POST: 'handleFetchedPost',
-	labels.NEW_PAGE: 'handleNewPage',
-	labels.UPDATE_SECTIONS: 'handleUpdateSections'
-};
+
+AppStateStore.handlers = {};
+AppStateStore.handlers[labels.FETCH_POST] = 'handleFetchedPost';
+AppStateStore.handlers[labels.NEW_PAGE] = 'handleNewPage';
+AppStateStore.handlers[labels.UPDATE_SECTIONS] = 'handleUpdateSections';
 
 // Initialize the AppStateStore with no data. The data in this store is of the
 // form: { current_url, page_css, sections[{[]}] }

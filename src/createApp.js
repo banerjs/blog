@@ -4,11 +4,11 @@ var AppStateStore = require('./stores/AppStateStore');
 
 var createApp = function(dataSource, options) {
 	const app = new Fluxible(options);
-	app.registerStore(BlogStore);
-	app.registerStore(AppStateStore);
+	app.registerStore(BlogStore.constructor);
+	app.registerStore(AppStateStore.constructor);
 
 	// Plug the data source in appropriately
-	fluxibleApp.plug({
+	app.plug({
 		name: 'DataSource Plugin',
 
 		/**
@@ -29,7 +29,7 @@ var createApp = function(dataSource, options) {
 	             * @param {Object} app Fluxible instance
 	             */
 	            plugActionContext: function(actionContext, context, app) {
-	            	actionContext.getDatasource = function() { return dataSource; };
+	            	actionContext.getDataSource = function() { return dataSource; };
 	            }
 			};
 	    }
@@ -37,6 +37,8 @@ var createApp = function(dataSource, options) {
 	    // There are no dehydrate/rehydrate methods because the datasource is
 	    // different between the server and the client
 	});
+
+	return app;
 };
 
 module.exports = createApp;

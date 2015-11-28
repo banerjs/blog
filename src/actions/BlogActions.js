@@ -3,6 +3,9 @@ var promise = require('promise');
 var labels = require('./index');
 var BlogStore = require('../stores/BlogStore');
 
+// Debug
+var debug = require('debug')('blog:server');
+
 var BlogActions = {
 	/**
 	 * This is the basic action of retieving the HTML for a given URL
@@ -37,11 +40,16 @@ var BlogActions = {
 		var storeUpdate = new Promise(function(resolve, reject) {
 			// First create a data structure to send the data back to the stores
 			// and also fetch the desired data from the stores
+			debug('Pre store fetch');
+			debug(context.getStore(BlogStore.prototype));
 			var store = context.getStore(BlogStore);
+			debug('Post store fetch');
 			var data = { url: payload.url, css: store.getPostCSS(payload.url) };
 
 			// Then update the stores with the new data
 			context.dispatch(labels.NEW_PAGE, data);
+
+			debug("Dispatched to the stores");
 			resolve(true);
 		});
 
@@ -58,7 +66,7 @@ var BlogActions = {
 	 * Update the store of all the sections that are present in the Blog
 	 */
 	updateSectionsList: function(context, payload) {
-
+		// TODO
 	}
 }
 

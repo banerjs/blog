@@ -47,7 +47,7 @@
 # Feature Requests
 
 - Animate slide transitions
-- Migrate to ES6 and Babel
+- Migrate to ES6
 - Create 2 JS bundles using Browserify - one for the app which changes often, and another for the libraries that don't change as often. [This](https://github.com/vigetlabs/gulp-starter/issues/75) gives hints on how to accomplish this.
 - Reactify the navigation component and add "Jump capabilities" for faster browsing.
 
