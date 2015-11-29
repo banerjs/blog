@@ -1,5 +1,6 @@
 # To start
 
+- start from Windows: `docker-machine.exe env --shell powershell default | Invoke-Expression`
 - startup a new container with the following command: `docker run -i -t -v /c/Users/Siddhartha/Documents/Code/blog/:/usr/src/ -w /usr/src/ -p 8000:8000 --rm node bash`
 - Get and start screen: `apt-get update && apt-get install screen dialog` followed by `screen`
 - Run the npm installer to get all project dependencies: `. install_deps_globally.sh package.json`
@@ -48,15 +49,19 @@
 
 - Animate slide transitions
 - Migrate to ES6
-- Create 2 JS bundles using Browserify - one for the app which changes often, and another for the libraries that don't change as often. [This](https://github.com/vigetlabs/gulp-starter/issues/75) gives hints on how to accomplish this.
-- Reactify the navigation component and add "Jump capabilities" for faster browsing.
+- Common CSS for different sections should go into a sections folder in CSS. Files in here should be included using SASS for the individual pages.
 
 # Todo
 
+- Fix separate bundling of lib.js and application.js
+- Fix the client side routing problems using history.js
 - Create content for the about page
-- Incorporate history. Needs to be correctly incorporated for the server side. Flesh out the interplay between Page, Body and the Actions
-- Create a proper loader for the client, server and API routers
-- Common CSS for different sections should go into a sections folder in CSS. Files in here should be included using SASS for the individual pages.
+- Create design for the slides
+- Add in interactivity to the slides
+- Plug in a proper data source
+- Flesh out the routes
+- Add in the ability to change the page title
+- Reactify the navigation component and add "Jump capabilities" for faster browsing.
 
 # Data Model
 

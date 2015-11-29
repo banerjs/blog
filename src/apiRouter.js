@@ -8,21 +8,20 @@ var router = express.Router();
 
 var DataSource = require('./sources/pg');
 
+// Debug
+var debug = require('debug')('blog:server');
+
 /** This file has all the API routes */
-router.get('/', function(req, res, next) {
-	res.json({ html: "<h1>Siddhartha Banerjee<br/><small>Robotics Ph.D. candidate at Georgia Tech</small></h1>"});
+router.get('/sections', function(req, res, next) {
+	res.json([{ slides: ['/', '/about']}]);
 });
 
-router.get('/about', function(req, res, next) {
-	DataSource.getPostFromUrl(req.url).then(function(data) {
+router.get('/*', function(req, res, next) {
+	DataSource.getPostFromUrl(req.originalUrl).then(function(data) {
 		res.json(data);
 	}, function(err) {
 		next(error);
 	});
-});
-
-router.get('/sections', function(req, res, next) {
-	res.json([{ slides: ['/', '/about']}]);
 });
 
 module.exports = router;

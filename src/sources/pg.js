@@ -12,8 +12,20 @@ var PG = {
 	 * @return A promise that can be acted upon if this GET is successful
 	 */
 	getPostFromUrl: function(url) {
+		var html;
+		switch(url) {
+			case "/":
+			case "/_/":
+				html = '<h1>Siddhartha Banerjee<br/><small>Robotics Ph.D. candidate at Georgia Tech</small></h1><p><a href="/about">About</a></p>'
+				break;
+			case "/about":
+			case "/_/about":
+				html = '<div className="container"><h2>About</h2><p><a href="/">Home</a></p></div>'
+				break;
+			default:
+				html = '<h3>Not Found</h3>';
+		}
 		return new Promise(function(resolve, reject) {
-			html = '<div className="container"><h2>About</h2></div>';
 			resolve({ html: html });
 		});
 	},

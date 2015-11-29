@@ -4,8 +4,8 @@ var AppStateStore = require('./stores/AppStateStore');
 
 var createApp = function(dataSource, options) {
 	const app = new Fluxible(options);
-	app.registerStore(BlogStore.constructor);
-	app.registerStore(AppStateStore.constructor);
+	app.registerStore(BlogStore);
+	app.registerStore(AppStateStore);
 
 	// Plug the data source in appropriately
 	app.plug({

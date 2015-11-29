@@ -1,13 +1,41 @@
 // Store for the blog pages
-var BaseStore = require('fluxible/addons/BaseStore');
-var assign = require('object-assign');
+var createStore = require('fluxible/addons/createStore');
 var labels = require('../actions');
 
 // Debug
 var debug = require('debug')('blog:server');
 
+/**
+ * Initializes the map of handlers to action labels. Need to do it this way
+ * because ES5 does not allow programmatic keys during object specification.
+ *
+ * @returns Map of action label to store methods
+ */
+var initHandlers = function() {
+	var handlers = {};
+	handlers[labels.FETCH_POST] = 'handleFetchedPost';
+	return handlers;
+};
+
 // First create the store prototype by extending the BaseStore prototype
-var BlogStore = assign({}, BaseStore.prototype, {
+var BlogStore = createStore({
+	/**
+	 * Recommended Fluxible field for name of the store
+	 */
+	storeName: 'BlogStore',
+
+	/**
+	 * Handlers for the different actions
+	 */
+	handlers: initHandlers(),
+
+	/**
+	 * Initialize the store
+	 */
+	initialize: function(dispatcher) {
+		// Of the form { url: { html, css } }
+		this._posts = {};
+	},
 
 	/**
 	 * This method handles the completion of the 'FETCH_POST' action
@@ -16,7 +44,6 @@ var BlogStore = assign({}, BaseStore.prototype, {
 	 *	data.url and data.post
 	 */
 	handleFetchedPost: function(data) {
-		debug("Posts have been fetched");
 		this._posts[data.url] = data.post;
 		this.emitChange();
 	},
@@ -55,15 +82,5 @@ var BlogStore = assign({}, BaseStore.prototype, {
 		this._posts = state.posts;
 	}
 });
-
-// Instantiate a new BlogStore and set its private variables as required by the
-// Fluxible dispatcher
-BlogStore.storeName = 'BlogStore';
-BlogStore.handlers = {};
-BlogStore.handlers[labels.FETCH_POST] = 'handleFetchedPost';
-
-// Initialize the BlogStore with no data. The data in this store has the form
-// { url: { html, css } }
-BlogStore._posts = {}
 
 module.exports = BlogStore;

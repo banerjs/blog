@@ -27,15 +27,13 @@ fs.readFile(__dirname + '/templates/base.html', function(err, data) {
 var router = function(req, res, next) {
 	// Create a context for this request and populate stores
 	var context = fluxibleApp.createContext();
-	var moveAction = context.executeAction(BlogActions.moveToNewPage, { url: req.url });
-	var fetchAction = context.executeAction(BlogActions.fetchBlogPost, { url: req.url });
-	debug("Promises have been created");
+	var moveAction = context.executeAction(BlogActions.moveToNewPage, { url: req.originalUrl });
+	var fetchAction = context.executeAction(BlogActions.fetchBlogPost, { url: req.originalUrl });
 
 	// Respond to the user only once the store promises have been fulfilled
 	Promise.all([moveAction, fetchAction]).then(function() {
-		debug("Done with promises");
 		var exposed_state = 'window.App=' + serialize(fluxibleApp.dehydrate(context)) + ';';
-		var appStore = context.getStore(AppStateStore.constructor);
+		var appStore = context.getStore(AppStateStore);
 
 		response = template.replace("TITLE", "Siddhartha Banerjee")
 						   .replace("CONTENT", ReactDOMServer.renderToString(createElementWithContext(context, {})))

@@ -8,9 +8,10 @@
   },
   "scripts": {
     "start": "node ./bin/www",
-    "debug": "DEBUG=blog:server NODE_ENV=development nodemon --watch ./build/ --watch ./app.js -e js,html --delay 10 ./bin/www",
+    "debug": "DEBUG=blog:server NODE_ENV=development nodemon --watch ./build/ --watch ./express.js --watch ./public/js/ -e js,html --delay 10 ./bin/www",
     "gulp": "gulp",
     "deploy": "gulp deploy",
+    "build": "gulp build",
     "clean": "gulp clean"
   },
   "devDependencies": {
@@ -52,7 +53,6 @@
     "pg-monitor": "^0.3.4",
     "react": "^0.14.2",
     "react-dom": "^0.14.2",
-    "react-router": "^1.0.0-rc4",
     "serialize-javascript": "^1.1.2",
     "serve-favicon": "^2.3.0",
     "skrollr": "^0.6.26"

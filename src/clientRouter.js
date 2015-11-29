@@ -1,6 +1,5 @@
 // Libraries required on the client side
 var $ = require('jquery');
-// var fullpage = require('fullpage.js');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Fluxible = require('fluxible');
@@ -16,19 +15,27 @@ var BlogActions = require('./actions/BlogActions');
 var fluxibleApp = require('./createApp')(DataSource, { component: Body });
 
 // Retrieve the server state
-const dehydratedState = window.App;
+var dehydratedState = window.App;
 fluxibleApp.rehydrate(dehydratedState, function(err, context) {
 	if (err) { throw err; }
 	window.context = context;
 
-	//TODO Need to initialize better. But this is the gist of it
-	ReactDOM.render(createElementWithContext(context, {}), document.getElementById('container'));
+	// Initialize React correctly
+	ReactDOM.render(createElementWithContext(context, {}), document.getElementById('content'));
 
     // Initialize the history API and execute update actions on the store when
     // when the URL changes
-    history = createHistory();
-    history.listen(function(location) {
-        context.executeAction(BlogActions.moveToNewPage, { url: location, direction: null });
-        context.executeAction(BlogActions.updateSections, {});
+    var history = createHistory();
+    history.listenBefore(function(location) {
+        context.executeAction(BlogActions.moveToNewPage, { url: location.pathname, direction: null });
+        // context.executeAction(BlogActions.updateSections, {});
+
+        // // Prevent the default action of anchors
+        // $("a").click(function(event) {
+        //     event.preventDefault();
+        //     history.push(event.target.pathname);
+        // });
+        history.push(location.pathname);
+        return false;
     });
 });

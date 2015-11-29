@@ -1,13 +1,45 @@
 // Store for the state of the application
-var BaseStore = require('fluxible/addons/BaseStore');
-var assign = require('object-assign');
+var createStore = require('fluxible/addons/createStore');
 var labels = require('../actions');
 
 // Debug
 var debug = require('debug')('blog:server');
 
+/**
+ * Initializes the map of handlers to action labels. Need to do it this way
+ * because ES5 does not allow programmatic keys during object specification.
+ *
+ * @returns Map of action label to store methods
+ */
+var initHandlers = function() {
+	var handlers = {};
+	handlers[labels.FETCH_POST] = 'handleFetchedPost';
+	handlers[labels.NEW_PAGE] = 'handleNewPage';
+	handlers[labels.UPDATE_SECTIONS] = 'handleUpdateSections';
+	return handlers;
+};
+
 // First create the store prototype by extending the BaseStore prototype
-var AppStateStore = assign({}, BaseStore.prototype, {
+var AppStateStore = createStore({
+	/**
+	 * Recommended Fluxible field for name of the store
+	 */
+	storeName: 'AppStateStore',
+
+	/**
+	 * Handlers for the different actions
+	 */
+	handlers: initHandlers(),
+
+	/**
+	 * Initialize the store
+	 */
+	initialize: function(dispatcher) {
+		// Of the form { current_url, page_css, sections[{[]}] }
+		// TODO: Add title of the page to this
+		this._appState = {};
+	},
+
 	/**
 	 * This method handles the completion of the 'FETCH_POST' action. The store
 	 * only updates the post if that post is the current post being displayed
@@ -20,7 +52,6 @@ var AppStateStore = assign({}, BaseStore.prototype, {
 			this._appState.page_css = data.post.css;
 			this.emitChange();
 		}
-		debug("Post fetched to app state");
 	},
 
 	/**
@@ -33,7 +64,6 @@ var AppStateStore = assign({}, BaseStore.prototype, {
 		// TODO: In the future, add more logic so that we can have transitions
 		// between pages in a logically consistent manner (store previous state
 		// for example)
-		debug("New Page has been created")
 		this._appState.current_url = data.url;
 		this._appState.page_css = data.css;
 		this.emitChange();
@@ -99,18 +129,5 @@ var AppStateStore = assign({}, BaseStore.prototype, {
 		this._appState = state.appState;
 	}
 });
-
-// Instantiate a new AppStateStore and set its private variables as required by
-// the Fluxible dispatcher
-AppStateStore.storeName = 'AppStateStore';
-
-AppStateStore.handlers = {};
-AppStateStore.handlers[labels.FETCH_POST] = 'handleFetchedPost';
-AppStateStore.handlers[labels.NEW_PAGE] = 'handleNewPage';
-AppStateStore.handlers[labels.UPDATE_SECTIONS] = 'handleUpdateSections';
-
-// Initialize the AppStateStore with no data. The data in this store is of the
-// form: { current_url, page_css, sections[{[]}] }
-AppStateStore._appState = {}
 
 module.exports = AppStateStore;

@@ -18,16 +18,24 @@ var sourcemaps = require('gulp-sourcemaps');
 var postcss = require('gulp-postcss');
 var nano = require('gulp-cssnano');
 var sass = require('gulp-sass');
-var autoprefixer = require('autoprefixer')
+var autoprefixer = require('autoprefixer');
 
-// Define all the vendor libs that don't really change all that much. Be careful
-// though. According to https://github.com/vigetlabs/gulp-starter/issues/75,
-// there could be issues with vendor dependencies if they're not fully specified
-// in this list.
+// Define all the vendor libs that don't really change all that much.
+var packageJSON = require('./package.json');
 var vendors = [
-	'jquery',
-	'fullpage.js'
-]
+	"debug",
+    "fluxible",
+    "fluxible-addons-react",
+    "fullpage.js",
+    "history",
+    "jquery",
+    "object-assign",
+    "promise",
+    "react",
+    "react-dom",
+    "serialize-javascript",
+   	"skrollr"
+];
 
 // Define task helper variables and functions
 var handleError = function(task) {
@@ -111,17 +119,37 @@ var tasks = {
 					.pipe(gulp.dest('build/'));
 	},
 
-	// Browserify
-	browserify: function() {
+	// Browserify Tasks
+	vendors: function() {
+		var bundler = browserify({
+			debug: false,
+			fullPaths: false,
+			require: vendors
+		});
+
+		var start = new Date();
+		console.log('LIB bundle started at ' + start);
+		return bundler.bundle()
+						.on('error', handleError('Browserify'))
+						.pipe(source('libs.js'))
+						.pipe(gulpif(production, streamify(uglify())))
+						.pipe(gulp.dest('public/js/'))
+						.pipe(notify(function() {
+							console.log('LIB bundle built in ' + (Date.now() - start) + 'ms');
+						}));
+	},
+
+	application: function() {
 		var bundler = browserify({
 			entries: './build/clientRouter.js',
+			external: vendors,
 			debug: !production,
 			fullPaths: !production,
 			cache: {}, packageCache: {} // apparently needed for watchify
 		});
 
 		if (watch) {
-			bundler = watchify(bundler, { delay: 8000 }); // Give reactify time
+			bundler = watchify(bundler, { delay: 1000 }); // Give reactify time
 		}
 
 		var rebundle = function() {
@@ -168,12 +196,14 @@ gulp.task('assets', tasks.assets);
 gulp.task('sass', tasks.sass);
 gulp.task('templates', tasks.templates);
 gulp.task('reactify', ['templates'], tasks.reactify);
-gulp.task('browserify', ['reactify'], tasks.browserify);
+gulp.task('vendors', tasks.vendors);
+gulp.task('application', ['reactify'], tasks.application);
 gulp.task('optimize', tasks.optimize);
 gulp.task('lint:js', tasks.lintjs);
 gulp.task('test', tasks.test);
 
 // Macro tasks
+gulp.task('browserify', ['vendors', 'application']);
 
 // This is the main task for production - deploys the code with minification
 gulp.task('deploy', [
