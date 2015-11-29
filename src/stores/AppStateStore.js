@@ -35,7 +35,7 @@ var AppStateStore = createStore({
 	 * Initialize the store
 	 */
 	initialize: function(dispatcher) {
-		// Of the form { current_url, page_css, sections[{[]}] }
+		// Of the form { current_url, page_css, sections[{[]}], history }
 		// TODO: Add title of the page to this
 		this._appState = {};
 	},
@@ -58,7 +58,7 @@ var AppStateStore = createStore({
 	 * This method handles the completion of a 'NEW_PAGE' action
 	 *
 	 * @param data The data from when the user navigates to a new page. It has
-	 *	2 fields, data.url and data.css
+	 *	3 fields, data.url, data.css, and data.history
 	 */
 	handleNewPage: function(data) {
 		// TODO: In the future, add more logic so that we can have transitions
@@ -66,6 +66,7 @@ var AppStateStore = createStore({
 		// for example)
 		this._appState.current_url = data.url;
 		this._appState.page_css = data.css;
+		this._appState.history = data.history;
 		this.emitChange();
 	},
 
@@ -111,6 +112,13 @@ var AppStateStore = createStore({
 	 */
 	getSections: function() {
 		return this._appState.sections;
+	},
+
+	/**
+	 *
+	 */
+	getHistory: function() {
+		return this._appState.history;
 	},
 
 	/**

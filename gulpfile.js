@@ -22,7 +22,7 @@ var autoprefixer = require('autoprefixer');
 
 // Define all the vendor libs that don't really change all that much.
 var packageJSON = require('./package.json');
-var vendors = [
+var libs = [
 	"debug",
     "fluxible",
     "fluxible-addons-react",
@@ -123,8 +123,12 @@ var tasks = {
 	vendors: function() {
 		var bundler = browserify({
 			debug: false,
-			fullPaths: false,
-			require: vendors
+			fullPaths: !production
+		});
+
+		// Loop over the libs and expose them
+		libs.forEach(function(lib) {
+			bundler.require(lib, { expose: lib });
 		});
 
 		var start = new Date();
@@ -142,14 +146,19 @@ var tasks = {
 	application: function() {
 		var bundler = browserify({
 			entries: './build/clientRouter.js',
-			external: vendors,
 			debug: !production,
 			fullPaths: !production,
 			cache: {}, packageCache: {} // apparently needed for watchify
 		});
 
+		// Require the external libs
+		libs.forEach(function(lib) {
+			bundler.external(lib);
+		});
+
+		// Setup watchify if we should
 		if (watch) {
-			bundler = watchify(bundler, { delay: 1000 }); // Give reactify time
+			bundler = watchify(bundler, { delay: 5000 }); // Give reactify time
 		}
 
 		var rebundle = function() {
@@ -157,7 +166,7 @@ var tasks = {
 			console.log('APP bundle started at ' + start);
 			return bundler.bundle()
 							.on('error', handleError('Browserify'))
-							.pipe(source('application.js'))
+							.pipe(source('app.js'))
 							.pipe(gulpif(production, streamify(uglify())))
 							.pipe(gulp.dest('public/js/'))
 							.pipe(notify(function() {

@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node ./bin/www",
-    "debug": "DEBUG=blog:server NODE_ENV=development nodemon --watch ./build/ --watch ./express.js --watch ./public/js/ -e js,html --delay 10 ./bin/www",
+    "debug": "DEBUG=blog:server NODE_ENV=development nodemon --watch ./build/ --watch ./express.js --watch ./public/js/ -e js,html --delay 5 ./bin/www",
     "gulp": "gulp",
     "deploy": "gulp deploy",
     "build": "gulp build",

@@ -1,6 +1,9 @@
 var $ = require('jquery');
 var React = require('react');
+var createHistory = require('history/lib/createBrowserHistory');
+
 var AppStateStore = require('../stores/AppStateStore');
+var BlogActions = require('../actions/BlogActions');
 
 // Debug
 var debug = require('debug')('blog:server');
@@ -25,6 +28,16 @@ var Body = React.createClass({
 	},
 
 	/**
+	 * Static members of the Body component
+	 */
+	statics: {
+		/**
+		 * This function unsets whatever 'history' listener might've been in use
+		 */
+		unsetHistoryListener: function() { return false; }
+	},
+
+	/**
 	 * Set the state of the component to have the following form:
 	 *	{
 	 *		url: window.location.pathname,
@@ -32,7 +45,7 @@ var Body = React.createClass({
 	 *	}
 	 */
 	getInitialState: function() {
-		store = this.context.getStore(AppStateStore);
+		var store = this.context.getStore(AppStateStore);
 		return {
 			url: store.getCurrentURL(),
 			css_tag: store.getPageCSSTag()
@@ -40,7 +53,7 @@ var Body = React.createClass({
 	},
 
 	/**
-	 * Update the CSS tag associated with the page
+	 * Update the CSS tag associated with the page. Do it only on the CLIENT!
 	 */
 	_updateCSS: function() {
 		if (typeof window !== 'undefined') {
@@ -49,10 +62,33 @@ var Body = React.createClass({
 	},
 
 	/**
+	 * Setup a history module. Do it only on the CLIENT!
+	 */
+	_setupHistoryListener: function() {
+		if (typeof window === 'undefined') {
+			return;
+		}
+
+		// Remove any previous history listeners
+	    Body.unsetHistoryListener()
+
+	    // Initialize the history API and execute update actions on the store when
+	    // when the URL changes
+	    var history = createHistory();
+	    Body.unsetHistoryListener = history.listen(function(location) {
+	    	this.context.executeAction(BlogActions.moveToNewPage, {
+	    		url: location.pathname,
+	    		direction: null,
+	    		history: history
+	    	});
+	    });
+	},
+
+	/**
 	 * Handler for events from the AppStateStore's change events
 	 */
 	_onStoreChanged: function() {
-		store = this.context.getStore(AppStateStore);
+		var store = this.context.getStore(AppStateStore);
 		this.setState({
 			url: store.getCurrentURL(),
 			css_tag: store.getPageCSSTag()
@@ -71,6 +107,7 @@ var Body = React.createClass({
 	 */
 	componentWillUnmount: function() {
 		this.context.getStore(AppStateStore).removeChangeListener(this._onStoreChanged);
+		Body.unsetHistoryListener(); // Also unset any history listeners
 	},
 
 	/**
@@ -85,10 +122,12 @@ var Body = React.createClass({
 	},
 
 	/**
-	 * Render the component based on the computed page URL and CSS tags
+	 * Render the component based on the computed page URL and CSS tags. This is
+	 * only called when the URL of the page changes
 	 */
 	render: function() {
 		this._updateCSS();
+		this._setupHistoryListener();
 		return (
 			<div>
 				<Page url={this.state.url} />

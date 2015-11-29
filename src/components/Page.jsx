@@ -1,6 +1,9 @@
+var $ = require('jquery');
 var React = require('react');
+
 var BlogActions = require('../actions/BlogActions');
 var BlogStore = require('../stores/BlogStore');
+var AppStateStore = require('../stores/AppStateStore');
 
 // Debug
 var debug = require('debug')('blog:server');
@@ -34,7 +37,7 @@ var Page = React.createClass({
 	 *	}
 	 */
 	getInitialState: function() {
-		store = this.context.getStore(BlogStore);
+		var store = this.context.getStore(BlogStore);
 		return {
 			html: store.getPostHTML(this.props.url)
 		};
@@ -44,8 +47,20 @@ var Page = React.createClass({
 	 * Handler for events from the BlogStore's change events
 	 */
 	_onStoreChanged: function() {
-		store = this.context.getStore(BlogStore);
+		var store = this.context.getStore(BlogStore);
 		this.setState({ html: store.getPostHTML(this.props.url) });
+	},
+
+	/**
+	 * Disable all anchor tags within the page
+	 */
+	_disableAnchors: function() {
+	 	var store = this.context.getStore(AppStateStore);
+        // Prevent the default action of anchors
+        $("a").click(function(event) {
+            event.preventDefault();
+            store.getHistory().push(event.target.pathname);
+        });
 	},
 
 	/**
@@ -53,6 +68,7 @@ var Page = React.createClass({
 	 */
 	componentDidMount: function() {
 		this.context.getStore(BlogStore).addChangeListener(this._onStoreChanged);
+		this._disableAnchors(); // Also disable all anchor tags
 	},
 
 	/**
@@ -66,9 +82,17 @@ var Page = React.createClass({
 	 * Ensure that the component updates when there are new props
 	 */
 	componentWillReceiveProps: function(nextProps) {
-		store = this.context.getStore(BlogStore);
-		this.setState({ html: store.getPostHTML(nextProps.html) });
+		var store = this.context.getStore(BlogStore);
+		this.setState({ html: store.getPostHTML(nextProps.url) });
 	},
+
+	/**
+	 * Use the update of the component to ensure that all anchor tags are
+	 * disabled
+	 */
+	 componentDidUpdate: function(prevProps, prevState) {
+	 	this._disableAnchors()
+	 },
 
 	/**
 	 * Render the component based on the computed page URL and internal HTML
@@ -76,7 +100,7 @@ var Page = React.createClass({
 	render: function() {
 		var innerHTML = this.state.html;
 		if (!innerHTML) {
-			innerHTML = <h1>Loading...</h1>;
+			innerHTML = "<h1>Loading...</h1>";
 			this.context.executeAction(BlogActions.fetchBlogPost, { url: this.props.url });
 		}
 		return (
