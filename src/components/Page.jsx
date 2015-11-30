@@ -3,7 +3,6 @@ var React = require('react');
 
 var BlogActions = require('../actions/BlogActions');
 var BlogStore = require('../stores/BlogStore');
-var AppStateStore = require('../stores/AppStateStore');
 
 // Debug
 var debug = require('debug')('blog:server');
@@ -27,7 +26,8 @@ var Page = React.createClass({
 	 * Type checking for the properties being passed into the component
 	 */
 	propTypes: {
-		url: React.PropTypes.string.isRequired
+		url: React.PropTypes.string.isRequired,
+		history: React.PropTypes.object
 	},
 
 	/**
@@ -55,11 +55,11 @@ var Page = React.createClass({
 	 * Disable all anchor tags within the page
 	 */
 	_disableAnchors: function() {
-	 	var store = this.context.getStore(AppStateStore);
         // Prevent the default action of anchors
+        var history = this.props.history;
         $("a").click(function(event) {
             event.preventDefault();
-            store.getHistory().push(event.target.pathname);
+            history.push(event.target.pathname);
         });
 	},
 
@@ -91,7 +91,7 @@ var Page = React.createClass({
 	 * disabled
 	 */
 	 componentDidUpdate: function(prevProps, prevState) {
-	 	this._disableAnchors()
+	 	this._disableAnchors();
 	 },
 
 	/**

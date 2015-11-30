@@ -33,7 +33,7 @@ var BlogStore = createStore({
 	 * Initialize the store
 	 */
 	initialize: function(dispatcher) {
-		// Of the form { url: { html, css } }
+		// Of the form { url: { title, html, css } }
 		this._posts = {};
 	},
 
@@ -46,6 +46,15 @@ var BlogStore = createStore({
 	handleFetchedPost: function(data) {
 		this._posts[data.url] = data.post;
 		this.emitChange();
+	},
+
+	/**
+	 * Return the title for a post at a given URL
+	 *
+	 * @param url
+	 */
+	getPostTitle: function(url) {
+		return this._posts[url] && this._posts[url].title;
 	},
 
 	/**

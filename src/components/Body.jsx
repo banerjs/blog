@@ -1,6 +1,5 @@
 var $ = require('jquery');
 var React = require('react');
-var createHistory = require('history/lib/createBrowserHistory');
 
 var AppStateStore = require('../stores/AppStateStore');
 var BlogActions = require('../actions/BlogActions');
@@ -15,7 +14,7 @@ var Page = require('./Page');
  * This is the main Body of the application. Use this to manage the skeleton of
  * the App. Currently, Body displays a single page only; in the future we might
  * have to preload the sections surrounding the current page in order to get the
- * animations to work properly. TODO: Add  the ability to change the title
+ * animations to work properly.
  */
 var Body = React.createClass({
 	/**
@@ -28,27 +27,26 @@ var Body = React.createClass({
 	},
 
 	/**
-	 * Static members of the Body component
+	 * Type checking for the properties being passed into the component
 	 */
-	statics: {
-		/**
-		 * This function unsets whatever 'history' listener might've been in use
-		 */
-		unsetHistoryListener: function() { return false; }
+	propTypes: {
+		history: React.PropTypes.object
 	},
 
 	/**
 	 * Set the state of the component to have the following form:
 	 *	{
 	 *		url: window.location.pathname,
-	 *		css_tag: <link-to-page-css>
+	 *		css_tag: <link-to-page-css>,
+	 *		title: document.title
 	 *	}
 	 */
 	getInitialState: function() {
 		var store = this.context.getStore(AppStateStore);
 		return {
 			url: store.getCurrentURL(),
-			css_tag: store.getPageCSSTag()
+			css_tag: store.getPageCSSTag(),
+			title: store.getPageTitle()
 		};
 	},
 
@@ -62,26 +60,12 @@ var Body = React.createClass({
 	},
 
 	/**
-	 * Setup a history module. Do it only on the CLIENT!
+	 * Update the title of the page. Do it only on the CLIENT!
 	 */
-	_setupHistoryListener: function() {
-		if (typeof window === 'undefined') {
-			return;
+	_updateTitle: function() {
+		if (typeof window !== 'undefined') {
+			document.title = this.state.title;
 		}
-
-		// Remove any previous history listeners
-	    Body.unsetHistoryListener()
-
-	    // Initialize the history API and execute update actions on the store when
-	    // when the URL changes
-	    var history = createHistory();
-	    Body.unsetHistoryListener = history.listen(function(location) {
-	    	this.context.executeAction(BlogActions.moveToNewPage, {
-	    		url: location.pathname,
-	    		direction: null,
-	    		history: history
-	    	});
-	    });
 	},
 
 	/**
@@ -91,7 +75,8 @@ var Body = React.createClass({
 		var store = this.context.getStore(AppStateStore);
 		this.setState({
 			url: store.getCurrentURL(),
-			css_tag: store.getPageCSSTag()
+			css_tag: store.getPageCSSTag(),
+			title: store.getPageTitle()
 		});
 	},
 
@@ -100,6 +85,13 @@ var Body = React.createClass({
 	 */
 	componentDidMount: function() {
 		this.context.getStore(AppStateStore).addChangeListener(this._onStoreChanged);
+	    this.props.history.listenBefore(function(location) {
+	    	this.context.executeAction(BlogActions.moveToNewPage, {
+	    		url: location.pathname,
+	    		direction: null,
+	    	});
+	    	return true;
+	    });
 	},
 
 	/**
@@ -107,7 +99,6 @@ var Body = React.createClass({
 	 */
 	componentWillUnmount: function() {
 		this.context.getStore(AppStateStore).removeChangeListener(this._onStoreChanged);
-		Body.unsetHistoryListener(); // Also unset any history listeners
 	},
 
 	/**
@@ -118,7 +109,8 @@ var Body = React.createClass({
 	 * @returns true iff the URL of the page has changed
 	 */
 	shouldComponentUpdate: function(nextProps, nextState) {
-		return nextState.url !== this.state.url;
+		return nextState.url !== this.state.url
+				|| nextState.title !== this.state.title;
 	},
 
 	/**
@@ -127,10 +119,10 @@ var Body = React.createClass({
 	 */
 	render: function() {
 		this._updateCSS();
-		this._setupHistoryListener();
+		this._updateTitle();
 		return (
 			<div>
-				<Page url={this.state.url} />
+				<Page url={this.state.url} history={this.props.history} />
 			</div>
 		);
 	}

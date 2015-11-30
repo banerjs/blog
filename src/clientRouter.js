@@ -4,6 +4,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Fluxible = require('fluxible');
 var createElementWithContext = require('fluxible-addons-react/createElementWithContext');
+var createHistory = require('history/lib/createBrowserHistory');
 
 // Own JS code required on the client side
 var Body = require('./components/Body');
@@ -20,5 +21,8 @@ fluxibleApp.rehydrate(dehydratedState, function(err, context) {
 	window.context = context;
 
 	// Initialize React correctly
-	ReactDOM.render(createElementWithContext(context, {}), document.getElementById('content'));
+	ReactDOM.render(
+        createElementWithContext(context, { history: createHistory() }),
+        document.getElementById('content')
+    );
 });

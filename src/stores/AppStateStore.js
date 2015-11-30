@@ -5,6 +5,10 @@ var labels = require('../actions');
 // Debug
 var debug = require('debug')('blog:server');
 
+// Constants
+DEFAULT_TITLE = "Siddhartha Banerjee";
+DEFAULT_TITLE_SEPARATOR = " | ";
+
 /**
  * Initializes the map of handlers to action labels. Need to do it this way
  * because ES5 does not allow programmatic keys during object specification.
@@ -35,8 +39,7 @@ var AppStateStore = createStore({
 	 * Initialize the store
 	 */
 	initialize: function(dispatcher) {
-		// Of the form { current_url, page_css, sections[{[]}], history }
-		// TODO: Add title of the page to this
+		// Of the form { current_url, page_title, page_css, sections[{[]}] }
 		this._appState = {};
 	},
 
@@ -50,6 +53,7 @@ var AppStateStore = createStore({
 	handleFetchedPost: function(data) {
 		if (data.url === this._appState.current_url) {
 			this._appState.page_css = data.post.css;
+			this._appState.page_title = data.post.title;
 			this.emitChange();
 		}
 	},
@@ -58,7 +62,7 @@ var AppStateStore = createStore({
 	 * This method handles the completion of a 'NEW_PAGE' action
 	 *
 	 * @param data The data from when the user navigates to a new page. It has
-	 *	3 fields, data.url, data.css, and data.history
+	 *	3 fields, data.url, data.css, and data.title
 	 */
 	handleNewPage: function(data) {
 		// TODO: In the future, add more logic so that we can have transitions
@@ -66,7 +70,7 @@ var AppStateStore = createStore({
 		// for example)
 		this._appState.current_url = data.url;
 		this._appState.page_css = data.css;
-		this._appState.history = data.history;
+		this._appState.page_title = data.title;
 		this.emitChange();
 	},
 
@@ -87,6 +91,19 @@ var AppStateStore = createStore({
 	 */
 	getCurrentURL: function() {
 		return this._appState.current_url;
+	},
+
+	/**
+	 * Return the title of the current page that the application is on
+	 *
+	 * @returns title
+	 */
+	getPageTitle: function() {
+		// Default title
+		if (!this._appState.page_title) {
+			return DEFAULT_TITLE;
+		}
+		return this._appState.page_title + DEFAULT_TITLE_SEPARATOR + DEFAULT_TITLE;
 	},
 
 	/**
@@ -112,13 +129,6 @@ var AppStateStore = createStore({
 	 */
 	getSections: function() {
 		return this._appState.sections;
-	},
-
-	/**
-	 *
-	 */
-	getHistory: function() {
-		return this._appState.history;
 	},
 
 	/**

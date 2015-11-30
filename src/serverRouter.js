@@ -35,7 +35,7 @@ var router = function(req, res, next) {
 		var exposed_state = 'window.App=' + serialize(fluxibleApp.dehydrate(context)) + ';';
 		var appStore = context.getStore(AppStateStore);
 
-		response = template.replace("TITLE", "Siddhartha Banerjee")
+		response = template.replace("TITLE", appStore.getPageTitle())
 						   .replace("CONTENT", ReactDOMServer.renderToString(createElementWithContext(context, {})))
 						   .replace("PAGE_CSS", appStore.getPageCSSTag())
 						   .replace("EXPOSED_STATE", exposed_state);

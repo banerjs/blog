@@ -50,11 +50,10 @@
 - Animate slide transitions
 - Migrate to ES6
 - Common CSS for different sections should go into a sections folder in CSS. Files in here should be included using SASS for the individual pages.
-- Remove multi-dispatch warning for new page
+- Remove multi-dispatch warning for new page -- problem has been greatly reduced
 
 # Todo
 
-- Add in the ability to change the page title
 - Create content for the about page
 - Create design for the slides
 - Add in interactivity to the slides
@@ -63,6 +62,8 @@
 - Reactify the navigation component and add "Jump capabilities" for faster browsing.
 
 # Data Model
+
+OBSOLETE!!
 
 The data model does the following:
 

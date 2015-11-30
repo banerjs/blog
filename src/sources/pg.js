@@ -13,20 +13,23 @@ var PG = {
 	 */
 	getPostFromUrl: function(url) {
 		var html;
+		var title;
 		switch(url) {
 			case "/":
 			case "/_/":
 				html = '<h1>Siddhartha Banerjee<br/><small>Robotics Ph.D. candidate at Georgia Tech</small></h1><p><a href="/about">About</a></p>'
+				title = null;
 				break;
 			case "/about":
 			case "/_/about":
 				html = '<div className="container"><h2>About</h2><p><a href="/">Home</a></p></div>'
+				title = "About";
 				break;
 			default:
 				html = '<h3>Not Found</h3>';
 		}
 		return new Promise(function(resolve, reject) {
-			resolve({ html: html });
+			resolve({ html: html, title: title });
 		});
 	},
 

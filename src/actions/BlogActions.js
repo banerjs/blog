@@ -33,7 +33,7 @@ var BlogActions = {
 	 *
 	 * @param context The actionContext from Fluxible
 	 * @param payload The details about the move. The following are present in
-	 *		payload: payload.url, payload.direction, payload.history
+	 *		payload: payload.url, payload.direction
 	 * @return A Promise that resolves to [true, true] if the action succeeded
 	 */
 	moveToNewPage: function(context, payload) {
@@ -44,7 +44,7 @@ var BlogActions = {
 			var data = {
 				url: payload.url,
 				css: store.getPostCSS(payload.url),
-				history: payload.history
+				title: store.getPostTitle(payload.url)
 			};
 
 			// Then update the stores with the new data
