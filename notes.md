@@ -50,16 +50,18 @@
 - Animate slide transitions
 - Migrate to ES6
 - Common CSS for different sections should go into a sections folder in CSS. Files in here should be included using SASS for the individual pages.
-- Remove multi-dispatch warning for new page -- problem has been greatly reduced
+- Create Unit Tests
+- Add in Timeouts to the fetch code
 
 # Todo
 
 - Create content for the about page
 - Create design for the slides
-- Add in interactivity to the slides
+- Add interactivity to the slides
 - Plug in a proper data source
 - Flesh out the routes
-- Reactify the navigation component and add "Jump capabilities" for faster browsing.
+- Setup passport and sessions
+  - Choose between Google, MSFT, and local logins
 
 # Data Model
 

@@ -15,7 +15,7 @@ var BlogActions = {
 	 		fetched for. payload.url must be a valid URL
 	 * @return A Promise that reolves to true if everything succeeded.
 	 */
-	fetchBlogPost: function(context, payload) {
+	fetchBlogPost: function(context, payload, done) {
 		return context.getDataSource()
 					.getPostFromUrl(payload.url)
 					.then(function(post) {
@@ -32,11 +32,10 @@ var BlogActions = {
 	 * This function handles the transition to a new URL.
 	 *
 	 * @param context The actionContext from Fluxible
-	 * @param payload The details about the move. The following are present in
-	 *		payload: payload.url, payload.direction
-	 * @return A Promise that resolves to [true, true] if the action succeeded
+	 * @param payload The details about the move. Contains 1 field: url
+	 * @return A Promise that resolves to true if the action succeeded
 	 */
-	moveToNewPage: function(context, payload) {
+	moveToNewPage: function(context, payload, done) {
 		var storeUpdate = new Promise(function(resolve, reject) {
 			// First create a data structure to send the data back to the stores
 			// and also fetch the desired data from the stores
@@ -52,20 +51,24 @@ var BlogActions = {
 			resolve(true);
 		});
 
-		// Asynchronously animate the page
-		var animate = new Promise(function(resolve, reject) {
-			// Do animations (probably need an if statement here for window)
-			resolve(true);
-		});
-
-		return Promise.all([storeUpdate, animate]);
+		return storeUpdate;
 	},
 
 	/**
-	 * Update the store of all the sections that are present in the Blog
+	 * Update the store with the sections and slides that are present in the
+	 * Blog
+	 *
+	 * @param context The actionContext from Fluxible
+	 * @param payload This is empty
+	 * @return A Promise that resolves to true if the action succeeded
 	 */
-	updateSectionsList: function(context, payload, done) {
-		done();
+	updateSections: function(context, payload, done) {
+		return context.getDataSource()
+					.getSections()
+				  	.then(function(sections) {
+				  		context.dispatch(labels.UPDATE_SECTIONS, sections);
+				  		return true;
+				  	});
 	}
 }
 

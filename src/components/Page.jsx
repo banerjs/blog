@@ -49,6 +49,7 @@ var Page = React.createClass({
 	_onStoreChanged: function() {
 		var store = this.context.getStore(BlogStore);
 		this.setState({ html: store.getPostHTML(this.props.url) });
+		this._removeHandlers(); // Remove handlers temporarily
 	},
 
 	/**
@@ -57,10 +58,18 @@ var Page = React.createClass({
 	_disableAnchors: function() {
         // Prevent the default action of anchors
         var history = this.props.history;
-        $("a").click(function(event) {
+        $("a").on('click.anchors', function(event) {
             event.preventDefault();
             history.push(event.target.pathname);
         });
+	},
+
+	/**
+	 * Remove all event handlers associated with the anchors so that we don't
+	 * fire multiple times for the same event
+	 */
+	_removeHandlers: function() {
+		$("a").off('click.anchors');
 	},
 
 	/**
@@ -76,6 +85,7 @@ var Page = React.createClass({
 	 */
 	componentWillUnmount: function() {
 		this.context.getStore(BlogStore).removeChangeListener(this._onStoreChanged);
+		this._removeHandlers(); // Also remove all event handlers on the page
 	},
 
 	/**
@@ -84,11 +94,12 @@ var Page = React.createClass({
 	componentWillReceiveProps: function(nextProps) {
 		var store = this.context.getStore(BlogStore);
 		this.setState({ html: store.getPostHTML(nextProps.url) });
+		this._removeHandlers(); // Remove the event handlers temporarily
 	},
 
 	/**
 	 * Use the update of the component to ensure that all anchor tags are
-	 * disabled
+	 * disabled and to also update the cache of sections
 	 */
 	 componentDidUpdate: function(prevProps, prevState) {
 	 	this._disableAnchors();

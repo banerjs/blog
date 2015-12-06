@@ -25,16 +25,13 @@ var packageJSON = require('./package.json');
 var libs = [
 	"debug",
     "fluxible",
-    "fluxible-addons-react",
-    "fullpage.js",
     "history",
     "jquery",
     "object-assign",
     "promise",
     "react",
     "react-dom",
-    "serialize-javascript",
-   	"skrollr"
+    "serialize-javascript"
 ];
 
 // Define task helper variables and functions
@@ -158,7 +155,7 @@ var tasks = {
 
 		// Setup watchify if we should
 		if (watch) {
-			bundler = watchify(bundler, { delay: 5000 }); // Give reactify time
+			bundler = watchify(bundler, { delay: 15000 }); // Give reactify time
 		}
 
 		var rebundle = function() {

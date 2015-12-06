@@ -12,23 +12,25 @@ var PG = {
 	 * @return A promise that can be acted upon if this GET is successful
 	 */
 	getPostFromUrl: function(url) {
-		var html;
-		var title;
+		var html = null;
+		var title = null;
+		var error = null;
 		switch(url) {
 			case "/":
-			case "/_/":
 				html = '<h1>Siddhartha Banerjee<br/><small>Robotics Ph.D. candidate at Georgia Tech</small></h1><p><a href="/about">About</a></p>'
-				title = null;
 				break;
 			case "/about":
-			case "/_/about":
 				html = '<div className="container"><h2>About</h2><p><a href="/">Home</a></p></div>'
 				title = "About";
 				break;
 			default:
-				html = '<h3>Not Found</h3>';
+				error = new Error("Not Found");
+				error.status = 404;
 		}
 		return new Promise(function(resolve, reject) {
+			if (!!error) {
+				reject(error);
+			}
 			resolve({ html: html, title: title });
 		});
 	},
@@ -41,7 +43,19 @@ var PG = {
 	 */
 	getSections: function() {
 		return new Promise(function(resolve, reject) {
-			sections = [{ slides: ['/', '/about']}]
+			sections = [{
+				name: 'Home',
+				url: '/',
+				slides: ['/', '/about']
+			}, {
+				name: 'Blog',
+				url: '/blog',
+				slides: ['/blog', '/blog1', '/blog2']
+			}, {
+				name: 'Travels',
+				url: '/travels',
+				slides: ['/travels']
+			}];
 			resolve(sections);
 		});
 	}

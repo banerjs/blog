@@ -19,33 +19,44 @@ var Page = require('./Page');
 var Body = React.createClass({
 	/**
 	 * Required React field for passing context to the components. This context
-	 * is hydrated by Fluxible.
+	 * is hydrated with information from Fluxible.
 	 */
-	contextTypes: {
+	childContextTypes: {
 		getStore: React.PropTypes.func.isRequired,
 		executeAction: React.PropTypes.func.isRequired
+	},
+
+	/**
+	 * Required React field for passing context to the child components. This
+	 * provides the getStore and executeAction methods from the Fluxible context
+	 * to the children.
+	 */
+	getChildContext: function() {
+		return {
+			getStore: this.props.context.getStore,
+			executeAction: this.props.context.executeAction
+		}
 	},
 
 	/**
 	 * Type checking for the properties being passed into the component
 	 */
 	propTypes: {
-		history: React.PropTypes.object
+		history: React.PropTypes.object,
+		context: React.PropTypes.object.isRequired
 	},
 
 	/**
 	 * Set the state of the component to have the following form:
 	 *	{
 	 *		url: window.location.pathname,
-	 *		css_tag: <link-to-page-css>,
 	 *		title: document.title
 	 *	}
 	 */
 	getInitialState: function() {
-		var store = this.context.getStore(AppStateStore);
+		var store = this.props.context.getStore(AppStateStore);
 		return {
 			url: store.getCurrentURL(),
-			css_tag: store.getPageCSSTag(),
 			title: store.getPageTitle()
 		};
 	},
@@ -55,7 +66,12 @@ var Body = React.createClass({
 	 */
 	_updateCSS: function() {
 		if (typeof window !== 'undefined') {
-			$("#page_style").replaceWith($(this.state.css_tag));
+			var store = this.props.context.getStore(AppStateStore);
+			new_link_tag = $(store.getPageCSSTag());
+			old_link_tag = $("#page_style");
+			if (old_link_tag[0].href !== new_link_tag[0].href) {
+				old_link_tag.replaceWith(new_link_tag);
+			}
 		}
 	},
 
@@ -72,24 +88,28 @@ var Body = React.createClass({
 	 * Handler for events from the AppStateStore's change events
 	 */
 	_onStoreChanged: function() {
-		var store = this.context.getStore(AppStateStore);
+		var store = this.props.context.getStore(AppStateStore);
 		this.setState({
 			url: store.getCurrentURL(),
-			css_tag: store.getPageCSSTag(),
 			title: store.getPageTitle()
 		});
 	},
 
 	/**
-	 * Register the handler with the AppStateStore when the component mounts
+	 * Register the handler with the AppStateStore when the component mounts.
+	 * Since this only happens on the client, we can safely dereference history
 	 */
 	componentDidMount: function() {
-		this.context.getStore(AppStateStore).addChangeListener(this._onStoreChanged);
+		this.props.context.getStore(AppStateStore).addChangeListener(this._onStoreChanged);
+
+		// create a pointer to the props object before defining a history
+		// listener
+		var props = this.props;
 	    this.props.history.listenBefore(function(location) {
-	    	this.context.executeAction(BlogActions.moveToNewPage, {
-	    		url: location.pathname,
-	    		direction: null,
+	    	props.context.executeAction(BlogActions.moveToNewPage, {
+	    		url: location.pathname
 	    	});
+		 	props.context.executeAction(BlogActions.updateSections, {});
 	    	return true;
 	    });
 	},
@@ -98,19 +118,7 @@ var Body = React.createClass({
 	 * Unregister the handler with the AppStateStore when the component unmounts
 	 */
 	componentWillUnmount: function() {
-		this.context.getStore(AppStateStore).removeChangeListener(this._onStoreChanged);
-	},
-
-	/**
-	 * Ensure that updates only take place when the URL of the app changes
-	 *
-	 * @param nextProps The updated set of props coming to the component
-	 * @param nextState The updated state for the component
-	 * @returns true iff the URL of the page has changed
-	 */
-	shouldComponentUpdate: function(nextProps, nextState) {
-		return nextState.url !== this.state.url
-				|| nextState.title !== this.state.title;
+		this.props.context.getStore(AppStateStore).removeChangeListener(this._onStoreChanged);
 	},
 
 	/**
