@@ -30,15 +30,6 @@ var NavigationArrow = React.createClass({
 	},
 
 	/**
-	 * Ensure that the component updates when there is a new URL
-	 */
-	componentWillReceiveProps: function(nextProps) {
-		if (this.props.url !== nextProps.url) {
-			this.forceUpdate();
-		}
-	},
-
-	/**
 	 * Click handler on the arrow
 	 */
 	_navigateToURL: function() {
@@ -52,7 +43,8 @@ var NavigationArrow = React.createClass({
 		var spanClass = "glyphicon " + this.props.arrow_class + " " + this.props.style_class;
 		spanClass += (!!this.props.url) ? "" : " invisible";
 		return (
-			<span className={spanClass} onClick={this._navigateToURL}></span>
+			<span className={spanClass} onClick={this._navigateToURL} style={{cursor: 'pointer'}}>
+			</span>
 		);
 	}
 });

@@ -89,10 +89,13 @@ var Body = React.createClass({
 	 */
 	_onStoreChanged: function() {
 		var store = this.props.context.getStore(AppStateStore);
-		this.setState({
-			url: store.getCurrentURL(),
-			title: store.getPageTitle()
-		});
+		if (this.state.url !== store.getCurrentURL()
+				|| this.state.title !== store.getPageTitle()) {
+			this.setState({
+				url: store.getCurrentURL(),
+				title: store.getPageTitle()
+			});
+		}
 	},
 
 	/**

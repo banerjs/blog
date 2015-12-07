@@ -17,11 +17,17 @@ var PG = {
 		var error = null;
 		switch(url) {
 			case "/":
-				html = '<h1>Siddhartha Banerjee<br/><small>Robotics Ph.D. candidate at Georgia Tech</small></h1><p><a href="/about">About</a></p>'
+				html = '<h1>Siddhartha Banerjee<br/><small>Robotics Ph.D. candidate at Georgia Tech</small></h1><p><a href="/about">About</a></p>';
 				break;
 			case "/about":
 				html = '<div className="container"><h2>About</h2><p><a href="/">Home</a></p></div>'
 				title = "About";
+				break;
+			case "/blog":
+			case "/blog1":
+			case "/blog2":
+			case "/travels":
+				html= '<h1>Coming Soon</h1>';
 				break;
 			default:
 				error = new Error("Not Found");

@@ -49,7 +49,6 @@ var Page = React.createClass({
 	_onStoreChanged: function() {
 		var store = this.context.getStore(BlogStore);
 		this.setState({ html: store.getPostHTML(this.props.url) });
-		this._removeHandlers(); // Remove handlers temporarily
 	},
 
 	/**
@@ -89,12 +88,27 @@ var Page = React.createClass({
 	},
 
 	/**
-	 * Ensure that the component updates when there are new props
+	 * Ensure that the component updates when there are *new* props
 	 */
 	componentWillReceiveProps: function(nextProps) {
 		var store = this.context.getStore(BlogStore);
 		this.setState({ html: store.getPostHTML(nextProps.url) });
-		this._removeHandlers(); // Remove the event handlers temporarily
+	},
+
+	/**
+	 * Ensure that the component updates when there are *new* props or the state
+	 * has changed. Don't update otherwise
+	 */
+	shouldComponentUpdate: function(nextProps, nextState) {
+		var shouldUpdate = this.props.url !== nextProps.url
+							|| (!this.state.html && !!nextState.html);
+
+		 // Remove handlers temporarily if you are going to update
+		if (shouldUpdate) {
+			this._removeHandlers();
+		}
+
+		return shouldUpdate;
 	},
 
 	/**

@@ -52,6 +52,7 @@
 - Common CSS for different sections should go into a sections folder in CSS. Files in here should be included using SASS for the individual pages.
 - Create Unit Tests
 - Add in Timeouts to the fetch code
+- Error Pages. Display error page when XHR fails
 
 # Todo
 

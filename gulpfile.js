@@ -28,6 +28,7 @@ var libs = [
     "history",
     "jquery",
     "object-assign",
+    "mousetrap",
     "promise",
     "react",
     "react-dom",

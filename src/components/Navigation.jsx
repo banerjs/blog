@@ -8,9 +8,7 @@ var debug = require('debug')('blog:server');
 
 // Fetch the sub components
 var NavigationArrow = require('./NavigationArrow');
-
-// Constants
-var HOME_PAGE_KEY = 'Home';
+var NavigationSection = require('./NavigationSection');
 
 /**
  * This is the main Navigation section of the website
@@ -69,13 +67,9 @@ var Navigation = React.createClass({
 	_generateState: function(store) {
 		// First regenerate the list of all the sections available
 		var sections = store.getSections();
-		var map = {};
-		sections.forEach(function(section) {
-			map[section.name] = section.url;
-		});
 		return {
-			sections: map,
-			home_url: map[HOME_PAGE_KEY]
+			sections: sections.slice(1).reverse(),
+			home_url: sections[0].url // The section at idx 0 is always HOME
 		};
 	},
 
@@ -109,19 +103,31 @@ var Navigation = React.createClass({
 	render: function() {
 		var store = this.props.context.getStore(AppStateStore);
 		return (
-			<div className="container-fluid hidden-xs">
-				<div className="row text-center">
-					<NavigationArrow url={store.getUpURL()} arrow_class="glyphicon-menu-up" style_class="" />
-				</div>
-				<div className="row">
-					<NavigationArrow url={store.getLeftURL()} arrow_class="glyphicon-menu-left" style_class="col-sm-4 text-left" />
-					<span className="col-sm-4 text-center glyphicon glyphicon-home"></span>
-					<NavigationArrow url={store.getRightURL()} arrow_class="glyphicon-menu-right" style_class="col-sm-4 text-right" />
-				</div>
-				<div className="row text-center">
-					<NavigationArrow url={store.getDownURL()} arrow_class="glyphicon-menu-down" style_class="" />
-				</div>
-			</div>
+			<table className="hidden-xs" style={{maxWidth: "100%", width: "100%", verticalAlign: "middle"}}>
+			<tbody>
+				<tr>
+					<td colSpan="3" className="text-center" style={{padding: 8}}>
+						<NavigationArrow url={store.getUpURL()} arrow_class="glyphicon-menu-up" />
+					</td>
+				</tr>
+				<tr>
+					<td className="text-left" style={{padding: 8}}>
+						<NavigationArrow url={store.getLeftURL()} arrow_class="glyphicon-menu-left" />
+					</td>
+					<td className="text-center" style={{padding: 8}}>
+						<NavigationSection home={this.state.home_url} sections={this.state.sections} />
+					</td>
+					<td className="text-right" style={{padding: 8}}>
+						<NavigationArrow url={store.getRightURL()} arrow_class="glyphicon-menu-right" />
+					</td>
+				</tr>
+				<tr>
+					<td colSpan="3" className="text-center" style={{padding: 8}}>
+						<NavigationArrow url={store.getDownURL()} arrow_class="glyphicon-menu-down" />
+					</td>
+				</tr>
+			</tbody>
+			</table>
 		);
 	}
 });
