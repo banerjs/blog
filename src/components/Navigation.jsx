@@ -82,11 +82,83 @@ var Navigation = React.createClass({
 	},
 
 	/**
+	 * Initialize mousetrap and use it!
+	 */
+	_setupKeyboardNav: function() {
+		// Don't proceed if this is server side
+		if (typeof window === 'undefined') {
+			return;
+		}
+
+		// Setup the appropriate variables
+		var Mousetrap = require('mousetrap');
+		var store = this.props.context.getStore(AppStateStore);
+		var history = this.props.history;
+		var state = this.state;
+
+		// Create the list of actions that can be taken by Mousetrap
+		var keyboardActions = {
+			moveUp: function(e) {
+				store.getUpURL() && history.push(store.getUpURL());
+			},
+
+			moveDown: function(e) {
+				store.getDownURL() && history.push(store.getDownURL());
+			},
+
+			moveLeft: function(e) {
+				store.getLeftURL() && history.push(store.getLeftURL());
+			},
+
+			moveRight: function(e) {
+				store.getRightURL() && history.push(store.getRightURL());
+			},
+
+			goToHome: function(e) {
+				history.push(state.home_url);
+			},
+
+			goToAbout: function(e) {
+				history.push('/about');
+			},
+
+			goToBlog: function(e) {
+				history.push('/blog');
+			},
+
+			goToTravels: function(e) {
+				history.push('/travels');
+			}
+		}
+
+		// Initialize and bind Mousetrap
+		Mousetrap.reset();
+
+		Mousetrap.bind('up', keyboardActions.moveUp);
+		Mousetrap.bind('w', keyboardActions.moveUp);
+
+		Mousetrap.bind('down', keyboardActions.moveDown);
+		Mousetrap.bind('s', keyboardActions.moveDown);
+
+		Mousetrap.bind('left', keyboardActions.moveLeft);
+		Mousetrap.bind('a', keyboardActions.moveLeft);
+
+		Mousetrap.bind('right', keyboardActions.moveRight);
+		Mousetrap.bind('d', keyboardActions.moveRight);
+
+		Mousetrap.bind('g h', keyboardActions.goToHome);
+		Mousetrap.bind('g a', keyboardActions.goToAbout);
+		Mousetrap.bind('g b', keyboardActions.goToBlog);
+		Mousetrap.bind('g t', keyboardActions.goToTravels);
+	},
+
+	/**
 	 * Register the handler with the AppStateStore when the component mounts
 	 */
 	componentDidMount: function() {
 		this.props.context.getStore(AppStateStore).addChangeListener(this._onStoreChanged);
 		this.props.context.executeAction(BlogActions.updateSections, {});
+		this._setupKeyboardNav();
 	},
 
 	/**
