@@ -1,5 +1,6 @@
 // This is the data source that gets the data through XHR calls
 var $ = require('jquery');
+var Promise = require('promise');
 
 var API_SERVER_PREFIX = '/_';
 var SECTIONS_URL = '/sections'; // TODO: Get this URL value from a routes.js file
@@ -13,7 +14,7 @@ var XHR = {
 	 */
 	getPostFromUrl: function(url) {
 		url = API_SERVER_PREFIX + url;
-		return $.get(url);
+		return Promise.resolve($.get(url));
 	},
 
 	/**
@@ -24,7 +25,7 @@ var XHR = {
 	 */
 	getSections: function() {
 		var url = API_SERVER_PREFIX + SECTIONS_URL;
-		return $.get(url);
+		return Promise.resolve($.get(url));
 	}
 }
 

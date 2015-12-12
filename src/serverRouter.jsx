@@ -1,12 +1,14 @@
 var fs = require('fs');
 var React = require('react');
 var ReactDOMServer = require('react-dom/server');
+var Promise = require('promise');
 var serialize = require('serialize-javascript');
 
 // Debug
 var debug = require('debug')('blog:server');
 
 // Personal JS
+var ContextWrapper = require('./components/ContextWrapper');
 var Body = require('./components/Body');
 var Navigation = require('./components/Navigation');
 var DataSource = require('./sources/pg');
@@ -37,8 +39,12 @@ var router = function(req, res, next) {
 		var appStore = context.getStore(AppStateStore);
 
 		response = template.replace("TITLE", appStore.getPageTitle())
-						   .replace("CONTENT", ReactDOMServer.renderToString(<Body context={context.getComponentContext()} />))
-						   .replace("NAVIGATION", ReactDOMServer.renderToString(<Navigation context={context.getComponentContext()} />))
+						   .replace("CONTENT", ReactDOMServer.renderToString(
+		   						<ContextWrapper context={context.getComponentContext()} component={Body} />
+						   	))
+						   .replace("NAVIGATION", ReactDOMServer.renderToString(
+						   		<ContextWrapper context={context.getComponentContext()} component={Navigation} />
+						   	))
 						   .replace("PAGE_CSS", appStore.getPageCSSTag())
 						   .replace("EXPOSED_STATE", exposed_state);
 		res.contentType = "text/html; charset=utf8";

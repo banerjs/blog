@@ -15,19 +15,19 @@ var debug = require('debug')('blog:server');
 var Page = React.createClass({
 	/**
 	 * Required React field for passing context to the components. This context
-	 * is hydrated by Fluxible.
+	 * is hydrated by ContextWrapper.
 	 */
 	contextTypes: {
 		getStore: React.PropTypes.func.isRequired,
-		executeAction: React.PropTypes.func.isRequired
+		executeAction: React.PropTypes.func.isRequired,
+		history: React.PropTypes.object
 	},
 
 	/**
 	 * Type checking for the properties being passed into the component
 	 */
 	propTypes: {
-		url: React.PropTypes.string.isRequired,
-		history: React.PropTypes.object
+		url: React.PropTypes.string.isRequired
 	},
 
 	/**
@@ -56,7 +56,7 @@ var Page = React.createClass({
 	 */
 	_disableAnchors: function() {
         // Prevent the default action of anchors
-        var history = this.props.history;
+        var history = this.context.history;
         $("a").on('click.anchors', function(event) {
             event.preventDefault();
             history.push(event.target.pathname);

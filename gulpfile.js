@@ -25,6 +25,7 @@ var packageJSON = require('./package.json');
 var libs = [
 	"debug",
     "fluxible",
+    "hammerjs",
     "history",
     "jquery",
     "object-assign",

@@ -47,11 +47,11 @@
 
 # Feature Requests
 
-- Animate slide transitions
+- Animations
 - Migrate to ES6
 - Common CSS for different sections should go into a sections folder in CSS. Files in here should be included using SASS for the individual pages.
 - Create Unit Tests
-- Add in Timeouts to the fetch code
+- Add in Timeouts to the fetch code. While Promise.race is a viable option, there already exists express middleware capable of doing this
 - Error Pages. Display error page when XHR fails
 - Help page for keyboard shortcuts
 

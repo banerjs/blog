@@ -16,33 +16,12 @@ var NavigationSection = require('./NavigationSection');
 var Navigation = React.createClass({
 	/**
 	 * Required React field for passing context to the components. This context
-	 * is hydrated by Fluxible.
+	 * is hydrated by ContextWrapper.
 	 */
-	childContextTypes: {
+	contextTypes: {
 		getStore: React.PropTypes.func.isRequired,
 		executeAction: React.PropTypes.func.isRequired,
 		history: React.PropTypes.object
-	},
-
-	/**
-	 * Required React field for passing context to the child components. This
-	 * provides the getStore and executeAction methods from the Fluxible context
-	 * to the children.
-	 */
-	getChildContext: function() {
-		return {
-			getStore: this.props.context.getStore,
-			executeAction: this.props.context.executeAction,
-			history: this.props.history
-		}
-	},
-
-	/**
-	 * Type checking for the properties being passed into the component
-	 */
-	propTypes: {
-		history: React.PropTypes.object,
-		context: React.PropTypes.object.isRequired
 	},
 
 	/**
@@ -53,7 +32,7 @@ var Navigation = React.createClass({
 	 *	}
 	 */
 	getInitialState: function() {
-		var store = this.props.context.getStore(AppStateStore);
+		var store = this.context.getStore(AppStateStore);
 		return this._generateState(store);
 	},
 
@@ -77,14 +56,15 @@ var Navigation = React.createClass({
 	 * Handler for events from the AppStateStore's change events
 	 */
 	_onStoreChanged: function() {
-		var store = this.props.context.getStore(AppStateStore);
+		var store = this.context.getStore(AppStateStore);
 		this.setState(this._generateState(store));
 	},
 
 	/**
-	 * Initialize mousetrap and use it!
+	 * Initialize the listeners that allow for intuitive keyboard and mouse
+	 * navigation
 	 */
-	_setupKeyboardNav: function() {
+	_setupNavGestures: function() {
 		// Don't proceed if this is server side
 		if (typeof window === 'undefined') {
 			return;
@@ -92,12 +72,13 @@ var Navigation = React.createClass({
 
 		// Setup the appropriate variables
 		var Mousetrap = require('mousetrap');
-		var store = this.props.context.getStore(AppStateStore);
-		var history = this.props.history;
+		var Hammer = require('hammerjs');
+		var store = this.context.getStore(AppStateStore);
+		var history = this.context.history;
 		var state = this.state;
 
 		// Create the list of actions that can be taken by Mousetrap
-		var keyboardActions = {
+		var navigationActions = {
 			moveUp: function(e) {
 				store.getUpURL() && history.push(store.getUpURL());
 			},
@@ -116,56 +97,50 @@ var Navigation = React.createClass({
 
 			goToHome: function(e) {
 				history.push(state.home_url);
-			},
-
-			goToAbout: function(e) {
-				history.push('/about');
-			},
-
-			goToBlog: function(e) {
-				history.push('/blog');
-			},
-
-			goToTravels: function(e) {
-				history.push('/travels');
 			}
 		}
 
 		// Initialize and bind Mousetrap
 		Mousetrap.reset();
 
-		Mousetrap.bind('up', keyboardActions.moveUp);
-		Mousetrap.bind('w', keyboardActions.moveUp);
+		Mousetrap.bind('up', navigationActions.moveUp);
+		Mousetrap.bind('w', navigationActions.moveUp);
 
-		Mousetrap.bind('down', keyboardActions.moveDown);
-		Mousetrap.bind('s', keyboardActions.moveDown);
+		Mousetrap.bind('down', navigationActions.moveDown);
+		Mousetrap.bind('s', navigationActions.moveDown);
 
-		Mousetrap.bind('left', keyboardActions.moveLeft);
-		Mousetrap.bind('a', keyboardActions.moveLeft);
+		Mousetrap.bind('left', navigationActions.moveLeft);
+		Mousetrap.bind('a', navigationActions.moveLeft);
 
-		Mousetrap.bind('right', keyboardActions.moveRight);
-		Mousetrap.bind('d', keyboardActions.moveRight);
+		Mousetrap.bind('right', navigationActions.moveRight);
+		Mousetrap.bind('d', navigationActions.moveRight);
 
-		Mousetrap.bind('g h', keyboardActions.goToHome);
-		Mousetrap.bind('g a', keyboardActions.goToAbout);
-		Mousetrap.bind('g b', keyboardActions.goToBlog);
-		Mousetrap.bind('g t', keyboardActions.goToTravels);
+		Mousetrap.bind('g h', navigationActions.goToHome);
+
+		// Initialize and bind Hammer
+		var hammertime = new Hammer(document.body);
+		hammertime.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
+
+		hammertime.on('swipedown', navigationActions.moveUp);
+		hammertime.on('swipeup', navigationActions.moveDown);
+		hammertime.on('swiperight', navigationActions.moveLeft);
+		hammertime.on('swipeleft', navigationActions.moveRight);
 	},
 
 	/**
 	 * Register the handler with the AppStateStore when the component mounts
 	 */
 	componentDidMount: function() {
-		this.props.context.getStore(AppStateStore).addChangeListener(this._onStoreChanged);
-		this.props.context.executeAction(BlogActions.updateSections, {});
-		this._setupKeyboardNav();
+		this.context.getStore(AppStateStore).addChangeListener(this._onStoreChanged);
+		this.context.executeAction(BlogActions.updateSections, {});
+		this._setupNavGestures();
 	},
 
 	/**
 	 * Unregister the handler with the AppStateStore when the component unmounts
 	 */
 	componentWillUnmount: function() {
-		this.props.context.getStore(AppStateStore).removeChangeListener(this._onStoreChanged);
+		this.context.getStore(AppStateStore).removeChangeListener(this._onStoreChanged);
 	},
 
 	/**
@@ -173,7 +148,7 @@ var Navigation = React.createClass({
 	 * only called when the URL of the page changes
 	 */
 	render: function() {
-		var store = this.props.context.getStore(AppStateStore);
+		var store = this.context.getStore(AppStateStore);
 		return (
 			<table className="hidden-xs" style={{maxWidth: "100%", width: "100%", verticalAlign: "middle"}}>
 			<tbody>

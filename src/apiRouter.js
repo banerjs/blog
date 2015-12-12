@@ -16,7 +16,7 @@ router.get('/sections', function(req, res, next) {
 	DataSource.getSections()
 				.then(function(data) {
 					res.status(200).json(data);
-				}).catch(function(err) {
+				}, function(err) {
 					next(err);
 				});
 });

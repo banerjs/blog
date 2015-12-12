@@ -6,6 +6,7 @@ var Fluxible = require('fluxible');
 var createHistory = require('history/lib/createBrowserHistory');
 
 // Own JS code required on the client side
+var ContextWrapper = require('./components/ContextWrapper');
 var Body = require('./components/Body');
 var Navigation = require('./components/Navigation');
 var DataSource = require('./sources/xhr');
@@ -23,11 +24,11 @@ fluxibleApp.rehydrate(dehydratedState, function(err, context) {
 
 	// Initialize React correctly
 	ReactDOM.render(
-        <Body context={context.getComponentContext()} history={history} />,
+        <ContextWrapper context={context.getComponentContext()} history={history} component={Body} />,
         document.getElementById('content')
     );
     ReactDOM.render(
-        <Navigation context={context.getComponentContext()} history={history} />,
+        <ContextWrapper context={context.getComponentContext()} history={history} component={Navigation} />,
         document.getElementById('navigation')
     );
 });

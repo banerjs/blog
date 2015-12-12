@@ -43,7 +43,7 @@
     "express": "^4.13.3",
     "express-session": "^1.12.1",
     "fluxible": "^1.0.3",
-    "fullpage.js": "^2.7.4",
+    "hammerjs": "^2.0.4",
     "history": "^1.12.0",
     "jquery": "^2.1.4",
     "morgan": "^1.6.1",
