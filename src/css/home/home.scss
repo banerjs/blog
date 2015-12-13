@@ -1,0 +1,30 @@
+html, body {
+	overflow-y: hidden;
+}
+
+#content {
+	height: 100vh;
+}
+
+#content_body {
+	display: table;
+	height: 100%;
+	width: 100%;
+}
+
+#content_page {
+	display: table-row;
+	background-image: url('/public/images/cover.jpg');
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: 95% 95%;
+
+	> div {
+		display: table-cell;
+		vertical-align: bottom;
+
+		> div {
+			background-color: #ffffff;
+		}
+	}
+}

@@ -58,7 +58,9 @@
 # Todo
 
 - Create content for the about page
-- Create design for the slides
+- Add in Google Analytics Script
+- Hook up the website to OpenShift release processes
+
 - Plug in a proper data source
 - Flesh out the routes
 - Setup passport and sessions

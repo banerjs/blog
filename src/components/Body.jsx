@@ -32,13 +32,15 @@ var Body = React.createClass({
 	 *	{
 	 *		url: window.location.pathname,
 	 *		title: document.title
+	 *		css: html for #page_style
 	 *	}
 	 */
 	getInitialState: function() {
 		var store = this.context.getStore(AppStateStore);
 		return {
 			url: store.getCurrentURL(),
-			title: store.getPageTitle()
+			title: store.getPageTitle(),
+			css: store.getPageCSSTag()
 		};
 	},
 
@@ -47,10 +49,9 @@ var Body = React.createClass({
 	 */
 	_updateCSS: function() {
 		if (typeof window !== 'undefined') {
-			var store = this.context.getStore(AppStateStore);
-			new_link_tag = $(store.getPageCSSTag());
+			new_link_tag = $(this.state.css);
 			old_link_tag = $("#page_style");
-			if (old_link_tag[0].href !== new_link_tag[0].href) {
+			if (old_link_tag.attr('href') !== new_link_tag.attr('href')) {
 				old_link_tag.replaceWith(new_link_tag);
 			}
 		}
@@ -71,10 +72,12 @@ var Body = React.createClass({
 	_onStoreChanged: function() {
 		var store = this.context.getStore(AppStateStore);
 		if (this.state.url !== store.getCurrentURL()
-				|| this.state.title !== store.getPageTitle()) {
+				|| this.state.title !== store.getPageTitle()
+				|| this.state.css !== store.getPageCSSTag()) {
 			this.setState({
 				url: store.getCurrentURL(),
-				title: store.getPageTitle()
+				title: store.getPageTitle(),
+				css: store.getPageCSSTag()
 			});
 		}
 	},

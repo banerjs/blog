@@ -62,7 +62,7 @@ var Page = React.createClass({
         var history = this.context.history;
         $("a").on('click.anchors', function(event) {
             event.preventDefault();
-            history.push(event.target.pathname);
+            history.push($(this).attr('href'));
         });
 	},
 

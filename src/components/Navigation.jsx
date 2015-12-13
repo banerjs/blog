@@ -93,7 +93,8 @@ var Navigation = React.createClass({
 			},
 
 			moveDown: function(e) {
-				if ($(window).scrollTop() + $(window).height() >= $(document).height()) {
+				if ($(window).scrollTop() + $(window).height() >= $(document).height()
+						|| $('html').css('overflow-y') === 'hidden') { // Scrolling disabled?
 					e.preventDefault();
 					store.getDownURL() && history.push(store.getDownURL());
 				}
