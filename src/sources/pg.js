@@ -4,6 +4,16 @@ var Promise = require('promise');
 // Debug
 var debug = require('debug')('blog:server');
 
+// Temporary usage of an HTML file for debugging appearance using the About page
+var fs = require('fs');
+var template;
+fs.readFile(__dirname + '/../templates/about.html', function(err, data) {
+	if (err) {
+		throw err;
+	}
+	template = data.toString();
+});
+
 var PG = {
 	/**
 	 * This retrieves the post associated with a URL.
@@ -20,11 +30,11 @@ var PG = {
 				html = '<h1>Siddhartha Banerjee<br/><small>Robotics Ph.D. candidate at Georgia Tech</small></h1><p><a href="/about">About</a></p>';
 				break;
 			case "/about":
-				html = '<div className="container"><h2>About</h2><p><a href="/">Home</a></p></div>'
+			case "/blog1":
+				html = template;
 				title = "About";
 				break;
 			case "/blog":
-			case "/blog1":
 			case "/blog2":
 			case "/travels":
 				html= '<h1>Coming Soon</h1>';

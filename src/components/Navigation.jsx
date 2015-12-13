@@ -1,3 +1,4 @@
+var $ = require('jquery');
 var React = require('react');
 
 var AppStateStore = require('../stores/AppStateStore');
@@ -9,6 +10,11 @@ var debug = require('debug')('blog:server');
 // Fetch the sub components
 var NavigationArrow = require('./NavigationArrow');
 var NavigationSection = require('./NavigationSection');
+
+// Constants
+var CONTENT_SECTION_ID = "#content";
+var NAVIGATION_SECTION_ID = "#navigation";
+var SCROLL_DISPLAY_THRESHOLD = 50;
 
 /**
  * This is the main Navigation section of the website
@@ -80,19 +86,31 @@ var Navigation = React.createClass({
 		// Create the list of actions that can be taken by Mousetrap
 		var navigationActions = {
 			moveUp: function(e) {
-				store.getUpURL() && history.push(store.getUpURL());
+				if ($(window).scrollTop() === 0) {
+					e.preventDefault();
+					store.getUpURL() && history.push(store.getUpURL());
+				}
 			},
 
 			moveDown: function(e) {
-				store.getDownURL() && history.push(store.getDownURL());
+				if ($(window).scrollTop() + $(window).height() >= $(document).height()) {
+					e.preventDefault();
+					store.getDownURL() && history.push(store.getDownURL());
+				}
 			},
 
 			moveLeft: function(e) {
-				store.getLeftURL() && history.push(store.getLeftURL());
+				if ($(window).scrollLeft() === 0) {
+					e.preventDefault();
+					store.getLeftURL() && history.push(store.getLeftURL());
+				}
 			},
 
 			moveRight: function(e) {
-				store.getRightURL() && history.push(store.getRightURL());
+				if ($(window).scrollLeft() + $(window).width() >= $(document).width()) {
+					e.preventDefault();
+					store.getRightURL() && history.push(store.getRightURL());
+				}
 			},
 
 			goToHome: function(e) {
@@ -128,6 +146,68 @@ var Navigation = React.createClass({
 	},
 
 	/**
+	 * Function to update the padding at the bottom of the page if there is a
+	 * chance that the content of the page might overlap with the nav
+	 */
+	_updatePadding: function() {
+		if (typeof window === 'undefined') {
+			return;
+		}
+
+		var navHeight = $(NAVIGATION_SECTION_ID).height();
+		var contentHeight = $(CONTENT_SECTION_ID).height();
+		var windowHeight = $(window).height();
+
+		if (contentHeight + navHeight > windowHeight) {
+			$(document.body).css("padding-bottom", navHeight + 1);
+		} else {
+			$(document.body).css("padding-bottom", 0);
+		}
+	},
+
+	/**
+	 * Function to listen in on the scroll events on the page and hide the nav
+	 * element as needed.
+	 */
+	_listenAndHide: function() {
+		if (typeof window === 'undefined') {
+			return;
+		}
+
+		// Remove any previous scroll listeners that might've been present
+		$(window).off("scroll.navigation");
+		$(NAVIGATION_SECTION_ID).removeClass("hidden");
+
+		// Create variables to cache numbers that don't change
+		var navHeight = $(NAVIGATION_SECTION_ID).height();
+		var contentHeight = $(CONTENT_SECTION_ID).height();
+		var windowHeight = $(window).height();
+		var docHeight = $(document).height();
+
+		// If the conditions for needing to hide the navigation are met, then
+		// attach a scroll event listener
+		if (contentHeight + navHeight > windowHeight) {
+			// Create a timer so that we don't spam the JS engine
+			var timer = null;
+
+			$(window).on("scroll.navigation", function(e) {
+				if (timer) {
+					window.clearTimeout(timer);
+				}
+
+				timer = window.setTimeout(function() {
+					if ($(window).scrollTop() > SCROLL_DISPLAY_THRESHOLD
+							&& $(window).scrollTop() + windowHeight < contentHeight - SCROLL_DISPLAY_THRESHOLD) {
+						$(NAVIGATION_SECTION_ID).addClass("hidden");
+					} else {
+						$(NAVIGATION_SECTION_ID).removeClass("hidden");
+					}
+				}, 50);
+			});
+		}
+	},
+
+	/**
 	 * Register the handler with the AppStateStore when the component mounts
 	 */
 	componentDidMount: function() {
@@ -148,6 +228,12 @@ var Navigation = React.createClass({
 	 * only called when the URL of the page changes
 	 */
 	render: function() {
+		// Setup the padding and the listeners so that there is minimal content
+		// overlap
+		this._updatePadding();
+		this._listenAndHide();
+
+		// Fetch the store and render the nav section
 		var store = this.context.getStore(AppStateStore);
 		return (
 			<table className="hidden-xs" style={{maxWidth: "100%", width: "100%", verticalAlign: "middle"}}>

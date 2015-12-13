@@ -113,7 +113,7 @@ var Body = React.createClass({
 		this._updateCSS();
 		this._updateTitle();
 		return (
-			<div>
+			<div id="content_body">
 				<Page url={this.state.url} />
 			</div>
 		);

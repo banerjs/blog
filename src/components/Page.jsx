@@ -129,7 +129,9 @@ var Page = React.createClass({
 			this.context.executeAction(BlogActions.fetchBlogPost, { url: this.props.url });
 		}
 		return (
-			<div dangerouslySetInnerHTML={{ __html: innerHTML }}></div>
+			<div id="content_page"
+				 dangerouslySetInnerHTML={{ __html: innerHTML }}>
+			</div>
 		);
 	}
 });
