@@ -7,6 +7,9 @@ var BlogStore = require('../stores/BlogStore');
 // Debug
 var debug = require('debug')('blog:server');
 
+// Fetch the sub component
+var PageLoader = require('./PageLoader');
+
 /**
  * This is the component that encapsulates the page being viewed by the viewer
  * at this time. It shows a spinning GIF by default until the data regarding its
@@ -123,14 +126,16 @@ var Page = React.createClass({
 	 * Render the component based on the computed page URL and internal HTML
 	 */
 	render: function() {
-		var innerHTML = this.state.html;
-		if (!innerHTML) {
-			innerHTML = "<h1>Loading...</h1>";
+		// Fetch the HTML for the page if we don't have it
+		if (!this.state.html) {
 			this.context.executeAction(BlogActions.fetchBlogPost, { url: this.props.url });
+			return <PageLoader />
 		}
+
+		// Otherwise, display the local HTML that we have on the page
 		return (
 			<div id="content_page"
-				 dangerouslySetInnerHTML={{ __html: innerHTML }}>
+				 dangerouslySetInnerHTML={{ __html: this.state.html }}>
 			</div>
 		);
 	}

@@ -57,12 +57,8 @@
 
 # Todo
 
-- Include scroll sensitivity to interactions
-  - Ensure Mousetrap allows scrolling with the keyboard
-  - Check navigation using phone for scrolling
 - Create content for the about page
 - Create design for the slides
-- Create proper loading screen
 - Plug in a proper data source
 - Flesh out the routes
 - Setup passport and sessions
