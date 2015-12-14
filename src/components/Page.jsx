@@ -61,8 +61,10 @@ var Page = React.createClass({
         // Prevent the default action of anchors
         var history = this.context.history;
         $("a").on('click.anchors', function(event) {
-            event.preventDefault();
-            history.push($(this).attr('href'));
+        	if (this.host === location.host) {
+	            event.preventDefault();
+	            history.push($(this).attr('href'));
+	        }
         });
 	},
 

@@ -79,6 +79,8 @@ var Navigation = React.createClass({
 		// Setup the appropriate variables
 		var Mousetrap = require('mousetrap');
 		var Hammer = require('hammerjs');
+		delete Hammer.defaults.cssProps.userSelect; // Allow users to select text
+
 		var store = this.context.getStore(AppStateStore);
 		var history = this.context.history;
 		var state = this.state;
@@ -155,15 +157,33 @@ var Navigation = React.createClass({
 			return;
 		}
 
+		// Remove any previous resize listeners
+		$(window).off("resize.navigation");
+
+		// Create variables that won't change
 		var navHeight = $(NAVIGATION_SECTION_ID).height();
 		var contentHeight = $(CONTENT_SECTION_ID).height();
 		var windowHeight = $(window).height();
 
+		// Add padding based on the height of the content vs. window
 		if (contentHeight + navHeight > windowHeight) {
 			$(document.body).css("padding-bottom", navHeight + 1);
 		} else {
 			$(document.body).css("padding-bottom", 0);
 		}
+
+		// Add resize listener to force an update
+		var component = this;
+		var timer = null;
+		$(window).on("resize.navigation", function(e) {
+			if (timer) {
+				window.clearTimeout(timer);
+			}
+
+			timer = window.setTimeout(function() {
+				component.forceUpdate();
+			}, 800);
+		});
 	},
 
 	/**

@@ -42,6 +42,7 @@ var PG = {
 			case "/about":
 				html = aboutPage;
 				title = "About";
+				css = 'home/about.css';
 				break;
 			default:
 				error = new Error("Not Found");

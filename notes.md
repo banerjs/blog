@@ -57,7 +57,7 @@
 
 # Todo
 
-- Create content for the about page
+- Spam proof email
 - Add in Google Analytics Script
 - Hook up the website to OpenShift release processes
 
