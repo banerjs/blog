@@ -1,9 +1,10 @@
-// This is the data source that gets the data through XHR calls
+// This is the data source that gets the data and sends emails through XHR calls
 var $ = require('jquery');
 var Promise = require('promise');
 
+// TODO: Get these URL values from a routes.js file
 var API_SERVER_PREFIX = '/_';
-var SECTIONS_URL = '/sections'; // TODO: Get this URL value from a routes.js file
+var SECTIONS_URL = '/sections';
 
 var XHR = {
 	/**

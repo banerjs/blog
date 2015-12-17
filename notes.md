@@ -57,7 +57,6 @@
 
 # Todo
 
-- Spam proof email
 - Add in Google Analytics Script
 - Hook up the website to OpenShift release processes
 

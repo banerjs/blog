@@ -5,15 +5,17 @@ var ReactDOM = require('react-dom');
 var Fluxible = require('fluxible');
 var createHistory = require('history/lib/createBrowserHistory');
 
-// Own JS code required on the client side
+// Root level components
 var ContextWrapper = require('./components/ContextWrapper');
 var Body = require('./components/Body');
 var Navigation = require('./components/Navigation');
+
+// Sources of data
 var DataSource = require('./sources/xhr');
-var BlogActions = require('./actions/BlogActions');
+var MailSource = DataSource;
 
 // Initialize libraries as needed
-var fluxibleApp = require('./createApp')(DataSource, {});
+var fluxibleApp = require('./createApp')(DataSource, MailSource, {});
 
 // Retrieve the server state
 var dehydratedState = window.App;

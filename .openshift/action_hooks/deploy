@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Build all the scripts as needed
+npm run deploy

@@ -1,3 +1,4 @@
+// Libraries required on the server side
 var fs = require('fs');
 var React = require('react');
 var ReactDOMServer = require('react-dom/server');
@@ -7,15 +8,21 @@ var serialize = require('serialize-javascript');
 // Debug
 var debug = require('debug')('blog:server');
 
-// Personal JS
+// Root level components
 var ContextWrapper = require('./components/ContextWrapper');
 var Body = require('./components/Body');
 var Navigation = require('./components/Navigation');
+
+// Sources of data
 var DataSource = require('./sources/pg');
+var MailSource = require('./sources/mail');
+
+// Stores and Actions for storing and manipulating the data
 var AppStateStore = require('./stores/AppStateStore');
 var BlogActions = require('./actions/BlogActions');
 
-var fluxibleApp = require('./createApp')(DataSource, {});
+// Initialize the application as desired
+var fluxibleApp = require('./createApp')(DataSource, MailSource, {});
 
 // Make sure to load up the template HTML file at startup
 var template;

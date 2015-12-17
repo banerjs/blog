@@ -8,16 +8,18 @@ var bodyParser = require('body-parser');
 var server = require('./build/serverRouter');
 var api = require('./build/apiRouter');
 
+// Create the server
 var app = express();
 
-// uncomment after placing your favicon in /public
+// Setup the middleware as required
 app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(logger('dev'));
+app.use(logger('combined'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use("/public", express.static(path.join(__dirname, 'public')));
 
+// Setup the route handlers
 app.use('/_/', api);
 app.get('/*', server);
 
@@ -45,6 +47,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.end();
 });
-
 
 module.exports = app;
