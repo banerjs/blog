@@ -109,6 +109,16 @@ var Body = React.createClass({
 	},
 
 	/**
+	 * If the URL changed, then fire a GA update page event. This happens only
+	 * on the browser
+	 */
+	componentDidUpdate: function(prevProps, prevState) {
+		if (this.state.url !== prevState.url && !!window.ga) {
+			window.ga('send', 'pageview', { page: this.state.url });
+		}
+	},
+
+	/**
 	 * Render the component based on the computed page URL and CSS tags. This is
 	 * only called when the URL of the page changes
 	 */

@@ -25,26 +25,19 @@ var NavigationArrow = React.createClass({
 	 */
 	propTypes: {
 		arrow_class: React.PropTypes.string.isRequired,
-		style_class: React.PropTypes.string,
 		url: React.PropTypes.string
-	},
-
-	/**
-	 * Click handler on the arrow
-	 */
-	_navigateToURL: function() {
-		this.context.history.push(this.props.url);
 	},
 
 	/**
 	 * Render the component based on URL
 	 */
 	render: function() {
-		var spanClass = "glyphicon " + this.props.arrow_class + " " + this.props.style_class;
-		spanClass += (!!this.props.url) ? "" : " invisible";
+		var arrowClass = "glyphicon " + this.props.arrow_class;
+		var visClass = (!!this.props.url) ? "" : " invisible";
 		return (
-			<span className={spanClass} onClick={this._navigateToURL} style={{cursor: 'pointer'}}>
-			</span>
+			<a href={this.props.url} className={visClass} style={{color: "inherit"}}>
+				<span className={arrowClass}></span>
+			</a>
 		);
 	}
 });

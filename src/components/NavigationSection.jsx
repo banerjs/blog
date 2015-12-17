@@ -38,20 +38,6 @@ var NavigationSection = React.createClass({
 	},
 
 	/**
-	 * Click handler on the home icon
-	 */
-	_navigateToHome: function() {
-		this.context.history.push(this.props.home);
-	},
-
-	/**
-	 * Click handler on the section links
-	 */
-	_navigateToURL: function(url) {
-		this.context.history.push(url);
-	},
-
-	/**
 	 * Mouse Enter Handler on the home icon
 	 */
 	_showSections: function() {
@@ -70,15 +56,15 @@ var NavigationSection = React.createClass({
 	 * component
 	 */
 	render: function() {
-		var spanClass = "glyphicon glyphicon-home";
+		var homeClass = "glyphicon glyphicon-home";
 		var sectionLinks = this.props.sections.map(function(section, idx) {
 			return (
-				<div key={idx}
+				<a key={idx}
 					 className={(this.state.mouseOnHome) ? "" : "hidden"}
-					 style={{cursor: 'pointer'}}
-					 onClick={this._navigateToURL.bind(this, section.url)}>
+					 style={{color: "inherit"}}
+					 href={section.url}>
 					<span>{section.name}</span>
-				</div>
+				</a>
 			);
 		}, this);
 
@@ -87,10 +73,9 @@ var NavigationSection = React.createClass({
 				 onMouseEnter={this._showSections}
 				 onMouseLeave={this._hideSections}>
 				{sectionLinks}
-				<div onClick={this._navigateToHome}
-					 style={{cursor: 'pointer'}}>
-					<span className={spanClass}></span>
-				</div>
+				<a href={this.props.home} style={{color: "inherit"}}>
+					<span className={homeClass}></span>
+				</a>
 			</div>
 		);
 	}
