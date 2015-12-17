@@ -54,11 +54,9 @@
 - Add in Timeouts to the fetch code. While Promise.race is a viable option, there already exists express middleware capable of doing this
 - Error Pages. Display error page when XHR fails
 - Help page for keyboard shortcuts
+- Migrate to OpenShift and scalable infrastructure
 
 # Todo
-
-- Add in Google Analytics Script
-- Hook up the website to OpenShift release processes
 
 - Plug in a proper data source
 - Flesh out the routes
