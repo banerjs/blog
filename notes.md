@@ -1,9 +1,16 @@
 # To start
 
-- start from Windows: `docker-machine.exe env --shell powershell default | Invoke-Expression`
-- startup a new container with the following command: `docker run -i -t -v /c/Users/Siddhartha/Documents/Code/blog/:/usr/src/ -w /usr/src/ -p 8000:8000 --rm node bash`
-- Get and start screen: `apt-get update && apt-get install screen dialog` followed by `screen`
-- Run the npm installer to get all project dependencies: `. install_deps_globally.sh package.json`
+- Start from Windows: `docker-machine.exe env --shell powershell default | Invoke-Expression`
+- Start a new web container with the following command: `docker run -i -t -v /c/Users/Siddhartha/Documents/Code/blog/:/usr/src/ -w /usr/src/ -p 8000:8000 --rm node bash`
+- Start a new postgres container `docker run --name blog-pg -d -v /tmp/blog/:/var/lib/postgresql/data -P -e POSTGRES_PASSWORD=a postgres`
+  - Note the container uses the folder /tmp in the virtual machine as a data directory. This is not accessible from windows
+  - Use `docker network inspect bridge` to figure out the IP address of the new container
+  - Run `export DATABASE_URL="<postgres url of database>"` in the node container shell running the server
+- Start a new redis container `docker run --name blog-redis -d -P redis`
+  - Note that we do not want persistent storage on redis; at least not yet
+  - Use `docker network inspect bridge` to figure out the IP address of the new container
+  - Run `export REDIS_URL="<redis url of the database>"` in the node container shell running the server
+- Run the npm installer to get all project dependencies: `./install_deps_globally.sh package.json`
 - Clean and start gulp in watch mode: `npm run clean; npm run gulp &`
 - Start the server in debug: `npm run debug`
 
@@ -55,58 +62,13 @@
 - Error Pages. Display error page when XHR fails
 - Help page for keyboard shortcuts
 - Migrate to OpenShift and scalable infrastructure
+- Configure the docker-compose files necessary to start all the different containers at the same time
+- Variable inserted into the HTML of a post for the various parts of it - date
 
 # Todo
 
-- Plug in a proper data source
+- Create a way to initialize data sources
+  - Alternatively, create a way to add in the data source
 - Flesh out the routes
 - Setup passport and sessions
   - Choose between Google, MSFT, and local logins
-
-# Data Model
-
-OBSOLETE!!
-
-The data model does the following:
-
-- Specify the internal HTML for a section
-- Affect the CSS for a section (most notably background colour)
-- Send this HTML through AJAX requests
-- Differentiate between section and slide
-
-The following JSON is available to the client. Based on the type of query, we can return with the appropriate sections populated.
-
-    [{
-      /** section */
-      styles,
-      slides: [{
-        /** slide */
-        url (pkey),
-        html,
-        styles
-      }, ...]
-    }, ...]
-
-The storage model in the DB however is different. We're using PG (easiest on Heroku) so the following denotes the columns for each row in the DB:
-
-    id(serial)
-    url(str)
-    section(int)
-    slide(int)
-    html(str)
-    styles(str)
-    section_styles(str)
-    created(date)
-    updated(date)
-
-The constraints on this storage are:
-
-    unique(url)
-    unique(section, slide)
-
-Notes on the styles objects:
-
-- The styles parameter is stored as a JSON str in the database. It is a JSON object
-- Styling for the slide or section is done with `styles.root`. All other children of the styles object are style objects for the stored html and can be referenced by their `styles.html_tag_name.root`.
-- As alluded to earlier, the styles object may be hierarchical in nature
-- The section_styles (should there exist any) are copied over multiple rows. This is to save storage space on Heroku.

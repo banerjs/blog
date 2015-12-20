@@ -6,7 +6,7 @@
 var express = require('express');
 var router = express.Router();
 
-var DataSource = require('./sources/pg');
+var DataSource = require('./sources/database');
 
 // Debug
 var debug = require('debug')('blog:server');

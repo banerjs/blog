@@ -1,5 +1,6 @@
-// This data source gets the data from PG. TODO
 var Promise = require('promise');
+var pg = require('pg-promise')({ promiseLib: Promise })(process.env.DATABASE_URL);
+var redis = require('redis').createClient(process.env.REDIS_URL, {});
 
 // Debug
 var debug = require('debug')('blog:server');
@@ -22,38 +23,22 @@ fs.readFile(__dirname + '/../templates/home.html', function(err, data) {
 	homePage = data.toString();
 });
 
-var PG = {
+var DATABASE = {
 	/**
 	 * This retrieves the post associated with a URL.
 	 *
 	 * @param url The URL of the post to fetch
-	 * @return A promise that can be acted upon if this GET is successful
+	 * @return A promise that can be acted upon if this fetch is successful
 	 */
 	getPostFromUrl: function(url) {
-		var html = null;
-		var title = null;
-		var css = null;
-		var error = null;
-		switch(url) {
-			case "/":
-				html = homePage;
-				css = 'home/home.css';
-				break;
-			case "/about":
-				html = aboutPage;
-				title = "About";
-				css = 'home/about.css';
-				break;
-			default:
-				error = new Error("Not Found");
-				error.status = 404;
-		}
-		return new Promise(function(resolve, reject) {
-			if (!!error) {
-				reject(error);
-			}
-			resolve({ html: html, title: title, css: css });
-		});
+		return pg.one("SELECT * FROM posts WHERE url = $1;", url)
+					.catch(function(err) {
+						if (!!err.message
+								&& err.message.toLowerCase().indexOf("no data") > -1) {
+							err.status = 404;
+						}
+						throw err;
+					});
 	},
 
 	/**
@@ -64,14 +49,18 @@ var PG = {
 	 */
 	getSections: function() {
 		return new Promise(function(resolve, reject) {
-			sections = [{
-				name: 'Home',
-				url: '/',
-				slides: ['/', '/about']
-			}];
-			resolve(sections);
+			try {
+				redis.get('sections', function(err, data) {
+					if (!data || !!err) {
+						reject(err || new Error("Sections don't exist"));
+					}
+					resolve(JSON.parse(data));
+				});
+			} catch (err) {
+				reject(err);
+			}
 		});
 	}
 }
 
-module.exports = PG;
+module.exports = DATABASE;

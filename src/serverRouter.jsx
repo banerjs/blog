@@ -14,7 +14,7 @@ var Body = require('./components/Body');
 var Navigation = require('./components/Navigation');
 
 // Sources of data
-var DataSource = require('./sources/pg');
+var DataSource = require('./sources/database');
 var MailSource = require('./sources/mail');
 
 // Stores and Actions for storing and manipulating the data
