@@ -1,10 +1,6 @@
 var React = require('react');
 
-if (typeof window !== 'undefined') {
-	var Auth0Lock = require('auth0-lock');
-}
-
-var AdminStateStore = require('../stores/AdminStateStore');
+var constants = require('../utils/constants');
 var AdminActions = require('../actions/AdminActions');
 
 // Debug
@@ -27,32 +23,12 @@ var Login = React.createClass({
 	},
 
 	/**
-	 * Set the state of the component to have the following form:
-	 *	{
-	 *
-	 *	}
-	 */
-	getInitialState: function() {
-		var store = this.context.getStore(AdminStateStore);
-		return {
-			logged_in: store.getLoggedIn()
-		};
-	},
-
-	/**
-	 * Handler for events from the AdminStateStore's change events
-	 */
-	_onStoreChanged: function() {
-		var store = this.context.getStore(AdminStateStore);
-		this.setState({ logged_in: store.getLoggedIn() });
-	},
-
-	/**
 	 * Initialize the lock mechanism when the component is about to be rendered.
 	 * Ensure that this run on the client ONLY!
 	 */
 	componentWillMount: function() {
 		if (typeof window !== 'undefined') {
+			var Auth0Lock = require('auth0-lock');
 			this.lock = new Auth0Lock(process.env.AUTH0_ID, process.env.AUTH0_NS);
 			var authHash = this.lock.parseHash(window.location.hash);
 			this.context.executeAction(AdminActions.login, { hash: authHash });
@@ -60,26 +36,30 @@ var Login = React.createClass({
 	},
 
 	/**
-	 * Register the handler with the AdminStateStore when the component mounts.
+	 * Push the login URL onto the history stack and change the document title
+	 *
+	 * Show the login dialog only if the user is not logged in. Otherwise, the
+	 * parent component should've preempted the render and rendered the base
+	 * admin page.
 	 */
 	componentDidMount: function() {
-		this.context.getStore(AdminStateStore).addChangeListener(this._onStoreChanged);
+		// Update the URL of the page
+		this.context.history.push('/admin/login');
+
+		// Update the title of the page
+		document.title = "Login" + constants.DEFAULT_TITLE_SEPARATOR
+							+ constants.DEFAULT_ADMIN_TITLE;
+
+		// Display the Auth0 lock UI
 		this.lock.show({
 			container: 'login-box',
-			responseType: 'token'
+			responseType: 'token',
+			callbackURL: window.location.origin + '/admin/login'
 		});
 	},
 
 	/**
-	 * Unregister the handler with the AdminStateStore when the component unmounts
-	 */
-	componentWillUnmount: function() {
-		this.context.getStore(AdminStateStore).removeChangeListener(this._onStoreChanged);
-	},
-
-	/**
-	 * Render the component based on the computed page URL and CSS tags. This is
-	 * only called when the URL of the page changes
+	 * Render the component
 	 */
 	render: function() {
 		var style = {

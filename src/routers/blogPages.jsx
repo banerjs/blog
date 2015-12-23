@@ -7,7 +7,7 @@ var createHistory = require('history/lib/createBrowserHistory');
 
 // Root level components
 var ContextWrapper = require('../components/ContextWrapper');
-var Body = require('../components/Body');
+var Blog = require('../components/Blog');
 var Navigation = require('../components/Navigation');
 
 // Sources of data
@@ -38,7 +38,7 @@ fluxibleApp.rehydrate(dehydratedState, function(err, context) {
 
 	// Initialize React correctly
 	ReactDOM.render(
-        <ContextWrapper context={context.getComponentContext()} history={history} component={Body} />,
+        <ContextWrapper context={context.getComponentContext()} history={history} component={Blog} />,
         document.getElementById('content')
     );
     ReactDOM.render(

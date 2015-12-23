@@ -11,12 +11,12 @@ var debug = require('debug')('blog:server');
 var Page = require('./Page');
 
 /**
- * This is the main Body of the application. Use this to manage the skeleton of
- * the App. Currently, Body displays a single page only; in the future we might
+ * This is the main body of the application. Use this to manage the skeleton of
+ * the App. Currently, Blog displays a single page only; in the future we might
  * have to preload the sections surrounding the current page in order to get the
  * animations to work properly.
  */
-var Body = React.createClass({
+var Blog = React.createClass({
 	/**
 	 * Required React field for passing context to the components. This context
 	 * is hydrated by ContextWrapper.
@@ -121,4 +121,4 @@ var Body = React.createClass({
 	}
 });
 
-module.exports = Body;
+module.exports = Blog;

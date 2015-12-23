@@ -1,15 +1,10 @@
 // Store for the state of the application
 var createStore = require('fluxible/addons/createStore');
 var labels = require('../actions');
+var constants = require('../utils/constants');
 
 // Debug
 var debug = require('debug')('blog:server');
-
-// Constants
-var DEFAULT_TITLE = "Siddhartha Banerjee";
-var DEFAULT_TITLE_SEPARATOR = " | ";
-var DEFAULT_PAGE_CSS = "blog.css";
-var DEFAULT_PAGE_CSS_PATH = "/public/css/";
 
 /**
  * Helper function to generate the link tag associated with the CSS for this
@@ -206,9 +201,10 @@ var BlogStateStore = createStore({
 	getPageTitle: function() {
 		// Default title
 		if (!this._blogState.page_title) {
-			return DEFAULT_TITLE;
+			return constants.DEFAULT_TITLE;
 		}
-		return this._blogState.page_title + DEFAULT_TITLE_SEPARATOR + DEFAULT_TITLE;
+		return this._blogState.page_title + constants.DEFAULT_TITLE_SEPARATOR
+				+ constants.DEFAULT_TITLE;
 	},
 
 	/**
@@ -218,9 +214,9 @@ var BlogStateStore = createStore({
 	 */
 	getPageCSSTag: function() {
 		if (!this._blogState.page_css) {
-			return createCSSLinkTag(DEFAULT_PAGE_CSS_PATH + DEFAULT_PAGE_CSS);
+			return createCSSLinkTag(constants.DEFAULT_PAGE_CSS_PATH + constants.DEFAULT_BLOG_CSS);
 		}
-		return createCSSLinkTag(DEFAULT_PAGE_CSS_PATH + this._blogState.page_css);
+		return createCSSLinkTag(constants.DEFAULT_PAGE_CSS_PATH + this._blogState.page_css);
 	},
 
 	/**

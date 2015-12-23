@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS posts (
  id bigserial primary key not null,
  url text not null unique CHECK (length(url) < 256),
- section integer not null,
- slide integer not null,
+ section bigint not null,
+ slide bigint not null,
  html text,
  title text CHECK (length(title) <= 20),
  css text CHECK (length(css) < 256),
@@ -14,8 +14,9 @@ CREATE TABLE IF NOT EXISTS posts (
 
 CREATE TABLE IF NOT EXISTS sections (
 	id bigserial primary key not null,
-	name text not null CHECK (length(name) <= 20),
-	url text not null CHECK (length(url) < 256)
+	name text not null unique CHECK (length(name) <= 20),
+	url text not null unique CHECK (length(url) < 256),
+	priority bigint not null
 );
 
 insert into posts (url, section, slide, html, css) values
@@ -73,4 +74,7 @@ insert into posts (url, section, slide, html, css) values
 </article>
 ', 'home/about.css');
 
-insert into sections (name, url) values ('Home', '/');
+insert into sections (name, url, priority) values
+	('Home', '/', 1),
+	('Blog', '/blog', 2),
+	('Travels', '/travels', 3);

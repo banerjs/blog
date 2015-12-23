@@ -8,7 +8,7 @@ var PageStore = require('../stores/PageStore');
 var debug = require('debug')('blog:server');
 
 // Fetch the sub component
-var PageLoader = require('./PageLoader');
+var Loader = require('./Loader');
 
 /**
  * This is the component that encapsulates the page being viewed by the viewer
@@ -131,7 +131,7 @@ var Page = React.createClass({
 		// Fetch the HTML for the page if we don't have it
 		if (!this.state.html) {
 			this.context.executeAction(BlogActions.fetchBlogPost, { url: this.props.url });
-			return <PageLoader />
+			return <Loader />
 		}
 
 		// Otherwise, display the local HTML that we have on the page

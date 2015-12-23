@@ -1,12 +1,16 @@
 var bodyParser = require('body-parser');
 var compression = require('compression');
 var cookieParser = require('cookie-parser');
+var csrf = require('csurf');
 var express = require('express');
 var favicon = require('serve-favicon');
 var fs = require('fs');
 var jwt = require('express-jwt');
 var logger = require('morgan');
 var path = require('path');
+var session = require('express-session');
+
+var RedisStore = require('connect-redis')(session);
 
 var admin = require('./build/routers/adminRouter');
 var blog = require('./build/routers/blogRouter');
@@ -24,7 +28,13 @@ app.use(logger((app.get('env') === 'development') ? 'dev' : 'combined'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/public", express.static(path.join(__dirname, 'public')));
-app.use(cookieParser());
+app.use(cookieParser(process.env.APPLICATION_SECRET));
+app.use(session({
+  secret: process.env.APPLICATION_SECRET,
+  store: new RedisStore({ url: process.env.REDIS_URL }),
+  resave: false,
+  saveUninitialized: false
+}));
 
 // Setup the login checkers
 var jwtCheck = jwt({
@@ -33,7 +43,7 @@ var jwtCheck = jwt({
 }).unless({ path: ['/admin/login'] });
 
 // Setup the route handlers
-app.use('/admin/', jwtCheck, admin);
+app.use('/admin/', jwtCheck, csrf(), admin);
 app.use('/', blog);
 
 // catch 404 and forward to error handler
@@ -46,8 +56,16 @@ app.use(function(req, res, next) {
 // error handlers
 
 // load error pages into memory
+var forbiddenPage;
 var notFoundPage;
 var serverErrorPage;
+
+fs.readFile(__dirname + '/build/templates/403.html', function(err, data) {
+  if (err) {
+    throw err;
+  }
+  forbiddenPage = data.toString();
+});
 
 fs.readFile(__dirname + '/build/templates/404.html', function(err, data) {
   if (err) {
@@ -66,7 +84,7 @@ fs.readFile(__dirname + '/build/templates/500.html', function(err, data) {
 
 // redirect to login if it is a 401
 app.use(function(err, req, res, next) {
-  if (err.status === 401) {
+  if (err.status === 401 && !req.xhr) {
     res.redirect('/admin/login');
   }
   next(err);
@@ -87,7 +105,9 @@ app.use(function(err, req, res, next) {
 
   // Send special message/show special page based on the computed status of the
   // error
-  if (status === 404) {
+  if (status === 403 || status === 401) {
+    response = (!req.xhr) ? forbiddenPage : "forbidden";
+  } else if (status === 404) {
     response = (!req.xhr) ? notFoundPage : "data not found";
   } else if (status === 500) {
     response = (!req.xhr) ? serverErrorPage : "server error";

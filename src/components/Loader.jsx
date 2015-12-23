@@ -8,7 +8,7 @@ var debug = require('debug')('blog:server');
  * This is a simple component that displays a loading GIF while the desired page
  * loads.
  */
-var PageLoader = React.createClass({
+var Loader = React.createClass({
 	render: function() {
 		var style = {
 			position: "absolute",
@@ -28,4 +28,4 @@ var PageLoader = React.createClass({
 	}
 });
 
-module.exports = PageLoader;
+module.exports = Loader;

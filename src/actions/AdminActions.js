@@ -28,8 +28,22 @@ var AdminActions = {
 	 * @param payload This is empty
 	 * @return A Promise that resolves to true if the action succeeded
 	 */
-	updateSections: function(context, payload) {
+	fetchSections: function(context, payload) {
 		return BlogActions.updateSections(context, payload);
+	},
+
+	/**
+	 * This action simply loads the desired CSRF token into the store
+	 *
+	 * @param context The actionContext from Fluxible
+	 * @param payload The generated CSRF token
+	 * @return A Promise that resolves to true if the action succeeded
+	 */
+	loadCSRF: function(context, payload) {
+		return new Promise(function(resolve, reject) {
+			context.dispatch(labels.LOAD_CSRF, payload);
+			resolve(true);
+		});
 	},
 
 	/**
@@ -71,13 +85,13 @@ var AdminActions = {
 	 * @param payload The details about logout. No payload
 	 * @return A Promise that resolves to true if the action succeeded
 	 */
-	 logout: function(context, payload) {
-	 	return new Promise(function(resolve, reject) {
-	 		window.localStorage.removeItem(constants.LOCAL_STORAGE_USER_TOKEN);
-	 		context.dispatch(labels.LOGGED_OUT, {});
-	 		resolve(true);
-	 	});
-	 }
+	logout: function(context, payload) {
+		return new Promise(function(resolve, reject) {
+			window.localStorage.removeItem(constants.LOCAL_STORAGE_USER_TOKEN);
+			context.dispatch(labels.LOGGED_OUT, {});
+			resolve(true);
+		});
+	}
 }
 
 module.exports = AdminActions;

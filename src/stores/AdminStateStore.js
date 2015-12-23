@@ -16,6 +16,7 @@ var initHandlers = function() {
 	var handlers = {};
 	handlers[labels.LOGGED_IN] = 'handleLoggedIn';
 	handlers[labels.LOGGED_OUT] = 'handleLoggedOut';
+	handlers[labels.LOAD_CSRF] = 'handleLoadCSRF';
 	return handlers;
 };
 
@@ -35,11 +36,21 @@ var AdminStateStore = createStore({
 	 * Initialize the store
 	 */
 	initialize: function(dispatcher) {
-		// Of the form { url, component, idToken }
-		this._adminState = {
-			idToken: (typeof window !== 'undefined')
-						&& window.localStorage.getItem(constants.LOCAL_STORAGE_USER_TOKEN)
-		};
+		// Of the form { section, slide }
+		this._adminState = {};
+		this._idToken = (typeof window !== 'undefined')
+			&& window.localStorage.getItem(constants.LOCAL_STORAGE_USER_TOKEN);
+		this._csrf = null;
+	},
+
+	/**
+	 * Sets the CSRF token for the current session
+	 *
+	 * @param An object containing the CSRF token for the session
+	 */
+	handleLoadCSRF: function(data) {
+		this._csrf = data.csrf;
+		this.emitChange();
 	},
 
 	/**
@@ -50,27 +61,48 @@ var AdminStateStore = createStore({
 	 *	through window.localStorage
 	 */
 	handleLoggedIn: function(data) {
-		this._adminState.idToken = data.idToken;
+		this._idToken = data.idToken;
 		this.emitChange();
 	},
 
 	/**
 	 * This method handles the completion of the 'LOGGED_OUT' action
 	 *
-	 * @param data The data returned from logging out. It's empty
+	 * @param data The data used for logging out. It's empty
 	 */
 	handleLoggedOut: function(data) {
-		this._adminState.idToken = null;
+		this._idToken = null;
+		this._adminState = {};
 		this.emitChange();
 	},
 
 	/**
 	 * Getter to know if the user has logged in
-	 *
-	 * @returns Boolean
 	 */
-	getLoggedIn: function() {
-		return !!this._adminState.idToken;
+	getIsLoggedIn: function() {
+		return !!this._idToken;
+	},
+
+	/**
+	 * Getter for the CSRF Token of this session
+	 */
+	getCSRFToken: function() {
+		return this._csrf;
+	},
+
+	/**
+	 * Return the current section that's being edited. NULL for the root page
+	 */
+	getCurrentSection: function() {
+		return this._adminState.section;
+	},
+
+	/**
+	 * Return the current page/slide that is being edited. NULL for the sections
+	 * editor page
+	 */
+	getCurrentSlide: function() {
+		return this._adminState.slide;
 	},
 
 	/**
@@ -78,7 +110,8 @@ var AdminStateStore = createStore({
 	 */
 	dehydrate: function() {
 		return {
-			state: this._adminState
+			adminState: this._adminState,
+			csrf: this._csrf
 		};
 	},
 
@@ -86,7 +119,8 @@ var AdminStateStore = createStore({
 	 * API method to deserialize data at the client
 	 */
 	rehydrate: function(state) {
-		this._adminState = state.posts;
+		this._adminState = state.adminState;
+		this._csrf = state.csrf;
 	}
 });
 

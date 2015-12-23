@@ -14,7 +14,10 @@ var labels = {
 	LOGGED_IN: "LOGGED_IN",
 
 	// Fired when the user logs out successfully
-	LOGGED_OUT: "LOGGED_OUT"
+	LOGGED_OUT: "LOGGED_OUT",
+
+	// Fired when the CSRF token needs to be loaded into the store
+	LOAD_CSRF: "LOAD_CSRF"
 }
 
 module.exports = labels;

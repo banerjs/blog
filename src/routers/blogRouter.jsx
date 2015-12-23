@@ -11,7 +11,7 @@ var debug = require('debug')('blog:server');
 
 // Root level components
 var ContextWrapper = require('../components/ContextWrapper');
-var Body = require('../components/Body');
+var Blog = require('../components/Blog');
 var Navigation = require('../components/Navigation');
 
 // Sources of data
@@ -72,7 +72,7 @@ router.get('*', function(req, res, next) {
 
 		response = template.replace("TITLE", appStore.getPageTitle())
 						   .replace("CONTENT", ReactDOMServer.renderToString(
-		   						<ContextWrapper context={context.getComponentContext()} component={Body} />
+		   						<ContextWrapper context={context.getComponentContext()} component={Blog} />
 						   	))
 						   .replace("NAVIGATION", ReactDOMServer.renderToString(
 						   		<ContextWrapper context={context.getComponentContext()} component={Navigation} />

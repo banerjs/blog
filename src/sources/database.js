@@ -5,24 +5,6 @@ var redis = require('redis').createClient(process.env.REDIS_URL, {});
 // Debug
 var debug = require('debug')('blog:server');
 
-// Temporary usage of an HTML file for debugging appearance using the About page
-var fs = require('fs');
-var aboutPage;
-fs.readFile(__dirname + '/../templates/about.html', function(err, data) {
-	if (err) {
-		throw err;
-	}
-	aboutPage = data.toString();
-});
-
-var homePage;
-fs.readFile(__dirname + '/../templates/home.html', function(err, data) {
-	if (err) {
-		throw err;
-	}
-	homePage = data.toString();
-});
-
 var DATABASE = {
 	/**
 	 * This retrieves the post associated with a URL.

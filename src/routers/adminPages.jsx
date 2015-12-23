@@ -7,7 +7,7 @@ var createHistory = require('history/lib/createBrowserHistory');
 
 // Root level components
 var ContextWrapper = require('../components/ContextWrapper');
-var Login = require('../components/Login');
+var Admin = require('../components/Admin');
 
 // Sources of data
 var DataSource = require('../sources/xhr');
@@ -28,12 +28,13 @@ fluxibleApp.rehydrate(dehydratedState, function(err, context) {
     // Initialize the routing
     var history = createHistory();
     history.listenBefore(function(location) {
+        console.log(location.pathname);
         return true;
     });
 
     // Initialize React correctly
     ReactDOM.render(
-        <ContextWrapper context={context.getComponentContext()} history={history} component={Login} />,
+        <ContextWrapper context={context.getComponentContext()} history={history} component={Admin} />,
         document.getElementById('content')
     );
 });
