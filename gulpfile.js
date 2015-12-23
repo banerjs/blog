@@ -1,28 +1,28 @@
+var autoprefixer = require('autoprefixer');
+var babel = require('gulp-babel');
+var browserify = require('browserify');
+var del = require('del');
+var envify = require('envify/custom');
+var eslint = require('gulp-eslint');
 var gulp = require('gulp');
 var gulpif = require('gulp-if');
-var streamify = require('gulp-streamify');
-var source = require('vinyl-source-stream');
 var gutil = require('gulp-util');
-var notify = require('gulp-notify');
-
-var watchify = require('watchify');
-var del = require('del');
-
-var babel = require('gulp-babel');
-
-var browserify = require('browserify');
-var eslint = require('gulp-eslint');
-var uglify = require('gulp-uglify');
-
-var sourcemaps = require('gulp-sourcemaps');
-var postcss = require('gulp-postcss');
+var htmlmin = require('gulp-htmlmin');
+var imagemin = require('gulp-image');
 var nano = require('gulp-cssnano');
+var notify = require('gulp-notify');
+var postcss = require('gulp-postcss');
 var sass = require('gulp-sass');
-var autoprefixer = require('autoprefixer');
+var source = require('vinyl-source-stream');
+var sourcemaps = require('gulp-sourcemaps');
+var streamify = require('gulp-streamify');
+var uglify = require('gulp-uglify');
+var watchify = require('watchify');
 
 // Define all the vendor libs that don't really change all that much.
 var packageJSON = require('./package.json');
 var libs = [
+	"auth0-lock",
 	"debug",
     "fluxible",
     "hammerjs",
@@ -64,14 +64,29 @@ var tasks = {
 
 	// Copy static files - images, favicon, etc.
 	// Assumption: there will never be assets folders with the names css and js
-	assets: function() {
-		return gulp.src('./assets/**')
+	fonts: function() {
+		return gulp.src('./assets/fonts/**')
+					.pipe(gulp.dest('public/fonts/'));
+	},
+
+	images: function() {
+		return gulp.src('./assets/images/**')
+					.pipe(imagemin())
+					.pipe(gulp.dest('public/images/'));
+	},
+
+	favicon: function() {
+		return gulp.src('./assets/favicon.ico')
 					.pipe(gulp.dest('public/'));
 	},
 
-	// Templates
+	// HTML Templates
 	templates: function() {
 		return gulp.src('./src/templates/**/*.html')
+					.pipe(gulpif(production, htmlmin({
+						removeComments: true,
+						collapseWhitespace: true
+					})))
 					.pipe(gulp.dest('build/templates/'));
 	},
 
@@ -135,16 +150,16 @@ var tasks = {
 		return bundler.bundle()
 						.on('error', handleError('Browserify'))
 						.pipe(source('libs.js'))
-						.pipe(gulpif(production, streamify(uglify())))
+						.pipe(streamify(uglify()))
 						.pipe(gulp.dest('public/js/'))
 						.pipe(notify(function() {
 							console.log('LIB bundle built in ' + (Date.now() - start) + 'ms');
 						}));
 	},
 
-	application: function() {
+	apps: function(taskName, bundleName, bundleSource) {
 		var bundler = browserify({
-			entries: './build/clientRouter.js',
+			entries: bundleSource,
 			debug: !production,
 			fullPaths: !production,
 			cache: {}, packageCache: {} // apparently needed for watchify
@@ -155,21 +170,24 @@ var tasks = {
 			bundler.external(lib);
 		});
 
+		// Setup the enify transform
+		bundler.transform(envify());
+
 		// Setup watchify if we should
 		if (watch) {
-			bundler = watchify(bundler, { delay: 15000 }); // Give reactify time
+			bundler = watchify(bundler, { delay: 10000 }); // Give reactify time
 		}
 
 		var rebundle = function() {
 			var start = new Date();
-			console.log('APP bundle started at ' + start);
+			console.log(taskName + ' bundle started at ' + start);
 			return bundler.bundle()
 							.on('error', handleError('Browserify'))
-							.pipe(source('app.js'))
+							.pipe(source(bundleName))
 							.pipe(gulpif(production, streamify(uglify())))
 							.pipe(gulp.dest('public/js/'))
 							.pipe(notify(function() {
-								console.log('APP bundle built in ' + (Date.now() - start) + 'ms');
+								console.log(taskName + ' bundle built in ' + (Date.now()-start) + 'ms');
 							}));
 		}
 
@@ -184,7 +202,7 @@ var tasks = {
 		return gulp.src([
 			'./src/**/*.js',
 			'./src/**/*.jsx',
-			'./app.js',
+			'./express.js',
 			'./bin/www'
 			])
 			.pipe(eslint())
@@ -199,27 +217,25 @@ var tasks = {
 };
 
 // Mini tasks
+gulp.task('adminjs', ['reactify'], tasks.apps.bind(tasks, 'ADMIN', 'admin.js', './build/routers/adminPages.js'));
+gulp.task('blogjs', ['reactify'], tasks.apps.bind(tasks, 'BLOG', 'blog.js', './build/routers/blogPages.js'));
 gulp.task('clean', tasks.clean);
-gulp.task('assets', tasks.assets);
+gulp.task('favicon', tasks.favicon);
+gulp.task('fonts', tasks.fonts);
+gulp.task('images', tasks.images);
+gulp.task('lint:js', tasks.lintjs);
+gulp.task('reactify', tasks.reactify);
 gulp.task('sass', tasks.sass);
 gulp.task('templates', tasks.templates);
-gulp.task('reactify', ['templates'], tasks.reactify);
-gulp.task('vendors', tasks.vendors);
-gulp.task('application', ['reactify'], tasks.application);
-gulp.task('optimize', tasks.optimize);
-gulp.task('lint:js', tasks.lintjs);
 gulp.task('test', tasks.test);
+gulp.task('vendors', tasks.vendors);
 
 // Macro tasks
-gulp.task('browserify', ['vendors', 'application']);
+gulp.task('browserify', ['vendors', 'blogjs', 'adminjs']);
+gulp.task('assets', ['fonts', 'images', 'favicon']);
 
 // This is the main task for production - deploys the code with minification
-gulp.task('deploy', [
-	'assets',
-	'sass',
-	'templates',
-	'browserify'
-]);
+gulp.task('deploy', ['assets', 'sass', 'templates', 'browserify']);
 
 // Unlike deploy which is production ready, this command builds with source maps
 gulp.task('build', ['deploy']);

@@ -1,8 +1,5 @@
 var React = require('react');
 
-var AppStateStore = require('../stores/AppStateStore');
-var BlogActions = require('../actions/BlogActions');
-
 // Debug
 var debug = require('debug')('blog:server');
 

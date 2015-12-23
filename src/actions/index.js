@@ -7,8 +7,14 @@ var labels = {
 	// Fired when a user navigates to a new page
 	NEW_PAGE: "NEW_PAGE",
 
-	// Fired when the sections in the app need to be updated.
-	UPDATE_SECTIONS: "UPDATE_SECTIONS"
+	// Fired when the sections in the app are updated.
+	FETCH_SECTIONS: "FETCH_SECTIONS",
+
+	// Fired when the user logs in successfully
+	LOGGED_IN: "LOGGED_IN",
+
+	// Fired when the user logs out successfully
+	LOGGED_OUT: "LOGGED_OUT"
 }
 
 module.exports = labels;

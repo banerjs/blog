@@ -1,7 +1,7 @@
 var $ = require('jquery');
 var React = require('react');
 
-var AppStateStore = require('../stores/AppStateStore');
+var BlogStateStore = require('../stores/BlogStateStore');
 var BlogActions = require('../actions/BlogActions');
 
 // Debug
@@ -38,15 +38,15 @@ var Navigation = React.createClass({
 	 *	}
 	 */
 	getInitialState: function() {
-		var store = this.context.getStore(AppStateStore);
+		var store = this.context.getStore(BlogStateStore);
 		return this._generateState(store);
 	},
 
 	/**
 	 * This method creates the state object for this component from the sections
-	 * returned by AppStateStore
+	 * returned by BlogStateStore
 	 *
-	 * @param store Pointer to AppStateStore
+	 * @param store Pointer to BlogStateStore
 	 * @returns The state object
 	 */
 	_generateState: function(store) {
@@ -59,10 +59,10 @@ var Navigation = React.createClass({
 	},
 
 	/**
-	 * Handler for events from the AppStateStore's change events
+	 * Handler for events from the BlogStateStore's change events
 	 */
 	_onStoreChanged: function() {
-		var store = this.context.getStore(AppStateStore);
+		var store = this.context.getStore(BlogStateStore);
 		this.setState(this._generateState(store));
 	},
 
@@ -81,7 +81,7 @@ var Navigation = React.createClass({
 		var Hammer = require('hammerjs');
 		delete Hammer.defaults.cssProps.userSelect; // Allow users to select text
 
-		var store = this.context.getStore(AppStateStore);
+		var store = this.context.getStore(BlogStateStore);
 		var history = this.context.history;
 		var state = this.state;
 
@@ -229,19 +229,19 @@ var Navigation = React.createClass({
 	},
 
 	/**
-	 * Register the handler with the AppStateStore when the component mounts
+	 * Register the handler with the BlogStateStore when the component mounts
 	 */
 	componentDidMount: function() {
-		this.context.getStore(AppStateStore).addChangeListener(this._onStoreChanged);
+		this.context.getStore(BlogStateStore).addChangeListener(this._onStoreChanged);
 		this.context.executeAction(BlogActions.updateSections, {});
 		this._setupNavGestures();
 	},
 
 	/**
-	 * Unregister the handler with the AppStateStore when the component unmounts
+	 * Unregister the handler with the BlogStateStore when the component unmounts
 	 */
 	componentWillUnmount: function() {
-		this.context.getStore(AppStateStore).removeChangeListener(this._onStoreChanged);
+		this.context.getStore(BlogStateStore).removeChangeListener(this._onStoreChanged);
 	},
 
 	/**
@@ -255,7 +255,7 @@ var Navigation = React.createClass({
 		this._listenAndHide();
 
 		// Fetch the store and render the nav section
-		var store = this.context.getStore(AppStateStore);
+		var store = this.context.getStore(BlogStateStore);
 		return (
 			<table className="hidden-xs" style={{maxWidth: "100%", width: "100%", verticalAlign: "middle"}}>
 			<tbody>

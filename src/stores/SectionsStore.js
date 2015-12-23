@@ -13,16 +13,16 @@ var debug = require('debug')('blog:server');
  */
 var initHandlers = function() {
 	var handlers = {};
-	handlers[labels.FETCH_POST] = 'handleFetchedPost';
+	handlers[labels.FETCH_SECTIONS] = 'handleFetchedSections';
 	return handlers;
 };
 
 // First create the store prototype by extending the BaseStore prototype
-var BlogStore = createStore({
+var SectionsStore = createStore({
 	/**
 	 * Recommended Fluxible field for name of the store
 	 */
-	storeName: 'BlogStore',
+	storeName: 'SectionsStore',
 
 	/**
 	 * Handlers for the different actions
@@ -33,46 +33,30 @@ var BlogStore = createStore({
 	 * Initialize the store
 	 */
 	initialize: function(dispatcher) {
-		// Of the form { url: { title, html, css } }
-		this._posts = {};
+		// Of the form [{name, url, slides[]}, ...]
+		this._sections = [];
 	},
 
 	/**
-	 * This method handles the completion of the 'FETCH_POST' action
+	 * This method handles the completion of the 'FETCH_SECTIONS' action
 	 *
-	 * @param data The data returned from fetching the post. It has 2 fields,
-	 *	data.url and data.post
+	 * @param data The data returned from fetching the sections. It is stored as
+	 *	is
 	 */
-	handleFetchedPost: function(data) {
-		this._posts[data.url] = data.post;
+	handleFetchedSections: function(data) {
+		this._sections = data;
 		this.emitChange();
 	},
 
 	/**
-	 * Return the title for a post at a given URL
+	 * Return the sections that are part of this app along with all the
+	 * associated metadata
 	 *
-	 * @param url
+	 * @returns The an array of objects, each containing the details of the
+	 *	sections
 	 */
-	getPostTitle: function(url) {
-		return this._posts[url] && this._posts[url].title;
-	},
-
-	/**
-	 * Return the HTML for a post at a given URL
-	 *
-	 * @param url
-	 */
-	getPostHTML: function(url) {
-		return this._posts[url] && this._posts[url].html;
-	},
-
-	/**
-	 * Return the name of a CSS file associated with a given post URL
-	 *
-	 * @param url
-	 */
-	getPostCSS: function(url) {
-		return this._posts[url] && this._posts[url].css;
+	getSections: function() {
+		return this._sections;
 	},
 
 	/**
@@ -80,7 +64,7 @@ var BlogStore = createStore({
 	 */
 	dehydrate: function() {
 		return {
-			posts: this._posts
+			sections: this._sections
 		};
 	},
 
@@ -88,8 +72,8 @@ var BlogStore = createStore({
 	 * API method to deserialize data at the client
 	 */
 	rehydrate: function(state) {
-		this._posts = state.posts;
+		this._sections = state.sections;
 	}
 });
 
-module.exports = BlogStore;
+module.exports = SectionsStore;

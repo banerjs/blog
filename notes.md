@@ -1,7 +1,8 @@
 # To start
 
 - Start from Windows: `docker-machine.exe env --shell powershell default | Invoke-Expression`
-- Start a new web container with the following command: `docker run -i -t -v /c/Users/Siddhartha/Documents/Code/blog/:/usr/src/ -w /usr/src/ -p 8000:8000 --rm node bash`
+- Start a new web container with the following command: `docker run --name blog -i -t -v /c/Users/Siddhartha/Documents/Code/blog/:/usr/src/ -w /usr/src/ -p 8000:8000 --rm node:4 bash`
+  - Note that problems with browserify and ejsify for auth0 means that we have to use node 4.x
 - Start a new postgres container `docker run --name blog-pg -d -v /tmp/blog/:/var/lib/postgresql/data -P -e POSTGRES_PASSWORD=a postgres`
   - Note the container uses the folder /tmp in the virtual machine as a data directory. This is not accessible from windows
   - Use `docker network inspect bridge` to figure out the IP address of the new container
@@ -56,19 +57,18 @@
 
 - Animations
 - Migrate to ES6
-- Common CSS for different sections should go into a sections folder in CSS. Files in here should be included using SASS for the individual pages.
 - Create Unit Tests
 - Add in Timeouts to the fetch code. While Promise.race is a viable option, there already exists express middleware capable of doing this
-- Error Pages. Display error page when XHR fails
 - Help page for keyboard shortcuts
 - Migrate to OpenShift and scalable infrastructure
 - Configure the docker-compose files necessary to start all the different containers at the same time
-- Variable inserted into the HTML of a post for the various parts of it - date
+- Variable inserted into the HTML of a post for the various dynamic parts, eg: date
 
 # Todo
 
 - Create a way to initialize data sources
-  - Alternatively, create a way to add in the data source
-- Flesh out the routes
-- Setup passport and sessions
-  - Choose between Google, MSFT, and local logins
+- Create a way to add to the data source
+- Complete the admin section
+  - Allow only my user id to edit
+  - Allow editing of sections
+  - Allow editing of posts

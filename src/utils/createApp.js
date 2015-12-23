@@ -1,11 +1,15 @@
 var Fluxible = require('fluxible');
-var BlogStore = require('./stores/BlogStore');
-var AppStateStore = require('./stores/AppStateStore');
+var PageStore = require('../stores/PageStore');
+var SectionsStore = require('../stores/SectionsStore');
+var BlogStateStore = require('../stores/BlogStateStore');
+var AdminStateStore = require('../stores/AdminStateStore');
 
 var createApp = function(dataSource, mailSource, fluxibleOptions) {
 	var app = new Fluxible(fluxibleOptions);
-	app.registerStore(BlogStore);
-	app.registerStore(AppStateStore);
+	app.registerStore(PageStore);
+	app.registerStore(SectionsStore);
+	app.registerStore(BlogStateStore);
+	app.registerStore(AdminStateStore);
 
 	// Plug the data source in appropriately
 	app.plug({

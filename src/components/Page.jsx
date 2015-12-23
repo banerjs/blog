@@ -2,7 +2,7 @@ var $ = require('jquery');
 var React = require('react');
 
 var BlogActions = require('../actions/BlogActions');
-var BlogStore = require('../stores/BlogStore');
+var PageStore = require('../stores/PageStore');
 
 // Debug
 var debug = require('debug')('blog:server');
@@ -40,17 +40,17 @@ var Page = React.createClass({
 	 *	}
 	 */
 	getInitialState: function() {
-		var store = this.context.getStore(BlogStore);
+		var store = this.context.getStore(PageStore);
 		return {
 			html: store.getPostHTML(this.props.url)
 		};
 	},
 
 	/**
-	 * Handler for events from the BlogStore's change events
+	 * Handler for events from the PageStore's change events
 	 */
 	_onStoreChanged: function() {
-		var store = this.context.getStore(BlogStore);
+		var store = this.context.getStore(PageStore);
 		this.setState({ html: store.getPostHTML(this.props.url) });
 	},
 
@@ -77,18 +77,18 @@ var Page = React.createClass({
 	},
 
 	/**
-	 * Register the handler with the BlogStore when the component mounts
+	 * Register the handler with the PageStore when the component mounts
 	 */
 	componentDidMount: function() {
-		this.context.getStore(BlogStore).addChangeListener(this._onStoreChanged);
+		this.context.getStore(PageStore).addChangeListener(this._onStoreChanged);
 		this._disableAnchors(); // Also disable all anchor tags
 	},
 
 	/**
-	 * Unregister the handler with the BlogStore when the component unmounts
+	 * Unregister the handler with the PageStore when the component unmounts
 	 */
 	componentWillUnmount: function() {
-		this.context.getStore(BlogStore).removeChangeListener(this._onStoreChanged);
+		this.context.getStore(PageStore).removeChangeListener(this._onStoreChanged);
 		this._removeHandlers(); // Also remove all event handlers on the page
 	},
 
@@ -96,7 +96,7 @@ var Page = React.createClass({
 	 * Ensure that the component updates when there are *new* props
 	 */
 	componentWillReceiveProps: function(nextProps) {
-		var store = this.context.getStore(BlogStore);
+		var store = this.context.getStore(PageStore);
 		this.setState({ html: store.getPostHTML(nextProps.url) });
 	},
 

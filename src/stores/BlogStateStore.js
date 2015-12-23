@@ -6,10 +6,10 @@ var labels = require('../actions');
 var debug = require('debug')('blog:server');
 
 // Constants
-DEFAULT_TITLE = "Siddhartha Banerjee";
-DEFAULT_TITLE_SEPARATOR = " | ";
-DEFAULT_PAGE_CSS = "banerjs.css";
-DEFAULT_PAGE_CSS_PATH = "/public/css/";
+var DEFAULT_TITLE = "Siddhartha Banerjee";
+var DEFAULT_TITLE_SEPARATOR = " | ";
+var DEFAULT_PAGE_CSS = "blog.css";
+var DEFAULT_PAGE_CSS_PATH = "/public/css/";
 
 /**
  * Helper function to generate the link tag associated with the CSS for this
@@ -58,16 +58,16 @@ var initHandlers = function() {
 	var handlers = {};
 	handlers[labels.FETCH_POST] = 'handleFetchedPost';
 	handlers[labels.NEW_PAGE] = 'handleNewPage';
-	handlers[labels.UPDATE_SECTIONS] = 'handleUpdateSections';
+	handlers[labels.FETCH_SECTIONS] = 'handleFetchedSections';
 	return handlers;
 };
 
 // First create the store prototype by extending the BaseStore prototype
-var AppStateStore = createStore({
+var BlogStateStore = createStore({
 	/**
 	 * Recommended Fluxible field for name of the store
 	 */
-	storeName: 'AppStateStore',
+	storeName: 'BlogStateStore',
 
 	/**
 	 * Handlers for the different actions
@@ -84,7 +84,7 @@ var AppStateStore = createStore({
 	 *	  sections [{[]}] }
 	 */
 	initialize: function(dispatcher) {
-		this._appState = {};
+		this._blogState = {};
 	},
 
 	/**
@@ -95,9 +95,9 @@ var AppStateStore = createStore({
 	 *	data.url and data.post
 	 */
 	handleFetchedPost: function(data) {
-		if (data.url === this._appState.current_url) {
-			this._appState.page_css = data.post.css;
-			this._appState.page_title = data.post.title;
+		if (data.url === this._blogState.current_url) {
+			this._blogState.page_css = data.post.css;
+			this._blogState.page_title = data.post.title;
 			this.emitChange();
 		}
 	},
@@ -111,64 +111,76 @@ var AppStateStore = createStore({
 	handleNewPage: function(data) {
 		// If the sections have been defined, save the old location of the user
 		// and then get the new user locations
-		if (!!this._appState.sections) {
+		if (!!this._blogState.sections) {
 			// Create the saved locations if they don't exist
-			if (!this._appState.saved_locations) {
-				this._appState.saved_locations = {};
-				for (i = 0; i < this._appState.sections.length; i++) {
-					this._appState.saved_locations[this._appState.sections[i].name] = 0;
+			if (!this._blogState.saved_locations) {
+				this._blogState.saved_locations = {};
+				for (i = 0; i < this._blogState.sections.length; i++) {
+					this._blogState.saved_locations[this._blogState.sections[i].name] = 0;
 				}
 			}
 
 			// Update the pointers to the states
-			var indices = findSectionSlide(data.url, this._appState.sections);
+			var indices = findSectionSlide(data.url, this._blogState.sections);
 			if (indices[0] === null || indices[1] === null) {
 				var error = new Error("The sections are unaware of this URL");
+				error.status = 404;
 				throw error;
 			}
-			this._appState.saved_locations[this._appState.sections[indices[0]].name] = indices[1];
-			this._appState.current_idx = indices;
+			this._blogState.saved_locations[this._blogState.sections[indices[0]].name] = indices[1];
+			this._blogState.current_idx = indices;
 		}
 
-		this._appState.current_url = data.url;
-		this._appState.page_css = data.css;
-		this._appState.page_title = data.title;
+		this._blogState.current_url = data.url;
+		this._blogState.page_css = data.css;
+		this._blogState.page_title = data.title;
 		this.emitChange();
 	},
 
 	/**
-	 * This method handles the completion of an 'UPDATE_SECTIONS' action
+	 * This method handles the completion of an 'FETCH_SECTIONS' action
 	 *
 	 * @param data The new sections that are in the app
 	 */
-	handleUpdateSections: function(data) {
-		this._appState.sections = data;
+	handleFetchedSections: function(data) {
+		this._blogState.sections = data.map(function(section) {
+			return {
+				name: section.name,
+				url: section.url,
+				slides: section.slides
+			};
+		});
+		var sections = this._blogState.sections; // Create an alias
 
 		// Create the saved location and current indices if they don't exist
-		if (!this._appState.current_idx) {
-			this._appState.current_idx = findSectionSlide(this._appState.current_url, data);
+		if (!this._blogState.current_idx) {
+			this._blogState.current_idx = findSectionSlide(this._blogState.current_url, sections);
 		}
 
-		if (!this._appState.saved_locations) {
-			this._appState.saved_locations = {};
-			for (i = 0; i < data.length; i++) {
-				this._appState.saved_locations[data[i].name] = 0;
+		if (!this._blogState.saved_locations) {
+			this._blogState.saved_locations = {};
+			for (i = 0; i < sections.length; i++) {
+				this._blogState.saved_locations[sections[i].name] = 0;
 			}
-			this._appState.saved_locations[data[this._appState.current_idx[0]].name] = this._appState.current_idx[1];
-		}
 
+			// Update the saved location to something we know only if  this is a
+			// known URL
+			if (this._blogState.current_idx[0] !== null && this._blogState.current_idx[1] !== null) {
+				this._blogState.saved_locations[sections[this._blogState.current_idx[0]].name] = this._blogState.current_idx[1];
+			}
+		}
 
 		// Update the saved_location pointers if the sections have been changed
-		for (i = 0; i < data.length; i++) {
+		for (i = 0; i < sections.length; i++) {
 			// Add a default of 0 if a section has been added
-			if (!this._appState.saved_locations[data[i].name]) {
-				this._appState.saved_locations[data[i].name] = 0;
+			if (!this._blogState.saved_locations[sections[i].name]) {
+				this._blogState.saved_locations[sections[i].name] = 0;
 			}
 
 			// Reset to default if the state is at a section that no longer
 			// exists
-			if (this._appState.saved_locations[data[i].name] >= data[i].slides.length) {
-				this._appState.saved_locations[data[i].name] = 0;
+			if (this._blogState.saved_locations[sections[i].name] >= sections[i].slides.length) {
+				this._blogState.saved_locations[sections[i].name] = 0;
 			}
 
 			// We don't care if a section has been deleted
@@ -183,7 +195,7 @@ var AppStateStore = createStore({
 	 * @returns url
 	 */
 	getCurrentURL: function() {
-		return this._appState.current_url;
+		return this._blogState.current_url;
 	},
 
 	/**
@@ -193,10 +205,10 @@ var AppStateStore = createStore({
 	 */
 	getPageTitle: function() {
 		// Default title
-		if (!this._appState.page_title) {
+		if (!this._blogState.page_title) {
 			return DEFAULT_TITLE;
 		}
-		return this._appState.page_title + DEFAULT_TITLE_SEPARATOR + DEFAULT_TITLE;
+		return this._blogState.page_title + DEFAULT_TITLE_SEPARATOR + DEFAULT_TITLE;
 	},
 
 	/**
@@ -205,10 +217,10 @@ var AppStateStore = createStore({
 	 * @returns HTML for the custom CSS associated with a page
 	 */
 	getPageCSSTag: function() {
-		if (!this._appState.page_css) {
+		if (!this._blogState.page_css) {
 			return createCSSLinkTag(DEFAULT_PAGE_CSS_PATH + DEFAULT_PAGE_CSS);
 		}
-		return createCSSLinkTag(DEFAULT_PAGE_CSS_PATH + this._appState.page_css);
+		return createCSSLinkTag(DEFAULT_PAGE_CSS_PATH + this._blogState.page_css);
 	},
 
 	/**
@@ -217,7 +229,7 @@ var AppStateStore = createStore({
 	 * @returns Sections as an array of objects
 	 */
 	getSections: function() {
-		return this._appState.sections;
+		return this._blogState.sections;
 	},
 
 	/**
@@ -226,15 +238,15 @@ var AppStateStore = createStore({
 	 * @returns URL of the slide to the left if present. Else null
 	 */
 	getLeftURL: function() {
-		if (!this._appState.sections
-				|| !this._appState.saved_locations
-				|| !this._appState.current_idx
-				|| this._appState.current_idx[0] === 0) {
+		if (!this._blogState.sections
+				|| !this._blogState.saved_locations
+				|| !this._blogState.current_idx
+				|| this._blogState.current_idx[0] === 0) {
 			return null;
 		}
-		var sectionIdx = this._appState.current_idx[0] - 1;
-		var slideIdx = this._appState.saved_locations[this._appState.sections[sectionIdx].name];
-		return this._appState.sections[sectionIdx].slides[slideIdx];
+		var sectionIdx = this._blogState.current_idx[0] - 1;
+		var slideIdx = this._blogState.saved_locations[this._blogState.sections[sectionIdx].name];
+		return this._blogState.sections[sectionIdx].slides[slideIdx];
 	},
 
 	/**
@@ -243,15 +255,15 @@ var AppStateStore = createStore({
 	 * @returns URL of the slide to the right if present. Else null
 	 */
 	getRightURL: function() {
-		if (!this._appState.sections
-				|| !this._appState.saved_locations
-				|| !this._appState.current_idx
-				|| this._appState.current_idx[0] >= this._appState.sections.length-1) {
+		if (!this._blogState.sections
+				|| !this._blogState.saved_locations
+				|| !this._blogState.current_idx
+				|| this._blogState.current_idx[0] >= this._blogState.sections.length-1) {
 			return null;
 		}
-		var sectionIdx = this._appState.current_idx[0] + 1;
-		var slideIdx = this._appState.saved_locations[this._appState.sections[sectionIdx].name];
-		return this._appState.sections[sectionIdx].slides[slideIdx];
+		var sectionIdx = this._blogState.current_idx[0] + 1;
+		var slideIdx = this._blogState.saved_locations[this._blogState.sections[sectionIdx].name];
+		return this._blogState.sections[sectionIdx].slides[slideIdx];
 	},
 
 	/**
@@ -260,15 +272,15 @@ var AppStateStore = createStore({
 	 * @returns URL of the slide above if present. Else null
 	 */
 	getUpURL: function() {
-		if (!this._appState.sections
-				|| !this._appState.saved_locations
-				|| !this._appState.current_idx
-				|| this._appState.current_idx[1] === 0) {
+		if (!this._blogState.sections
+				|| !this._blogState.saved_locations
+				|| !this._blogState.current_idx
+				|| this._blogState.current_idx[1] === 0) {
 			return null;
 		}
-		var sectionIdx = this._appState.current_idx[0];
-		var slideIdx = this._appState.current_idx[1] - 1;
-		return this._appState.sections[sectionIdx].slides[slideIdx];
+		var sectionIdx = this._blogState.current_idx[0];
+		var slideIdx = this._blogState.current_idx[1] - 1;
+		return this._blogState.sections[sectionIdx].slides[slideIdx];
 	},
 
 	/**
@@ -277,16 +289,16 @@ var AppStateStore = createStore({
 	 * @returns URL of the slide below if present. Else null
 	 */
 	getDownURL: function() {
-		if (!this._appState.sections
-				|| !this._appState.saved_locations
-				|| !this._appState.current_idx
-				|| (this._appState.current_idx[1]
-					>= this._appState.sections[this._appState.current_idx[0]].slides.length-1)) {
+		if (!this._blogState.sections
+				|| !this._blogState.saved_locations
+				|| !this._blogState.current_idx
+				|| (this._blogState.current_idx[1]
+					>= this._blogState.sections[this._blogState.current_idx[0]].slides.length-1)) {
 			return null;
 		}
-		var sectionIdx = this._appState.current_idx[0];
-		var slideIdx = this._appState.current_idx[1] + 1;
-		return this._appState.sections[sectionIdx].slides[slideIdx];
+		var sectionIdx = this._blogState.current_idx[0];
+		var slideIdx = this._blogState.current_idx[1] + 1;
+		return this._blogState.sections[sectionIdx].slides[slideIdx];
 	},
 
 	/**
@@ -294,7 +306,7 @@ var AppStateStore = createStore({
 	 */
 	dehydrate: function() {
 		return {
-			appState: this._appState
+			blogState: this._blogState
 		};
 	},
 
@@ -302,8 +314,8 @@ var AppStateStore = createStore({
 	 * API method to deserialize data at the client
 	 */
 	rehydrate: function(state) {
-		this._appState = state.appState;
+		this._blogState = state.blogState;
 	}
 });
 
-module.exports = AppStateStore;
+module.exports = BlogStateStore;

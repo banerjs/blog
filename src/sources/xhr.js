@@ -2,7 +2,6 @@
 var $ = require('jquery');
 var Promise = require('promise');
 
-// TODO: Get these URL values from a routes.js file
 var API_SERVER_PREFIX = '/_';
 var SECTIONS_URL = '/sections';
 

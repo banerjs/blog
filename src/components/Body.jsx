@@ -1,7 +1,7 @@
 var $ = require('jquery');
 var React = require('react');
 
-var AppStateStore = require('../stores/AppStateStore');
+var BlogStateStore = require('../stores/BlogStateStore');
 var BlogActions = require('../actions/BlogActions');
 
 // Debug
@@ -36,7 +36,7 @@ var Body = React.createClass({
 	 *	}
 	 */
 	getInitialState: function() {
-		var store = this.context.getStore(AppStateStore);
+		var store = this.context.getStore(BlogStateStore);
 		return {
 			url: store.getCurrentURL(),
 			title: store.getPageTitle(),
@@ -67,10 +67,10 @@ var Body = React.createClass({
 	},
 
 	/**
-	 * Handler for events from the AppStateStore's change events
+	 * Handler for events from the BlogStateStore's change events
 	 */
 	_onStoreChanged: function() {
-		var store = this.context.getStore(AppStateStore);
+		var store = this.context.getStore(BlogStateStore);
 		if (this.state.url !== store.getCurrentURL()
 				|| this.state.title !== store.getPageTitle()
 				|| this.state.css !== store.getPageCSSTag()) {
@@ -83,29 +83,17 @@ var Body = React.createClass({
 	},
 
 	/**
-	 * Register the handler with the AppStateStore when the component mounts.
-	 * Since this only happens on the client, we can safely dereference history
+	 * Register the handler with the BlogStateStore when the component mounts.
 	 */
 	componentDidMount: function() {
-		this.context.getStore(AppStateStore).addChangeListener(this._onStoreChanged);
-
-		// create a pointer to the context object before defining a history
-		// listener
-		var context = this.context;
-	    this.context.history.listenBefore(function(location) {
-	    	context.executeAction(BlogActions.moveToNewPage, {
-	    		url: location.pathname
-	    	});
-		 	context.executeAction(BlogActions.updateSections, {});
-	    	return true;
-	    });
+		this.context.getStore(BlogStateStore).addChangeListener(this._onStoreChanged);
 	},
 
 	/**
-	 * Unregister the handler with the AppStateStore when the component unmounts
+	 * Unregister the handler with the BlogStateStore when the component unmounts
 	 */
 	componentWillUnmount: function() {
-		this.context.getStore(AppStateStore).removeChangeListener(this._onStoreChanged);
+		this.context.getStore(BlogStateStore).removeChangeListener(this._onStoreChanged);
 	},
 
 	/**

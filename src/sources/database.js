@@ -56,8 +56,8 @@ var DATABASE = {
 					}
 					resolve(JSON.parse(data));
 				});
-			} catch (err) {
-				reject(err);
+			} catch (e) {
+				reject(e);
 			}
 		});
 	}
