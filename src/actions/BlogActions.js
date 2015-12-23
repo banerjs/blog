@@ -19,6 +19,14 @@ var BlogActions = {
 		return context.getDataSource()
 					.getPostFromUrl(payload.url)
 					.then(function(post) {
+						// Check that the post returned is not empty
+						if (!post || (!post.html && !post.title && !post.css)) {
+							var err = new Error("No matching posts were found");
+							err.status = 404;
+							throw err;
+						}
+
+						// Populate the store if the post is not empty
 						var data = {
 							url: payload.url,
 							post: post

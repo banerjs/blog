@@ -31,14 +31,7 @@ var DATABASE = {
 	 * @return A promise that can be acted upon if this fetch is successful
 	 */
 	getPostFromUrl: function(url) {
-		return pg.one("SELECT * FROM posts WHERE url = $1;", url)
-					.catch(function(err) {
-						if (!!err.message
-								&& err.message.toLowerCase().indexOf("no data") > -1) {
-							err.status = 404;
-						}
-						throw err;
-					});
+		return pg.oneOrNone("SELECT * FROM posts WHERE url = $1;", url);
 	},
 
 	/**
