@@ -58,9 +58,11 @@
 - Templating of the HTML stored in the DB
 - Structure editing similar to Trello
 - Better routing in the Admin section (Routing using constants in the Actions is distressing)
+- Django style URLs and URL processing
 
 # Todo
 
+- Fix the CSS for the navigation section
 - Create a way to initialize data sources
 - Create a way to add to the data source
 - Complete the admin section

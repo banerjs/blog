@@ -57,7 +57,7 @@ var NavigationSection = React.createClass({
 		var sectionLinks = this.props.sections.map(function(section, idx) {
 			return (
 				<a key={idx}
-					 className={(this.state.mouseOnHome) ? "" : "hidden"}
+					 className={"row " + ((this.state.mouseOnHome) ? "" : "hidden")}
 					 style={{color: "inherit"}}
 					 href={section.url}>
 					<span>{section.name}</span>
@@ -70,7 +70,7 @@ var NavigationSection = React.createClass({
 				 onMouseEnter={this._showSections}
 				 onMouseLeave={this._hideSections}>
 				{sectionLinks}
-				<a href={this.props.home} style={{color: "inherit"}}>
+				<a href={this.props.home} className="row" style={{color: "inherit"}}>
 					<span className={homeClass}></span>
 				</a>
 			</div>
