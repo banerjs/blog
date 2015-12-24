@@ -14,10 +14,9 @@ var Loader = React.createClass({
 			position: "absolute",
 			top: "50%",
 			left: "50%",
-			width: 200,
-			height: 200,
-			marginTop: -100,
-			marginLeft: -100
+			msTransform: "translateX(-50%) translateY(-50%)",
+			WebkitTransform: "translateX(-50%) translateY(-50%)",
+			transform: "translate(-50%, -50%)"
 		}
 		return (
 			<div className="text-center" style={style}>

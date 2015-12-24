@@ -25,6 +25,7 @@ var libs = [
 	"auth0-lock",
 	"debug",
     "fluxible",
+    "form-serializer",
     "hammerjs",
     "history",
     "jquery",
@@ -33,7 +34,8 @@ var libs = [
     "promise",
     "react",
     "react-dom",
-    "serialize-javascript"
+    "serialize-javascript",
+    "validator"
 ];
 
 // Define task helper variables and functions

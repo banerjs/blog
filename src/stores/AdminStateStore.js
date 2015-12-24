@@ -17,6 +17,9 @@ var initHandlers = function() {
 	handlers[labels.LOGGED_IN] = 'handleLoggedIn';
 	handlers[labels.LOGGED_OUT] = 'handleLoggedOut';
 	handlers[labels.LOAD_CSRF] = 'handleLoadCSRF';
+	handlers[labels.EDIT_STRUCTURE] = 'handleEditStructure';
+	handlers[labels.EDIT_SECTION] = 'handleEditSection';
+	handlers[labels.EDIT_PAGE] = 'handleEditPage';
 	return handlers;
 };
 
@@ -73,6 +76,39 @@ var AdminStateStore = createStore({
 	handleLoggedOut: function(data) {
 		this._idToken = null;
 		this._adminState = {};
+		this.emitChange();
+	},
+
+	/**
+	 * This method stores the fact that the user wishes to edit all sections,
+	 * a.k.a the structure, in the admin portal
+	 *
+	 * @param data The data for this transition. It's empty
+	 */
+	handleEditStructure: function(data) {
+		this._adminState = {};
+		this.emitChange();
+	},
+
+	/**
+	 * This method stores the fact that the user wishes to edit the pages of a
+	 * desired section in the admin portal
+	 *
+	 * @param data The details of the section in question
+	 */
+	handleEditSection: function(data) {
+		this._adminState = { section: data }
+		this.emitChange();
+	},
+
+	/**
+	 * This method stores the fact that the user wishes to edit a particular
+	 * page in the admin portal
+	 *
+	 * @param data The details of the page and section in question
+	 */
+	handleEditPage: function(data) {
+		this._adminState = data;
 		this.emitChange();
 	},
 

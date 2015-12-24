@@ -33,7 +33,6 @@
 - GIF Creation - [Spiffygif](http://spiffygif.com/)
 - React Starter [Docs](https://github.com/webpack/react-starter/blob/master/NOTES/HowStuffWorks.md)
 - Gulp Starters - [Gist](https://gist.github.com/mlouro/8886076), [Boilerplate](https://github.com/christianalfoni/react-app-boilerplate/blob/master/gulpfile.js)
-- Tried using [gulp-reacss](https://github.com/yodairish/gulp-reacss). Failed. I believe the API is not fully fleshed out yet. However, it does give me the means of trying to use the [css](https://github.com/reworkcss/css) library should I desire to do so.
 - Setting up PG - [node-postgres](https://github.com/brianc/node-postgres) and [pg-promise](https://github.com/vitaly-t/pg-promise) alongwith [pg-monitor](https://github.com/vitaly-t/pg-monitor). The reason I'm not using firebase/mongo are because of pricing, lookup latencies and storage restrictions when deploying on Heroku. On Openshift, this would not be a problem, but the setup there takes longer.
 - For posterity's sake, here were a few data sources that I was considering a while back:
   - [Firebase](https://www.firebase.com/) - Excellent API and libraries
@@ -44,16 +43,10 @@
 - Free Stock Photos - [Unsplash](https://unsplash.com/)
 - Online Image Compression - [CompressJPEG](http://compressjpeg.com/) and [TinyPNG](https://tinypng.com/)
 - Glyphs from [WebHostingHub](http://www.webhostinghub.com/glyphs/)
-- [Paletton](http://paletton.com/) allows for an easy way to generate colour palettes. The colours that go with the text colour for the Readable Bootstrap theme are:
-  - #030303
-  - #020202
-  - #646464
-  - #393939
-  - #020101
 - [Pixlr](https://pixlr.com/) is an excellent online image editing platform
 - [Fluxible](http://fluxible.io/) seems like a promising place for creating a Flux data flow. [This](https://github.com/yahoo/fluxible/blob/master/docs/blog/2014-11-06-bringing-flux-to-the-server.md) seems like a decent tutorial on using Fluxible
 
-# Feature Requests
+# Features
 
 - Animations
 - Migrate to ES6
@@ -62,13 +55,20 @@
 - Help page for keyboard shortcuts
 - Migrate to OpenShift and scalable infrastructure
 - Configure the docker-compose files necessary to start all the different containers at the same time
-- Variable inserted into the HTML of a post for the various dynamic parts, eg: date
+- Templating of the HTML stored in the DB
+- Structure editing similar to Trello
+- Better routing in the Admin section (Routing using constants in the Actions is distressing)
 
 # Todo
 
 - Create a way to initialize data sources
 - Create a way to add to the data source
 - Complete the admin section
-  - Allow only my user id to edit
   - Allow editing of sections
+    - Create XHR endpoints for the edits
+    - Hook up the XHR endpoints to the data sources
   - Allow editing of posts
+    - Complete the portal to edit the page
+    - Create the UI for editing the page
+    - Create the XHR endpoints for the edits
+    - Hook up the endpoints to the data sources

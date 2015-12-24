@@ -49,6 +49,15 @@ var PageStore = createStore({
 	},
 
 	/**
+	 * Return the post at a given URL
+	 *
+	 * @param url
+	 */
+	getPost: function(url) {
+		return this._posts[url];
+	},
+
+	/**
 	 * Return the title for a post at a given URL
 	 *
 	 * @param url

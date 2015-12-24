@@ -28,7 +28,9 @@ fluxibleApp.rehydrate(dehydratedState, function(err, context) {
     // Initialize the routing
     var history = createHistory();
     history.listenBefore(function(location) {
-        console.log(location.pathname);
+        context.executeAction(AdminActions.moveToNewPage, {
+            url: location.pathname
+        });
         return true;
     });
 

@@ -33,8 +33,11 @@ var SectionsStore = createStore({
 	 * Initialize the store
 	 */
 	initialize: function(dispatcher) {
-		// Of the form [{name, url, slides[]}, ...]
+		// Of the form [{name, url, priority, slides[]}, ...]
 		this._sections = [];
+
+		// Of the form { url: section }
+		this._urlMap = {};
 	},
 
 	/**
@@ -45,6 +48,12 @@ var SectionsStore = createStore({
 	 */
 	handleFetchedSections: function(data) {
 		this._sections = data;
+
+		// Generate the URL map of the sections
+		for (var i = 0; i < data.length; i++) {
+			this._urlMap[data[i].url] = data[i];
+		}
+
 		this.emitChange();
 	},
 
@@ -60,11 +69,22 @@ var SectionsStore = createStore({
 	},
 
 	/**
+	 * Return the section object associated with a URL
+	 *
+	 * @param url The URL of the section
+	 * @returns The section object associated with that URL
+	 */
+	getSection: function(url) {
+		return this._urlMap[url];
+	},
+
+	/**
 	 * API method to serialize data to the client
 	 */
 	dehydrate: function() {
 		return {
-			sections: this._sections
+			sections: this._sections,
+			urlMap: this._urlMap
 		};
 	},
 
@@ -73,6 +93,7 @@ var SectionsStore = createStore({
 	 */
 	rehydrate: function(state) {
 		this._sections = state.sections;
+		this._urlMap = state.urlMap;
 	}
 });
 

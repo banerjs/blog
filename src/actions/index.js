@@ -17,7 +17,16 @@ var labels = {
 	LOGGED_OUT: "LOGGED_OUT",
 
 	// Fired when the CSRF token needs to be loaded into the store
-	LOAD_CSRF: "LOAD_CSRF"
+	LOAD_CSRF: "LOAD_CSRF",
+
+	// Fired when the user wants to edit all the sections (structure)
+	EDIT_STRUCTURE: "EDIT_STRUCTURE",
+
+	// Fired when the user wants to edit a particular section
+	EDIT_SECTION: "EDIT_SECTION",
+
+	// Fired when the user wants to edit a particular slide (page)
+	EDIT_PAGE: "EDIT_PAGE"
 }
 
 module.exports = labels;

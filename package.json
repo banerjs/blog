@@ -40,7 +40,6 @@
     "gulp-util": "^3.0.7",
     "nodemon": "^1.8.1",
     "packageify": "^0.2.3",
-    "pg-monitor": "^0.3.4",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.6.0"
   },
@@ -56,6 +55,7 @@
     "express-jwt": "^3.3.0",
     "express-session": "^1.12.1",
     "fluxible": "^1.0.3",
+    "form-serializer": "^2.5.0",
     "hammerjs": "^2.0.4",
     "history": "^1.12.0",
     "jquery": "^2.1.4",

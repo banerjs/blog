@@ -2,8 +2,11 @@
 var Promise = require('promise');
 var labels = require('./index');
 var constants = require('../utils/constants');
+var maxSplit = require('../utils/maxSplit');
 
 var BlogActions = require('./BlogActions');
+var SectionsStore = require('../stores/SectionsStore');
+var PageStore = require('../stores/PageStore');
 
 // Debug
 var debug = require('debug')('blog:server');
@@ -42,6 +45,97 @@ var AdminActions = {
 	loadCSRF: function(context, payload) {
 		return new Promise(function(resolve, reject) {
 			context.dispatch(labels.LOAD_CSRF, payload);
+			resolve(true);
+		});
+	},
+
+	/**
+	 * This action figures out the user's desires from the URL that's being
+	 * pushed on to window, and then delegates the actual update of the UI to
+	 * the various other actions in this object. Essentially, this is the router
+	 * for the admin section
+	 *
+	 * @param context The actionContext from Fluxible
+	 * @param payload An object containing the URL that is being redirected to
+	 * @return A Promise that resolves to true if the action succeeded
+	 */
+	moveToNewPage: function(context, payload) {
+		var promise; 								// Variable to be returned
+		var actions = require('./AdminActions');	// `this` has been bound!
+
+		// First get the check for the logout out of the way
+		if (payload.url === constants.LOGOUT_URL) {
+			return actions.logout(context, {});
+		}
+
+		// Then figure out the sections, etc from the URL
+		var urlParts = maxSplit(payload.url, '/', 5);
+		var sectionsStore = context.getStore(SectionsStore);
+		var pageStore = context.getStore(PageStore);
+
+		// Now call the appropriate actions based on the identified parts
+		if (urlParts.length === 3) {				// Visit the home page
+			promise = actions.editStructure(context, {});
+		} else if (urlParts.length === 4) {			// Edit a section
+			var section = sectionsStore.getSection('/' + urlParts[3]);
+			if (!section) {
+				promise = new Promise(function(resolve, reject) { reject("Unknown Section!"); });
+			} else {
+				promise = actions.editSection(context, section);
+			}
+		} else if (urlParts.length >= 5) {			// Edit a page
+			var section = sectionsStore.getSection('/' + urlParts[3]);
+			var pageUrl = '/' + urlParts.slice(3).join('/');
+			var slide = pageStore.getPost(pageUrl);
+			if (!slide) {
+				promise = new Promise(function(resolve, reject) { reject("Unknown Page!"); });
+			} else {
+				promise = actions.editPage(context, { section: section, slide: slide });
+			}
+		}
+
+		// Return the promise
+		return promise;
+	},
+
+	/**
+	 * A user uses this action to edit the all the sections (structure)
+	 *
+	 * @param context The actionContext from Fluxible
+	 * @param payload This is empty
+	 * @return A Promise that resolves to true if the action succeeded
+	 */
+	editStructure: function(context, payload) {
+		return new Promise(function(resolve, reject) {
+			context.dispatch(labels.EDIT_STRUCTURE, {});
+			resolve(true);
+		});
+	},
+
+	/**
+	 * A user uses this action to edit the pages within a section
+	 *
+	 * @param context The actionContext from Fluxible
+	 * @param payload The section that the user wants to edit
+	 * @return A Promise that resolves to true if the action succeeded
+	 */
+	editSection: function(context, payload) {
+		return new Promise(function(resolve, reject) {
+			context.dispatch(labels.EDIT_SECTION, payload);
+			resolve(true);
+		});
+	},
+
+	/**
+	 * A user uses this action to edit a particular page
+	 *
+	 * @param context The actionContext from Fluxible
+	 * @param payload The page (& linked section) that the user wants to edit
+	 * @return A Promise that resolves to true if the action succeeded
+	 */
+	editPage: function(context, payload) {
+		return new Promise(function(resolve, reject) {
+			context.dispatch(labels.EDIT_PAGE, payload);
 			resolve(true);
 		});
 	},

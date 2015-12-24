@@ -1,15 +1,16 @@
 var React = require('react');
 
+var constants = require('../utils/constants');
 var AdminActions = require('../actions/AdminActions');
 
 // Debug
 var debug = require('debug')('blog:server');
 
 /**
- * This is a simple button that initiates the logout process from any of the
- * Admin pages
+ * This is a simple button that transitions the user to the structure editing
+ * view in the admin portal
  */
-var Logout = React.createClass({
+var StructureButton = React.createClass({
 	/**
 	 * Required React field for passing context to the components. This context
 	 * is hydrated by ContextWrapper.
@@ -20,8 +21,12 @@ var Logout = React.createClass({
 		history: React.PropTypes.object
 	},
 
-	_logout: function() {
-		this.context.executeAction(AdminActions.logout, {});
+	/**
+	 * Callback function that gets executed when the user wants to return to the
+	 * other sections
+	 */
+	_editStructure: function() {
+		this.context.history.push(constants.ADMIN_HOME_PAGE);
 	},
 
 	/**
@@ -29,11 +34,11 @@ var Logout = React.createClass({
 	 */
 	render: function() {
 		return (
-			<button className={"btn btn-danger"} onClick={this._logout}>
-			{"Logout"}
+			<button className="btn btn-default" onClick={this._editStructure}>
+			{"All Sections"}
 			</button>
 		);
 	}
 });
 
-module.exports = Logout;
+module.exports = StructureButton;

@@ -8,7 +8,7 @@ var AdminActions = require('../actions/AdminActions');
 var debug = require('debug')('blog:server');
 
 // Child Components
-var Login = require('./Login');
+var LoginPage = require('./LoginPage');
 var StructureEditor = require('./StructureEditor');
 var SectionEditor = require('./SectionEditor');
 var PageEditor = require('./PageEditor');
@@ -40,12 +40,10 @@ var Admin = React.createClass({
 	 *		section,
 	 *		slide
 	 *	}
+	 * Initially, we want a force render of the Login page
 	 */
 	getInitialState: function() {
-		var store = this.context.getStore(AdminStateStore);
-		return {
-			logged_in: store.getIsLoggedIn()
-		};
+		return {};
 	},
 
 	/**
@@ -90,9 +88,9 @@ var Admin = React.createClass({
 		var component;
 
 		// Based on the hierarchy in the edit tree, render the components as
-		// needed
+		// needed.
 		if (!this.state.logged_in) {
-			component = <Login />;
+			component = <LoginPage />;
 		} else if (!this.state.section) {
 			component = <StructureEditor />;
 		} else if (!this.state.slide) {

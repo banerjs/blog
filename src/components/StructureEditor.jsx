@@ -8,7 +8,8 @@ var SectionsStore = require('../stores/SectionsStore');
 var debug = require('debug')('blog:server');
 
 // Child Components
-var Logout = require('./Logout');
+var LogoutButton = require('./LogoutButton');
+var InlineSection = require('./InlineSection');
 
 /**
  * This is the component that presents the login form to the application. It
@@ -68,15 +69,12 @@ var StructureEditor = React.createClass({
 	},
 
 	/**
-	 * Subscribe to any changes in the SectionsStore.
-	 *
-	 * Also, push this page's URL onto the history stack and update the page's
+	 * Subscribe to any changes in the SectionsStore. Also, update the page's
 	 * title
 	 */
 	componentDidMount: function() {
 		this.context.getStore(SectionsStore).addChangeListener(this._onStoreChanged);
 
-		this.context.history.push('/admin/sections');
 		document.title = "Sections" + constants.DEFAULT_TITLE_SEPARATOR
 							+ constants.DEFAULT_ADMIN_TITLE;
 	},
@@ -89,14 +87,31 @@ var StructureEditor = React.createClass({
 	},
 
 	/**
-	 * Render the component
+	 * Render the component.
 	 */
 	render: function() {
+		// First create a component for each of the sections
+		var sections = this.state.sections.map(function(section, isx) {
+			return (
+				<InlineSection section={section} key={section.name} />
+			);
+		});
+
+		// Then append the extra add section
+		sections.push(<InlineSection key={"section-add"}/>)
+
 		return (
-			<div className={"container"}>
-				<div className={"page-header text-right"}>
-					<Logout />
+			<div className="container">
+				<div className="page-header">
+					<div className="row">
+					<div className="col-xs-12 text-right">
+						<div className="btn-group">
+						<LogoutButton />
+						</div>
+					</div>
+					</div>
 				</div>
+				{sections}
 			</div>
 		);
 	}
