@@ -30,8 +30,8 @@ insert into posts (url, section, slide, html, css) values
 </section>
 </div>
 ', 'home/home.css');
-insert into posts (url, section, slide, html, css) values
-	('/about', 1, 2, '<article class="container">
+insert into posts (url, title, section, slide, html, css) values
+	('/about', 'About', 1, 2, '<article class="container">
 <section>
 <h1>About</h1>
 <p>Hello! Welcome to my website. As a researcher in training at Georgia Tech, I plan to use the site as a place to share my thoughts and showcase my work. Although this site is my personal message board, I hope to be able to use it to conduct dialogues with others in the not too distant future.</p>

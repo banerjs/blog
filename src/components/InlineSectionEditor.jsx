@@ -49,7 +49,7 @@ var InlineSectionEditor = React.createClass({
 	 */
 	_editSection: function(event) {
 		event.preventDefault();
-		this.context.history.push(constants.ADMIN_HOME_PAGE + this.props.section.url);
+		this.context.history.push(constants.ADMIN_SECTIONS_URL + this.props.section.url);
 	},
 
 	/**

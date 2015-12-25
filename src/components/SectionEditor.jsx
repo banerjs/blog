@@ -7,13 +7,13 @@ var AdminActions = require('../actions/AdminActions');
 var debug = require('debug')('blog:server');
 
 // Child Components
+var InlinePage = require('./InlinePage');
 var StructureButton = require('./StructureButton');
 var LogoutButton = require('./LogoutButton');
 
 /**
- * This is the component that presents the login form to the application. It
- * also handles any necessary authentication before redirecting the user to the
- * appropriate page in the event of a successful login
+ * This is component allows a user to view the pages that are a part of the
+ * section as well as initiate the process of editing them
  */
 var SectionEditor = React.createClass({
 	/**
@@ -45,6 +45,15 @@ var SectionEditor = React.createClass({
 	 * Render the component
 	 */
 	render: function() {
+		// First create the set of all the slides that need to be displayed
+		var pages = !!this.props.section.slides
+						&& this.props.section.slides.map(function(slideUrl, idx) {
+							return (
+								<InlinePage url={slideUrl} key={idx} />
+							);
+						});
+
+		// Then simply return the formatted HTML
 		return (
 			<div className="container">
 				<div className="page-header">
@@ -60,6 +69,9 @@ var SectionEditor = React.createClass({
 					</div>
 					</div>
 				</div>
+				<ul className="list-group">
+					{pages}
+				</ul>
 			</div>
 		);
 	}

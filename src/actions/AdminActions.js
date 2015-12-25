@@ -69,21 +69,24 @@ var AdminActions = {
 		}
 
 		// Then figure out the sections, etc from the URL
-		var urlParts = maxSplit(payload.url, '/', 5);
+		var urlParts = payload.url.split('/');
 		var sectionsStore = context.getStore(SectionsStore);
 		var pageStore = context.getStore(PageStore);
 
 		// Now call the appropriate actions based on the identified parts
-		if (urlParts.length === 3) {				// Visit the home page
+		if (payload.url.indexOf(constants.ADMIN_SECTIONS_URL) === 0
+				&& urlParts.length === 3) {				// Visit the home page
 			promise = actions.editStructure(context, {});
-		} else if (urlParts.length === 4) {			// Edit a section
+		} else if (payload.url.indexOf(constants.ADMIN_SECTIONS_URL) === 0
+					&& urlParts.length >= 4) {			// Edit a section
 			var section = sectionsStore.getSection('/' + urlParts[3]);
 			if (!section) {
 				promise = new Promise(function(resolve, reject) { reject("Unknown Section!"); });
 			} else {
 				promise = actions.editSection(context, section);
 			}
-		} else if (urlParts.length >= 5) {			// Edit a page
+		} else if (payload.url.indexOf(constants.ADMIN_PAGES_URL) === 0
+					&& urlParts.length >= 4) {			// Edit a page
 			var section = sectionsStore.getSection('/' + urlParts[3]);
 			var pageUrl = '/' + urlParts.slice(3).join('/');
 			var slide = pageStore.getPost(pageUrl);
@@ -92,6 +95,8 @@ var AdminActions = {
 			} else {
 				promise = actions.editPage(context, { section: section, slide: slide });
 			}
+		} else {										// Unknown page
+			promise = new Promise(function(resolve, reject) { reject("Unknown URL!"); });
 		}
 
 		// Return the promise

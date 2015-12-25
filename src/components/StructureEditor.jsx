@@ -12,9 +12,7 @@ var LogoutButton = require('./LogoutButton');
 var InlineSection = require('./InlineSection');
 
 /**
- * This is the component that presents the login form to the application. It
- * also handles any necessary authentication before redirecting the user to the
- * appropriate page in the event of a successful login
+ * This is the component that the user can use to edit the sections in the site
  */
 var StructureEditor = React.createClass({
 	/**

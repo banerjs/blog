@@ -13,6 +13,13 @@ var constants = {
 	// URL for logout
 	LOGOUT_URL: '/admin/logout',
 
+	// URL suffix for creating a new page
+	CREATE_PAGE_URL: '/create',
+
+	// Edit URLs
+	ADMIN_SECTIONS_URL: '/admin/sections',
+	ADMIN_PAGES_URL: '/admin/pages',
+
 	// Constants for the page title
 	DEFAULT_TITLE: "Siddhartha Banerjee",
 	DEFAULT_ADMIN_TITLE: "Admin",
