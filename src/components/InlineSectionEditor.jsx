@@ -84,8 +84,8 @@ var InlineSectionEditor = React.createClass({
 						<input type="text"
 							   className="form-control"
 							   name="name"
-							   placeholder={!section.name && "Name"}
-							   defaultValue={section.name || ""}>
+							   placeholder="Name"
+							   defaultValue={section.name}>
 						</input>
 					</div>
 				</div>
@@ -95,8 +95,8 @@ var InlineSectionEditor = React.createClass({
 						<input type="text"
 							   className="form-control"
 							   name="url"
-							   placeholder={!section.url && "/name"}
-							   defaultValue={section.url || ""}>
+							   placeholder="/name"
+							   defaultValue={section.url}>
 						</input>
 					</div>
 				</div>
@@ -106,8 +106,8 @@ var InlineSectionEditor = React.createClass({
 						<input type="number"
 							   className="form-control"
 							   name="priority"
-							   placeholder={!section.priority && "100"}
-							   defaultValue={section.priority || ""}>
+							   placeholder="100"
+							   defaultValue={section.priority}>
 						</input>
 					</div>
 				</div>

@@ -87,9 +87,24 @@ var AdminActions = {
 			}
 		} else if (payload.url.indexOf(constants.ADMIN_PAGES_URL) === 0
 					&& urlParts.length >= 4) {			// Edit a page
+			// First fetch the section. Special logic for the root section
 			var section = sectionsStore.getSection('/' + urlParts[3]);
+			if (!section) {
+				var section = sectionsStore.getSection('/');
+			}
+
+			// Then get the section. Keep in mind that the /create route needs a
+			// stub slide object
 			var pageUrl = '/' + urlParts.slice(3).join('/');
-			var slide = pageStore.getPost(pageUrl);
+			var slide;
+			if (new RegExp("^(\\/[\\w-]*)?\\" + constants.CREATE_PAGE_URL + "$").test(pageUrl)) {
+				slide = { title: "New Page", url: "", html: "" };
+			} else {
+				slide = pageStore.getPost(pageUrl);
+			}
+
+			// Finally, transition to the desired editor only if this was a
+			// matching route
 			if (!slide) {
 				promise = new Promise(function(resolve, reject) { reject("Unknown Page!"); });
 			} else {

@@ -42,18 +42,36 @@ var SectionEditor = React.createClass({
 	},
 
 	/**
+	 * Callback to use when the user clicks to create a page
+	 */
+	_createPage: function() {
+		this.context.history.push(constants.ADMIN_PAGES_URL
+									+ ((this.props.section.url === '/') ? "" : this.props.section.url)
+									+ constants.CREATE_PAGE_URL);
+	},
+
+	/**
 	 * Render the component
 	 */
 	render: function() {
 		// First create the set of all the slides that need to be displayed
-		var pages = !!this.props.section.slides
-						&& this.props.section.slides.map(function(slideUrl, idx) {
-							return (
-								<InlinePage url={slideUrl} key={idx} />
-							);
-						});
+		var pages = this.props.section.slides.map(function(slideUrl, idx) {
+						return (
+							<InlinePage url={slideUrl} key={idx} />
+						);
+					});
 
-		// Then simply return the formatted HTML
+		// Then add in the option for creating a page
+		pages.push(
+			<li className="list-group-item text-center"
+				style={{cursor: 'pointer'}}
+				onClick={this._createPage}
+				key="create-page">
+				<span className="glyphicon glyphicon-plus"></span>
+			</li>
+		);
+
+		// Finally simply return the formatted HTML
 		return (
 			<div className="container">
 				<div className="page-header">

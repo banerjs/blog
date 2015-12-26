@@ -69,8 +69,5 @@
     - Create XHR endpoints for the edits
     - Hook up the XHR endpoints to the data sources
   - Allow editing of posts
-    - Add in "create post" to the edit posts portal
-    - Fix routing problem to admin pages with the '/about' route
-    - Create the UI for editing the page
     - Create the XHR endpoints for the edits
     - Hook up the endpoints to the data sources

@@ -94,8 +94,16 @@ var InlinePage = React.createClass({
 					style={{cursor: 'pointer'}}
 					onClick={this._editPage}>
 					<div className="row">
-						<h5 className="col-sm-5 col-xs-12">{this.state.post.title}</h5>
-						<h5 className="col-sm-7 col-xs-12"><small>{this.props.url}</small></h5>
+						<h4 className="col-sm-5 col-xs-12">{this.state.post.title || "Home"}</h4>
+						<h4 className="col-sm-7 col-xs-12"><small>{this.props.url}</small></h4>
+					</div>
+					<div className="row">
+						<em className="col-xs-12 small">
+							{"Created: " + new Date(this.state.post.created_date).toDateString()}
+						</em>
+						<em className="col-xs-12 small">
+							{"Updated: " + new Date(this.state.post.updated_date).toDateString()}
+						</em>
 					</div>
 				</li>
 			);
