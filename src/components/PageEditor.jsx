@@ -1,3 +1,4 @@
+var $ = require('jquery');
 var React = require('react');
 
 var constants = require('../utils/constants');
@@ -5,6 +6,20 @@ var AdminActions = require('../actions/AdminActions');
 
 // Debug
 var debug = require('debug')('blog:server');
+
+// Include client-side only components
+var CodeMirror;
+if (typeof window !== 'undefined') {
+	// Add in the serializer
+	require('form-serializer');
+
+	// Install CodeMirror
+	CodeMirror = require('react-codemirror');
+	require('codemirror/mode/xml/xml');
+	require('codemirror/mode/css/css');
+	require('codemirror/mode/javascript/javascript');
+	require('codemirror/mode/htmlmixed/htmlmixed');
+}
 
 // Child components
 var SectionButton = require('./SectionButton');
@@ -39,15 +54,44 @@ var PageEditor = React.createClass({
 	 * Update the page's title
 	 */
 	componentDidMount: function() {
-		document.title = this.props.slide.title + " Page"
+		document.title = (this.props.slide.title || "Home") + " Page"
 							+ constants.DEFAULT_TITLE_SEPARATOR
 							+ constants.DEFAULT_ADMIN_TITLE;
+	},
+
+	/**
+	 * This callback submits the form for us through XHR
+	 */
+	_endEdit: function(event) {
+		event.preventDefault();
+
+		// Get the form data
+		var formData = $(this.refs.form).serializeObject();
+		formData.html = this.refs.editor.getCodeMirror().getValue();
+		console.log(formData);
 	},
 
 	/**
 	 * Render the component
 	 */
 	render: function() {
+		// Initialize the code editor
+		var editor;
+		if (!!CodeMirror) {
+			editor = (
+				<CodeMirror ref="editor"
+							value={this.props.slide.html}
+							autoSave={true}
+							options={{
+								mode: 'htmlmixed',
+								lineWrapping: true,
+								theme: 'monokai'
+							}}>
+				</CodeMirror>
+			);
+		}
+
+		// Render
 		return (
 			<div className="container">
 				<div className="page-header">
@@ -57,9 +101,9 @@ var PageEditor = React.createClass({
 					</div>
 					<div className="col-sm-6 col-xs-12 text-right">
 						<div className="btn-group">
-						<SectionButton section={this.props.section} />
-						<StructureButton />
-						<LogoutButton />
+							<SectionButton section={this.props.section} />
+							<StructureButton />
+							<LogoutButton />
 						</div>
 					</div>
 					</div>
@@ -94,14 +138,9 @@ var PageEditor = React.createClass({
 					</div>
 					<div className="form-group">
 						<label htmlFor="html" className="control-label">{"HTML"}</label>
-						<textarea className="form-control"
-								  name="html"
-								  placeholder="<div>Random Words on the Page</div>"
-								  rows="20"
-								  defaultValue={this.props.slide.html}>
-						</textarea>
+						{editor}
 					</div>
-					<button className="btn btn-default">{"Submit"}</button>
+					<button className="btn btn-default" onClick={this._endEdit}>{"Submit"}</button>
 				</form>
 			</div>
 		);

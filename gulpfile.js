@@ -23,6 +23,7 @@ var watchify = require('watchify');
 var packageJSON = require('./package.json');
 var libs = [
 	"auth0-lock",
+	"codemirror",
 	"debug",
     "fluxible",
     "form-serializer",
@@ -33,6 +34,7 @@ var libs = [
     "object-assign",
     "promise",
     "react",
+    "react-codemirror",
     "react-dom",
     "serialize-javascript",
     "validator"

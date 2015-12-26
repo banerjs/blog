@@ -104,7 +104,7 @@ var StructureEditor = React.createClass({
 					<div className="row">
 					<div className="col-xs-12 text-right">
 						<div className="btn-group">
-						<LogoutButton />
+							<LogoutButton />
 						</div>
 					</div>
 					</div>

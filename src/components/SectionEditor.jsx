@@ -81,8 +81,8 @@ var SectionEditor = React.createClass({
 					</div>
 					<div className="col-sm-4 col-xs-12 text-right">
 						<div className="btn-group">
-						<StructureButton />
-						<LogoutButton />
+							<StructureButton />
+							<LogoutButton />
 						</div>
 					</div>
 					</div>

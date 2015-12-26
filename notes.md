@@ -69,5 +69,6 @@
     - Create XHR endpoints for the edits
     - Hook up the XHR endpoints to the data sources
   - Allow editing of posts
+    - Fix codemirror
     - Create the XHR endpoints for the edits
     - Hook up the endpoints to the data sources
