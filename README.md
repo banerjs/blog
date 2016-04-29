@@ -1,6 +1,6 @@
 # Blog
 
-All of us have this innate desire to spout words onto paper. Someday, I will too. For now, I'm using this as an excuse to learn cool new technologies.
+All of us have this innate desire to spout words onto paper. Someday, I will too. For now, I'm using this as an excuse to learn cool new technologies. [Website](http://www.banerjs.com/)
 
 - Django & JQuery: DONE. Easy and quick to setup - the previous version of my website was running this code. Learned how to parse markdown into HTML in real time within a form. But I wanted more of a challenge; I wanted to learn something completely new. Not using it anymore, and I don't think this code is available anywhere anymore.
 

@@ -30,8 +30,7 @@ var Page = React.createClass({
 	 * Type checking for the properties being passed into the component
 	 */
 	propTypes: {
-		url: React.PropTypes.string.isRequired,
-		enableLinks: React.PropTypes.bool
+		url: React.PropTypes.string.isRequired
 	},
 
 	/**
@@ -59,11 +58,6 @@ var Page = React.createClass({
 	 * Disable all anchor tags within the page
 	 */
 	_disableAnchors: function() {
-		// If disableLinks is set to true, then do not disable
-		if (!!this.props.enableLinks) {
-			return;
-		}
-
         // Prevent the default action of anchors
         var history = this.context.history;
         $("a").on('click.anchors', function(event) {
