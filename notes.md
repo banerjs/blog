@@ -3,6 +3,7 @@
 - Start from Windows: `docker-machine.exe env --shell powershell default | Invoke-Expression`
 - Start a new web container with the following command: `docker run --name blog -i -t -v /c/Users/Siddhartha/Documents/Code/blog/:/usr/src/ -w /usr/src/ -p 8000:8000 --rm node:4 bash`
   - Note that problems with browserify and ejsify for auth0 means that we have to use node 4.x
+  - If this is the first time running the container, then make sure to export .env in the current directory. It sets up the required environment variables locally
 - Start a new postgres container `docker run --name blog-pg -d -v /tmp/blog/:/var/lib/postgresql/data -P -e POSTGRES_PASSWORD=a postgres`
   - Note the container uses the folder /tmp in the virtual machine as a data directory. This is not accessible from windows
   - Use `docker network inspect bridge` to figure out the IP address of the new container
@@ -51,24 +52,26 @@
 - Animations
 - Migrate to ES6
 - Create Unit Tests
-- Add in Timeouts to the fetch code. While Promise.race is a viable option, there already exists express middleware capable of doing this
-- Help page for keyboard shortcuts
+- Add in Timeouts to the fetch code on the server side. While Promise.race is a viable option, there already exists express middleware capable of doing this
+- Help popup for keyboard shortcuts
 - Migrate to OpenShift and scalable infrastructure
 - Configure the docker-compose files necessary to start all the different containers at the same time
-- Templating of the HTML stored in the DB
+- Templating of the HTML stored in the posts
+  - Design a syntax set that can be used to add automatic metadata to post HTML
 - Structure editing similar to Trello
-- Better routing in the Admin section (Routing using constants in the Actions is distressing)
-- Django style URLs and URL processing
+- Better routing in the Admin section, and maybe even the Blog section
+  - Routing using constants in the Actions is distressing
+  - Django style URLs and URL processing
 
 # Todo
 
-- Create a way to initialize data sources
-- Create a way to add to the data source
-- Complete the admin section
+- Create a way to initialize data source
+  - Automatic creation of tables and JSON in Redis
+  - Automatic parsing of a `posts` subdirectory
+- Create a way to maintain the data source
   - Allow editing of sections
     - Create XHR endpoints for the edits
     - Hook up the XHR endpoints to the data sources
   - Allow editing of posts
-    - Fix codemirror
     - Create the XHR endpoints for the edits
     - Hook up the endpoints to the data sources

@@ -8,17 +8,9 @@ var AdminActions = require('../actions/AdminActions');
 var debug = require('debug')('blog:server');
 
 // Include client-side only components
-var CodeMirror;
 if (typeof window !== 'undefined') {
 	// Add in the serializer
 	require('form-serializer');
-
-	// Install CodeMirror
-	CodeMirror = require('react-codemirror');
-	require('codemirror/mode/xml/xml');
-	require('codemirror/mode/css/css');
-	require('codemirror/mode/javascript/javascript');
-	require('codemirror/mode/htmlmixed/htmlmixed');
 }
 
 // Child components
@@ -67,30 +59,22 @@ var PageEditor = React.createClass({
 
 		// Get the form data
 		var formData = $(this.refs.form).serializeObject();
-		formData.html = this.refs.editor.getCodeMirror().getValue();
 		console.log(formData);
+	},
+
+	/**
+	 * Helper function to resize the iframe when it is done loading. Since we
+	 * don't really know when an iframe is done leading, keep polling it until
+	 * we know for sure
+	 */
+	_onIFrameLoad: function() {
+		this.refs.iframe.height = (this.refs.iframe.contentWindow.document.body.scrollHeight+35) + "px";
 	},
 
 	/**
 	 * Render the component
 	 */
 	render: function() {
-		// Initialize the code editor
-		var editor;
-		if (!!CodeMirror) {
-			editor = (
-				<CodeMirror ref="editor"
-							value={this.props.slide.html}
-							autoSave={true}
-							options={{
-								mode: 'htmlmixed',
-								lineWrapping: true,
-								theme: 'monokai'
-							}}>
-				</CodeMirror>
-			);
-		}
-
 		// Render
 		return (
 			<div className="container">
@@ -136,12 +120,14 @@ var PageEditor = React.createClass({
 							   defaultValue={this.props.slide.css}>
 						</input>
 					</div>
-					<div className="form-group">
-						<label htmlFor="html" className="control-label">{"HTML"}</label>
-						{editor}
-					</div>
 					<button className="btn btn-default" onClick={this._endEdit}>{"Submit"}</button>
 				</form>
+				<h1>Page Contents:</h1>
+				<iframe src={this.props.slide.url}
+						sandbox="allow-same-origin"
+						onLoad={this._onIFrameLoad}
+						width="100%"
+						ref="iframe" />
 			</div>
 		);
 	}
