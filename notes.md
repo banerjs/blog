@@ -78,3 +78,4 @@
     - Create the XHR endpoints for the edits
     - Hook up the endpoints to the data sources
 - Indicate and implement presence of an index file within a section
+- Less Narcissistic Homepage
