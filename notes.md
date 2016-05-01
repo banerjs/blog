@@ -53,7 +53,9 @@
 - Migrate to ES6
 - Create Unit Tests
 - Add in Timeouts to the fetch code on the server side. While Promise.race is a viable option, there already exists express middleware capable of doing this
-- Create a proper cache for posts instead of webserver memory
+- Improve Performance
+  - Use a proper cache for posts instead of memory
+  - Use `bluebird`, or something equally performant, for promises
 - Help popup for keyboard shortcuts
 - Migrate to OpenShift and scalable infrastructure
 - Configure the docker-compose files necessary to start all the different containers at the same time
@@ -67,8 +69,7 @@
 # Todo
 
 - Create a way to initialize data source
-  - Automatic creation of tables and JSON in Redis
-  - Automatic parsing of a `posts` subdirectory
+  - Automatic creation of JSON in Redis
 - Create a way to maintain the data source
   - Allow editing of sections
     - Create XHR endpoints for the edits
@@ -76,3 +77,4 @@
   - Allow editing of posts
     - Create the XHR endpoints for the edits
     - Hook up the endpoints to the data sources
+- Indicate and implement presence of an index file within a section

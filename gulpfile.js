@@ -102,6 +102,12 @@ var tasks = {
 					.pipe(gulp.dest('build/posts/'));
 	},
 
+	// SQL Templates
+	sql: function() {
+		return gulp.src('./src/**/*.sql')
+					.pipe(gulp.dest('build/'));
+	},
+
 	// SASS
 	sass: function() {
 		var start = new Date();
@@ -239,6 +245,7 @@ gulp.task('lint:js', tasks.lintjs);
 gulp.task('posts', tasks.posts);
 gulp.task('reactify', tasks.reactify);
 gulp.task('sass', tasks.sass);
+gulp.task('sql', tasks.sql);
 gulp.task('templates', tasks.templates);
 gulp.task('test', tasks.test);
 gulp.task('vendors', tasks.vendors);
@@ -247,9 +254,10 @@ gulp.task('vendors', tasks.vendors);
 gulp.task('browserify', ['vendors', 'blogjs', 'adminjs']);
 gulp.task('assets', ['fonts', 'images', 'favicon']);
 gulp.task('html', ['templates', 'posts']);
+gulp.task('scripts', ['sql']);
 
 // This is the main task for production - deploys the code with minification
-gulp.task('deploy', ['assets', 'sass', 'html', 'browserify']);
+gulp.task('deploy', ['scripts', 'assets', 'sass', 'html', 'browserify']);
 
 // Unlike deploy which is production ready, this command builds with source maps
 gulp.task('build', ['deploy']);

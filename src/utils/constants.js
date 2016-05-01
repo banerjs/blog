@@ -3,7 +3,7 @@ var path = require('path');
 
 var constants = {
 	// Root Directory for the posts
-	POST_ROOT_DIR: path.resolve(__dirname, '../posts'),
+	POSTS_ROOT_DIR: path.resolve(__dirname, '../posts'),
 
 	// Home page and Admin home page
 	BLOG_HOME_PAGE: '/',

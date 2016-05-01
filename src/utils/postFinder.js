@@ -1,11 +1,11 @@
 var fs = require('fs');
 var path = require('path');
 
-var POST_ROOT_DIR = require('./constants').POST_ROOT_DIR;
+var POSTS_ROOT_DIR = require('./constants').POSTS_ROOT_DIR;
 
 // Start the helper function `walk` with the correct args
 var finder = function (done) {
-  walk(POST_ROOT_DIR, done);
+  walk(POSTS_ROOT_DIR, done);
 };
 
 // Helper function to traverse a directory
@@ -24,7 +24,7 @@ var walk = function (dir, done) {
             if (!--pending) done(null, results);
           });
         } else {
-          results.push(path.relative(POST_ROOT_DIR, file));
+          results.push(path.relative(POSTS_ROOT_DIR, file));
           if (!--pending) done(null, results);
         }
       });

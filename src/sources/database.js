@@ -12,7 +12,7 @@ var redis = require('redis').createClient(process.env.REDIS_URL, {});
 var debug = require('debug')('blog:server');
 
 // Load all the posts into memory.
-// TODO: Fix this at some point in the future. Create a proper cache
+// TODO: Fix this at some point in the future - create a proper cache
 var postsHTML = {};
 var constants = require('../utils/constants');
 var postFinder = require('../utils/postFinder');
@@ -23,7 +23,7 @@ postFinder(function(err, filenames) {
 	}
 
 	filenames.forEach(function(postfile) {
-		fs.readFile(path.resolve(constants.POST_ROOT_DIR, postfile), function(err, html) {
+		fs.readFile(path.resolve(constants.POSTS_ROOT_DIR, postfile), function(err, html) {
 			if (err) {
 				console.error(err);
 				return;
