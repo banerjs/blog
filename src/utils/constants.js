@@ -1,5 +1,10 @@
 // File defining all the app-wide constants
+var path = require('path');
+
 var constants = {
+	// Root Directory for the posts
+	POST_ROOT_DIR: path.resolve(__dirname, '../posts'),
+
 	// Home page and Admin home page
 	BLOG_HOME_PAGE: '/',
 	ADMIN_HOME_PAGE: '/admin/sections',

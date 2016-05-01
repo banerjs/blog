@@ -92,6 +92,16 @@ var tasks = {
 					.pipe(gulp.dest('build/templates/'));
 	},
 
+	// HTML Posts. In the future, might have a Markdown processing step here
+	posts: function() {
+		return gulp.src('./src/posts/**/*.html')
+					.pipe(gulpif(production, htmlmin({
+						removeComments: true,
+						collapseWhitespace: true
+					})))
+					.pipe(gulp.dest('build/posts/'));
+	},
+
 	// SASS
 	sass: function() {
 		var start = new Date();
@@ -226,6 +236,7 @@ gulp.task('favicon', tasks.favicon);
 gulp.task('fonts', tasks.fonts);
 gulp.task('images', tasks.images);
 gulp.task('lint:js', tasks.lintjs);
+gulp.task('posts', tasks.posts);
 gulp.task('reactify', tasks.reactify);
 gulp.task('sass', tasks.sass);
 gulp.task('templates', tasks.templates);
@@ -235,9 +246,10 @@ gulp.task('vendors', tasks.vendors);
 // Macro tasks
 gulp.task('browserify', ['vendors', 'blogjs', 'adminjs']);
 gulp.task('assets', ['fonts', 'images', 'favicon']);
+gulp.task('html', ['templates', 'posts']);
 
 // This is the main task for production - deploys the code with minification
-gulp.task('deploy', ['assets', 'sass', 'templates', 'browserify']);
+gulp.task('deploy', ['assets', 'sass', 'html', 'browserify']);
 
 // Unlike deploy which is production ready, this command builds with source maps
 gulp.task('build', ['deploy']);
@@ -247,7 +259,7 @@ gulp.task('build', ['deploy']);
 gulp.task('watch', ['deploy'], function() {
 	gulp.watch('./src/**/*.scss', ['sass']);
 	gulp.watch('./assets/**', ['assets']);
-	gulp.watch('./src/templates/**/*.html', ['templates']);
+	gulp.watch('./src/**/*.html', ['html']);
 	gulp.watch([
 		'./src/**/*.js',
 		'./src/**/*.jsx'

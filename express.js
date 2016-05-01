@@ -5,6 +5,7 @@ var csrf = require('csurf');
 var express = require('express');
 var favicon = require('serve-favicon');
 var fs = require('fs');
+var path = require('path');
 var jwt = require('express-jwt');
 var logger = require('morgan');
 var path = require('path');
@@ -60,21 +61,21 @@ var forbiddenPage;
 var notFoundPage;
 var serverErrorPage;
 
-fs.readFile(__dirname + '/build/templates/403.html', function(err, data) {
+fs.readFile(path.resolve(__dirname, 'build/templates/403.html'), function(err, data) {
   if (err) {
     throw err;
   }
   forbiddenPage = data.toString();
 });
 
-fs.readFile(__dirname + '/build/templates/404.html', function(err, data) {
+fs.readFile(path.resolve(__dirname, 'build/templates/404.html'), function(err, data) {
   if (err) {
     throw err;
   }
   notFoundPage = data.toString();
 });
 
-fs.readFile(__dirname + '/build/templates/500.html', function(err, data) {
+fs.readFile(path.resolve(__dirname, 'build/templates/500.html'), function(err, data) {
   if (err) {
     throw err;
   }

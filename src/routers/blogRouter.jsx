@@ -1,5 +1,6 @@
 // Libraries required on the server side
 var fs = require('fs');
+var path = require('path');
 var Router = require('express').Router;
 var React = require('react');
 var ReactDOMServer = require('react-dom/server');
@@ -27,7 +28,7 @@ var fluxibleApp = require('../utils/createApp')(DataSource, MailSource, {});
 
 // Make sure to load up the template HTML file at startup
 var template;
-fs.readFile(__dirname + '/../templates/blog.html', function(err, data) {
+fs.readFile(path.resolve(__dirname, '../templates/blog.html'), function(err, data) {
 	if (err) {
 		throw err;
 	}

@@ -53,6 +53,7 @@
 - Migrate to ES6
 - Create Unit Tests
 - Add in Timeouts to the fetch code on the server side. While Promise.race is a viable option, there already exists express middleware capable of doing this
+- Create a proper cache for posts instead of webserver memory
 - Help popup for keyboard shortcuts
 - Migrate to OpenShift and scalable infrastructure
 - Configure the docker-compose files necessary to start all the different containers at the same time
