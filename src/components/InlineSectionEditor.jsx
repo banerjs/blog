@@ -111,7 +111,23 @@ var InlineSectionEditor = React.createClass({
 						</input>
 					</div>
 				</div>
+				<div className="form-group">
+					<label htmlFor="index_filename" className="col-sm-2 control-label">{"Index Filename"}</label>
+					<div className="col-sm-10">
+						<input type="text"
+							   className="form-control"
+							   name="index_filename"
+							   defaultValue={section.index_filename}>
+						</input>
+					</div>
+				</div>
 				{slideEdit}
+				<div className="form-group">
+					<input type="hidden"
+						   name="id"
+						   defaultValue={section.id}>
+					</input>
+				</div>
 			</form>
 			</div>
 		);

@@ -4,9 +4,9 @@ var fs = require('fs');
 var path = require('path');
 var Promise = require('promise');
 var pg = require('pg-promise')({ promiseLib: Promise })(process.env.DATABASE_URL);
-var redis = require('redis').createClient(process.env.REDIS_URL, {});
 
 var constants = require('../../utils/constants');
+var pg2redis = require('../../utils/pg2redis');
 
 // First traverse the filesystem and index all the post files
 var fsresult = new Promise(function(resolve, reject) {		// List the sections
@@ -202,7 +202,7 @@ var execInserts = inserts.then(function(inserts) {
 				return Promise.resolve(
 					pg.none("INSERT INTO sections (name, foldername, url, priority) "
 							+ " VALUES ($1, $2, $3, (SELECT coalesce(max(priority),0)+1 FROM sections));",
-						[name, section.folder, url])
+							[name, section.folder, url])
 				);
 			});
 		}
@@ -213,14 +213,19 @@ var execInserts = inserts.then(function(inserts) {
 				pg.one("SELECT * FROM sections WHERE foldername = $1;", section.folder)
 			);
 		}).then(function(dbsection) {					// Insert slides
-			var promises = [];
+			var seqpromise = Promise.resolve(true);		// Inserts need to be sequential
 			section.files.forEach(function(slide) {
 				var url = dbsection.url + '/' + path.basename(slide, '.html');
-				promises.push(pg.none("INSERT INTO posts (url, section, slide, filename) "
-									+ "VALUES ($1, $2, (SELECT coalesce(max(slide),0) + 1 FROM posts WHERE section = $2), $3);",
-							[url, dbsection.id, slide]));
+				seqpromise = seqpromise.then(function() {
+					return Promise.resolve(
+						pg.none("INSERT INTO posts (url, section, slide, filename) "
+								+ "VALUES ($1, $2, (SELECT coalesce(max(slide),0) + 1 FROM posts WHERE section = $2), $3);",
+								[url, dbsection.id, slide])
+					);
+				});
 			});
-			return Promise.resolve(Promise.all(promises));
+
+			return Promise.resolve(seqpromise);
 		});
 
 		promises.push(dbpromise.then(function() { return true; }));
@@ -262,13 +267,13 @@ var execDeletes = deletes.then(function(deletes) {
 // Logging for the execution of deletes
 execDeletes.then(function() { console.log("Deletes Executed"); }, console.error);
 
-// TODO: Update Redis with the latest data
-// var updateRedis = Promise.all([execInserts, execDeletes]).then(function() {
-
-// });
+// Update Redis with the latest data
+var updateRedis = Promise.all([execInserts, execDeletes]).then(function() {
+	return Promise.resolve(pg2redis());
+});
 
 // Exit the script once all the promises are done executing
-Promise.all([execInserts, execDeletes]).then(function() {
+Promise.all([updateRedis]).then(function() {
 	console.log("SUCCESS");
 	process.exit(0);
 }, function() {

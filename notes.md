@@ -65,11 +65,11 @@
 - Better routing in the Admin section, and maybe even the Blog section
   - Routing using constants in the Actions is distressing
   - Django style URLs and URL processing
+  - 404 page when browsing client side
+  - Graceful handling of trailing slashes
 
 # Todo
 
-- Create a way to initialize data source
-  - Automatic creation of JSON in Redis
 - Create a way to maintain the data source
   - Allow editing of sections
     - Create XHR endpoints for the edits

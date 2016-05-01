@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS posts (
 
 CREATE TABLE IF NOT EXISTS sections (
 	id bigserial primary key not null,
-	name text not null unique CHECK (length(name) <= 20),
+	name text not null CHECK (length(name) <= 20),
 	foldername text not null unique CHECK (length(foldername) <= 20),
 	url text not null unique CHECK (length(url) < 256),
 	priority bigint not null,
