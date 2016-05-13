@@ -15,6 +15,13 @@
 - Run the npm installer to get all project dependencies: `./install_deps_globally.sh package.json`
 - Clean and start gulp in watch mode: `npm run clean; npm run gulp &`
 - Start the server in debug: `npm run debug`
+- Long term, add the following lines to `.bashrc`:
+
+```
+if [ -f /usr/src/.env ]; then
+  . /usr/src/.env
+fi
+```
 
 # Resources
 
@@ -57,7 +64,6 @@
   - Use a proper cache for posts instead of memory
   - Use `bluebird`, or something equally performant, for promises
 - Help popup for keyboard shortcuts
-- Migrate to OpenShift and scalable infrastructure
 - Configure the docker-compose files necessary to start all the different containers at the same time
 - Templating of the HTML stored in the posts
   - Design a syntax set that can be used to add automatic metadata to post HTML
@@ -71,6 +77,9 @@
 
 # Todo
 
+- Move to node 6 and OpenShift
+  - Have a less complicated dependency tree
+  - Create less complicated codebase
 - Create a way to maintain the data source
   - Allow editing of sections
     - Create XHR endpoints for the edits
