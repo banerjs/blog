@@ -1,18 +1,16 @@
 // This file is an interface into all the database sources used on the server:
-// 1. Postgres
-// 2. Redis
-// 3. File System
+// 1. MongoDB
+// 2. File System
+var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
 var Promise = require('promise');
-var pg = require('pg-promise')({ promiseLib: Promise })(process.env.DATABASE_URL);
-var redis = require('redis').createClient(process.env.REDIS_URL, {});
+var mongo = require('mongodb').connect(process.env.DATABASE_URL, { promiseLibrary: Promise });
 
 // Debug
 var debug = require('debug')('blog:server');
 
 // Load all the posts into memory.
-// TODO: Fix this at some point in the future - create a proper cache
 var postsHTML = {};
 var constants = require('../utils/constants');
 var postFinder = require('../utils/postFinder');
@@ -44,14 +42,20 @@ var DATABASE = {
 	 * @return A promise that can be acted upon if this fetch is successful
 	 */
 	getPostFromUrl: function(url) {
-		return pg.oneOrNone("SELECT * FROM posts WHERE url = $1;", url)
-					.then(function(post) {
+		return mongo.then(function(db) {
+						return db.collection("posts");
+					}).then(function(collection) {
+						return collection.find({ url: url }).limit(1).next()
+					}).then(function(post) {
 						if (!post) {
 							return post;
 						}
 
 						post.html = postsHTML[post.filename] || null;
 						return post;
+					}).catch(function(reason) {
+						console.error(reason);
+						throw reason;
 					});
 	},
 
@@ -62,18 +66,13 @@ var DATABASE = {
 	 * @return An array of sections, each of which is an array of URLs
 	 */
 	getSections: function() {
-		return new Promise(function(resolve, reject) {
-			try {
-				redis.get('sections', function(err, data) {
-					if (!data || !!err) {
-						reject(err || new Error("Sections don't exist"));
-					}
-					resolve(JSON.parse(data));
-				});
-			} catch (e) {
-				reject(e);
-			}
-		});
+		return mongo.then(function(db) {
+						return db.collection("sections");
+					}).then(function(collection) {
+						return collection.find({})
+										.sort({ 'priority': 1 })
+										.toArray();
+					});
 	}
 }
 

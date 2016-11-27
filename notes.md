@@ -41,13 +41,16 @@ fi
 - Create Unit Tests
 - Add in Timeouts to the fetch code on the server side. While Promise.race is a viable option, there already exists express middleware capable of doing this
 - Improve Performance
-  - Use a proper cache for posts instead of memory
+  - Use a proper cache for posts loaded from disk instead of preloading all posts to memory
   - Use `bluebird`, or something equally performant, for promises
 - Help popup for keyboard shortcuts
 - Configure the docker-compose files necessary to start all the different containers at the same time. Alternately, figure out OpenShift launch using Kubernetes
 - Templating of the HTML stored in the posts
   - Design a syntax set that can be used to add automatic metadata to post HTML
-  - Use automated markdown parsing for the posts
+  - Use automated markdown parsing for the posts during the gulp build process
+- Migrate to using Mongoose for schema validation
+- Have a less complicated dependency tree
+- Create less complicated codebase
 
 If I want to keep the same features in the Admin pages:
 
@@ -62,13 +65,11 @@ If I want to keep the same features in the Admin pages:
 If I want to simplify the Admin pages to simply handle the metadata, and leave the editing of the posts to git (leaning towards this):
 
 - Revamp admin and blog URL structuring
-  - Infer path from the location in the file system
+  - Infer path and metadata from the file system
 
 # Todo
 
 - Move to node 6 and OpenShift
-  - Have a less complicated dependency tree
-  - Create less complicated codebase
 - Create a way to maintain the data source
   - Allow editing of sections
     - Create XHR endpoints for the edits
@@ -76,3 +77,36 @@ If I want to simplify the Admin pages to simply handle the metadata, and leave t
   - Allow editing of posts
     - Create the XHR endpoints for the edits
     - Hook up the endpoints to the data sources
+
+# Data Schema
+
+sections
+
+```
+name text not null              # This is the display name. Capitalize!
+foldername text not null unique # Foldername in the folder src/posts
+url text not null unique        # URL to the index of the section
+priority bigint not null        # Display priority. Home is always 1
+slides text[]                   # Array of URLs for the slides in a section
+index_filename text             # TODO. Not implemented yet
+```
+
+posts
+
+```
+url text not null unique        # URL of the post
+section text not null           # Needs to match the foldername of the section
+slide bigint not null           # Priority for display
+filename text not null unique   # File path relative to src/posts
+title text                      # <title> element
+css text                        # File path relative to src/css
+created_date timestamp with time zone not null default now()
+updated_date timestamp with time zone not null default now()
+```
+
+Indices needed:
+
+- `section.priority`
+- `section.url`
+- `posts.section + posts.slide` -- unique
+- `posts.url`

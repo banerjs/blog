@@ -3,7 +3,7 @@ var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Fluxible = require('fluxible');
-var createHistory = require('history/lib/createBrowserHistory');
+var createHistory = require('history').createBrowserHistory;
 
 // Root level components
 var ContextWrapper = require('../components/ContextWrapper');
@@ -27,7 +27,7 @@ fluxibleApp.rehydrate(dehydratedState, function(err, context) {
 
     // Initialize the routing
     var history = createHistory();
-    history.listenBefore(function(location) {
+    history.listen(function(location) {
         context.executeAction(AdminActions.moveToNewPage, {
             url: location.pathname
         });
