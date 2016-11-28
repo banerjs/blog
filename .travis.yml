@@ -12,7 +12,7 @@ git:
 
 branches:
   only:
-  - master
+  - production
 
 install:
   - docker build -t banerjs/blog .
@@ -22,4 +22,4 @@ script:
 
 after_success:
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" && docker push banerjs/blog
-  - curl -o /tmp/travis-automerge https://raw.githubusercontent.com/cdown/travis-automerge/master/travis-automerge && chmod a+x /tmp/travis-automerge && /tmp/travis-automerge
+  #- bash scripts/refresh_image.sh
