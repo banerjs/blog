@@ -36,7 +36,8 @@ RUN chmod +x /tini && \
 		make install) && \
 	rm -rf nss_wrapper && \
 	useradd -r -m -g 0 ${INSTALL_USER} && \
-	chown -R ${INSTALL_USER}:0 ${INSTALL_DIR}
+	chown -R ${INSTALL_USER}:0 ${INSTALL_DIR} && \
+	chmod +x ${INSTALL_DIR}scripts/entrypoint.sh
 
 WORKDIR ${INSTALL_DIR}
 # Adding in a dummy so that Openshift hopefully updates itself
