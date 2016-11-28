@@ -2,4 +2,4 @@
 .gitignore
 *.sublime-*
 *.md
-install_deps_globally.sh
+scratch/

@@ -8,7 +8,7 @@ git:
 
 branches:
   only:
-    - production
+    - master
 
 install:
   - docker build -t banerjs/blog .
@@ -18,3 +18,4 @@ script:
 
 after_success:
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" && docker push banerjs/blog
+  # TODO: Add in the ability to merge into the production branch if the build is successful
