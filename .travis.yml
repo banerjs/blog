@@ -18,7 +18,7 @@ install:
   - docker build -t banerjs/blog .
 
 script:
-  - docker run -u 2500:2300 --rm banerjs/blog run deploy
+  - docker run -u 2500 --rm banerjs/blog run deploy
 
 after_success:
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" && docker push banerjs/blog
