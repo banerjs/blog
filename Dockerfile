@@ -22,8 +22,21 @@ LABEL "io.openshift.expose-services" ${PORT}:http \
 COPY . ${INSTALL_DIR}
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini && \
-	groupadd -r ${INSTALL_USER} && useradd -r -m -c "NAME" -g ${INSTALL_USER} ${INSTALL_USER} && \
-	chown -R ${INSTALL_USER}:${INSTALL_USER} ${INSTALL_DIR}
+	apt-get update -qq && \
+	DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends\
+		cmake && \
+	curl -SL -o nss_wrapper.tar.gz https://ftp.samba.org/pub/cwrap/nss_wrapper-1.1.2.tar.gz && \
+	mkdir nss_wrapper && \
+	tar -xC nss_wrapper --strip-components=1 -f nss_wrapper.tar.gz && \
+	rm nss_wrapper.tar.gz && \
+	mkdir nss_wrapper/obj && \
+		(cd nss_wrapper/obj && \
+		cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DLIB_SUFFIX=64 .. && \
+		make && \
+		make install) && \
+	rm -rf nss_wrapper && \
+	useradd -r -m -g 0 ${INSTALL_USER} && \
+	chown -R ${INSTALL_USER}:0 ${INSTALL_DIR}
 
 WORKDIR ${INSTALL_DIR}
 # Adding in a dummy so that Openshift hopefully updates itself
@@ -38,5 +51,5 @@ ENV NODE_ENV=production
 # Expose the port
 EXPOSE ${PORT}
 
-ENTRYPOINT ["/tini", "--", "npm"]
+ENTRYPOINT ["./scripts/entrypoint.sh"]
 CMD ["start"]

@@ -18,8 +18,8 @@ install:
   - docker build -t banerjs/blog .
 
 script:
-  - docker run --rm banerjs/blog run deploy
+  - docker run -u 2500:2300 --rm banerjs/blog run deploy
 
 after_success:
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" && docker push banerjs/blog
-  - bash scripts/refresh_image.sh
+  - chmod +x scripts/refresh_image.sh && ./scripts/refresh_image.sh
