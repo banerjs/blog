@@ -43,7 +43,8 @@ RUN chmod +x /tini && \
 RUN find ${INSTALL_DIR} -type d -exec chmod g+x {} \;
 
 WORKDIR ${INSTALL_DIR}
-USER banerjs
+# Adding in a dummy so that Openshift hopefully updates itself
+USER 998
 
 # Run the commands needed to get node running
 RUN npm config set progress false && npm install --quiet --depth 0
