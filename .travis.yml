@@ -1,14 +1,18 @@
+env:
+  global:
+    secure: YFTuvV3LjxqBiurrotdpuIeFvhLEiS0rdFUH8VQ8uLXPF/2Y+jBApq0Mzk6hy2O5Pt+zUNPvpUSKO33xpkaikDlgohW3+8VTWMHG+xtlfSO9orrYMmzRmanCL1e/S6Ck63tcX4J+0trhWCrjJHlzbCXbny8uxDhZpzgVT1ufYCQ=
+
 sudo: required
 
 services:
   - docker
 
 git:
-  depth: 2
+  depth: 10
 
 branches:
   only:
-    - master
+  - master
 
 install:
   - docker build -t banerjs/blog .
@@ -17,5 +21,5 @@ script:
   - docker run --rm banerjs/blog run deploy
 
 after_success:
-  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" && docker push banerjs/blog
-  # TODO: Add in the ability to merge into the production branch if the build is successful
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" && docker push banerjs/blog
+  - curl -o /tmp/travis-automerge https://raw.githubusercontent.com/cdown/travis-automerge/master/travis-automerge && chmod a+x /tmp/travis-automerge && /tmp/travis-automerge
