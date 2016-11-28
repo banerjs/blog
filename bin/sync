@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // This script traverses the posts subdirectory and ensures that the databases
 // are in sync with the filesystem
 var fs = require('fs');
@@ -5,7 +6,7 @@ var path = require('path');
 var Promise = require('promise');
 var mongo = require('mongodb').connect(process.env.DATABASE_URL, { promiseLibrary: Promise });
 
-var constants = require('../../utils/constants');
+var constants = require('../build/utils/constants');
 
 // First traverse the filesystem and index all the post files
 var fsresult = new Promise(function(resolve, reject) {		// List the sections

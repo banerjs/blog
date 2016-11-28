@@ -8,13 +8,14 @@
   },
   "main": "./bin/www",
   "scripts": {
-    "start": "npm run deploy && npm run sync && node ./bin/www",
+    "postinstall": "NODE_ENV=production npm run deploy",
+    "start": "npm run sync && node ./bin/www",
     "debug": "DEBUG=blog:server NODE_ENV=development nodemon --watch ./build/ --watch ./express.js --watch ./public/js/ -e js,html --delay 3 ./bin/www",
     "watch": "gulp",
     "deploy": "gulp deploy",
     "build": "gulp build",
     "clean": "gulp clean",
-    "sync": "node ./build/scripts/post-build/database_sync.js"
+    "sync": "node ./bin/sync"
   },
   "devDependencies": {
     "autoprefixer": "^6.5.3",

@@ -20,7 +20,7 @@ fi
 
 - In order to deploy
   - Build the image locally to test `docker build -t banerjs/blog /c/Users/Siddhartha/Documents/Code/blog`
-  - Test the image locally `docker run -d -p 8000:8000 -e DATABASE_URL="<mongo url of database> banerjs/blog`
+  - Test the image locally `docker run -d -p 8000:8000 -e DATABASE_URL="<mongo url of database> -u 2500001 --name blog-test banerjs/blog`
   - Push to DockerHub `docker push banerjs/blog`. Might need to login with `docker login`
 
 # Resources
