@@ -229,7 +229,7 @@ var tasks = {
 };
 
 // Mini tasks
-gulp.task('adminjs', ['reactify'], tasks.apps.bind(tasks, 'ADMIN', 'admin.js', './build/routers/adminPages.js'));
+// gulp.task('adminjs', ['reactify'], tasks.apps.bind(tasks, 'ADMIN', 'admin.js', './build/routers/adminPages.js'));
 gulp.task('blogjs', ['reactify'], tasks.apps.bind(tasks, 'BLOG', 'blog.js', './build/routers/blogPages.js'));
 gulp.task('clean', tasks.clean);
 gulp.task('favicon', tasks.favicon);
@@ -244,7 +244,7 @@ gulp.task('test', tasks.test);
 gulp.task('vendors', tasks.vendors);
 
 // Macro tasks
-gulp.task('browserify', ['vendors', 'blogjs', 'adminjs']);
+gulp.task('browserify', ['vendors', 'blogjs']);
 gulp.task('assets', ['fonts', 'images', 'favicon']);
 gulp.task('html', ['templates', 'posts']);
 

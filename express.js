@@ -13,7 +13,7 @@ var session = require('express-session');
 
 var MongoDBStore = require('connect-mongodb-session')(session);
 
-var admin = require('./build/routers/adminRouter');
+// var admin = require('./build/routers/adminRouter');
 var blog = require('./build/routers/blogRouter');
 
 // Debug
@@ -41,13 +41,13 @@ app.use(session({
 }));
 
 // Setup the login checkers
-var jwtCheck = jwt({
-	secret: new Buffer(process.env.AUTH0_SECRET, 'base64'),
-	audience: process.env.AUTH0_ID
-}).unless({ path: ['/admin/login'] });
+// var jwtCheck = jwt({
+// 	secret: new Buffer(process.env.AUTH0_SECRET, 'base64'),
+// 	audience: process.env.AUTH0_ID
+// }).unless({ path: ['/admin/login'] });
 
 // Setup the route handlers
-app.use('/admin/', jwtCheck, csrf(), admin);
+// app.use('/admin/', jwtCheck, csrf(), admin);
 app.use('/', blog);
 
 // catch 404 and forward to error handler
@@ -87,12 +87,12 @@ fs.readFile(path.resolve(__dirname, 'build/templates/500.html'), function(err, d
 
 
 // redirect to login if it is a 401
-app.use(function(err, req, res, next) {
-  if (err.status === 401 && !req.xhr) {
-    res.redirect('/admin/login');
-  }
-  next(err);
-});
+// app.use(function(err, req, res, next) {
+//   if (err.status === 401 && !req.xhr) {
+//     res.redirect('/admin/login');
+//   }
+//   next(err);
+// });
 
 // development error handler - will print stacktrace
 if (app.get('env') === 'development') {
