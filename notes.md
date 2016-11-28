@@ -43,7 +43,7 @@ fi
 # Features
 
 - Animations
-- Create Unit Tests
+- Create Unit Tests. [Resource](https://blog.risingstack.com/node-hero-node-js-unit-testing-tutorial/)
 - Add in Timeouts to the fetch code on the server side. While Promise.race is a viable option, there already exists express middleware capable of doing this
 - Improve Performance
   - Transition to node:6-alpine as the base image for the container

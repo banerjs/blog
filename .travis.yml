@@ -1,0 +1,20 @@
+sudo: required
+
+services:
+  - docker
+
+git:
+  depth: 2
+
+branches:
+  only:
+    - production
+
+install:
+  - docker build -t banerjs/blog .
+
+script:
+  - docker run --rm banerjs/blog run deploy
+
+after_success:
+  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" && docker push banerjs/blog
