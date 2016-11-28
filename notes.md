@@ -18,6 +18,11 @@ if [ -f /usr/src/.env ]; then
 fi
 ```
 
+- In order to deploy
+  - Build the image locally to test `docker build -t banerjs/blog /c/Users/Siddhartha/Documents/Code/blog`
+  - Test the image locally `docker run -d -p 8000:8000 -e DATABASE_URL="<mongo url of database> banerjs/blog`
+  - Push to DockerHub `docker push banerjs/blog`. Might need to login with `docker login`
+
 # Resources
 
 - Google Maps styling: [SnazzyMaps](https://snazzymaps.com/)
@@ -41,10 +46,11 @@ fi
 - Create Unit Tests
 - Add in Timeouts to the fetch code on the server side. While Promise.race is a viable option, there already exists express middleware capable of doing this
 - Improve Performance
+  - Transition to node:6-alpine as the base image for the container
+  - Reduce memory usage during deploy
   - Use a proper cache for posts loaded from disk instead of preloading all posts to memory
   - Use `bluebird`, or something equally performant, for promises
 - Help popup for keyboard shortcuts
-- Transition to node:6-alpine as the base image for the container
 - Templating of the HTML stored in the posts
   - Design a syntax set that can be used to add automatic metadata to post HTML
   - Use automated markdown parsing for the posts during the gulp build process
