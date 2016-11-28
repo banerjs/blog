@@ -89,7 +89,7 @@ var StructureEditor = React.createClass({
 	 */
 	render: function() {
 		// First create a component for each of the sections
-		var sections = this.state.sections.map(function(section, isx) {
+		var sections = this.state.sections.map(function(section, idx) {
 			return (
 				<InlineSection section={section} key={section.name} />
 			);

@@ -11,7 +11,7 @@ var logger = require('morgan');
 var path = require('path');
 var session = require('express-session');
 
-var RedisStore = require('connect-redis')(session);
+var MongoDBStore = require('connect-mongodb-session')(session);
 
 var admin = require('./build/routers/adminRouter');
 var blog = require('./build/routers/blogRouter');
@@ -32,7 +32,10 @@ app.use("/public", express.static(path.join(__dirname, 'public')));
 app.use(cookieParser(process.env.APPLICATION_SECRET));
 app.use(session({
   secret: process.env.APPLICATION_SECRET,
-  store: new RedisStore({ url: process.env.REDIS_URL }),
+  store: new MongoDBStore({
+    uri: process.env.DATABASE_URL,
+    collection: 'sessions'
+  }),
   resave: false,
   saveUninitialized: false
 }));

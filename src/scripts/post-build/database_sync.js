@@ -3,10 +3,9 @@
 var fs = require('fs');
 var path = require('path');
 var Promise = require('promise');
-var pg = require('pg-promise')({ promiseLib: Promise })(process.env.DATABASE_URL);
+var mongo = require('mongodb').connect(process.env.DATABASE_URL, { promiseLibrary: Promise });
 
 var constants = require('../../utils/constants');
-var pg2redis = require('../../utils/pg2redis');
 
 // First traverse the filesystem and index all the post files
 var fsresult = new Promise(function(resolve, reject) {		// List the sections
@@ -46,43 +45,36 @@ fsresult.then(function(result) {
 	console.error("(ERROR) FS Index: ", err);
 });
 
-// Start the database transactions
-// First fetch and execute the required create table SQL
-var dbresult = new Promise(function(resolve, reject) {
-	fs.readFile(path.resolve(__dirname, 'create_table.sql'), function(err, sql) {
-		if (err) {
-			reject(err);
-		}
-		resolve(sql.toString());
-	});
-}).then(function(sql) {
-	var createResult = pg.none(sql).then(function() { return true; }, function(err) { throw err; });
-	return Promise.resolve(createResult);
+// Create persistent connections to the database
+var connections = mongo.then(function(db) {
+	return [db.collection("sections"), db.collection("posts")];
 });
 
-// Then fetch the information for the sections from the database
-dbresult = dbresult.then(function() {
-	var sections = pg.any("SELECT * FROM sections;");
-	var posts = pg.any("SELECT * FROM posts;");
-	return Promise.resolve(Promise.all([sections, posts]));
-}).then(function(results) {
-	var sections = results[0];
-	var posts = results[1];
-	var dbdata = []
+// Fetch the data in the Mongo database and make sure it corresponds to the data
+// parsed out from the filesystem
+var dbresult = connections.then(function(collections) {
+	var sections = collections[0].find({}).toArray();
+	var posts = collections[1].find({}).toArray();
 
-	sections.forEach(function(section) {
-		var data = {
-			folder: section.foldername,
-			files: posts.filter(function(post) {
-							return post.section === section.id;
+	return Promise.all([sections, posts]).then(function(data) {
+		var sections = data[0];
+		var posts = data[1];
+		var dbdata = [];
+
+		sections.forEach(function(section) {
+			var data = {
+				folder: section.foldername,
+				files: posts.filter(function(post) {
+							return post.section === section.foldername;
 						}).map(function(post) {
 							return post.filename;
 						})
-		}
-		dbdata.push(data);
-	});
+			};
+			dbdata.push(data);
+		});
 
-	return dbdata;
+		return dbdata;
+	});
 });
 
 // Log the results of the DB traversal
@@ -112,7 +104,7 @@ var inserts = Promise.all([fsresult, dbresult]).then(function(results) {
 				insert_section: true
 			});
 		} else {									// Section present in DB
-			var dbsection = dbdata[dbsection_idx];	// Pointer to database section
+			var dbsection = dbdata[dbsection_idx];	// Pointer to db section
 			var insertData = {						// Stub data object
 				folder: fssection.folder,
 				files: [],
@@ -124,7 +116,7 @@ var inserts = Promise.all([fsresult, dbresult]).then(function(results) {
 					insertData.files.push(fsfile);
 				}
 			});
-			if (insertData.files.length > 0) {		// Insert files only if missing
+			if (insertData.files.length > 0) {		// Insert files if missing
 				insertSet.push(insertData);
 			}
 		}
@@ -187,52 +179,95 @@ deletes.then(function(result) {
 
 // Run the insert statements (with sensible defaults)
 var execInserts = inserts.then(function(inserts) {
-	var promises = [];									// Holder for promises
+	var sectionPromise = Promise.resolve(true);			// Stub promise
 
-	// Process each of the sections asynchronously
+	// Process each section synchronously
 	inserts.forEach(function(section) {
-		var dbpromise = Promise.resolve(true);			// Create a stub promise
-
-		// Update the first action on the promise if a new section must be
-		// inserted
+		// Insert the section if there is a need to do so
 		if (!!section.insert_section) {
+			// Generate the name and URL
 			var name = section.folder.charAt(0).toUpperCase() + section.folder.slice(1);
 			var url = '/' + section.folder;
-			dbpromise = dbpromise.then(function() {
-				return Promise.resolve(
-					pg.none("INSERT INTO sections (name, foldername, url, priority) "
-							+ " VALUES ($1, $2, $3, (SELECT coalesce(max(priority),0)+1 FROM sections));",
-							[name, section.folder, url])
-				);
+
+			sectionPromise = sectionPromise.then(function() {
+				return connections.then(function(collections) {
+					var sections = collections[0];
+					// Find out the max_priority that exists in the DB now and
+					// then insert one with a higher priority
+					return sections.find({})
+								.sort({ 'priority': -1 })
+								.limit(1)
+								.next()
+								.then(function(section) {
+									if (!section) {		// Check if is first
+										return 0;
+									}
+									return section.priority;
+								}).then(function(max_priority) { // Insert
+									return sections.insertOne({
+											name: name,
+											foldername: section.folder,
+											url: url,
+											priority: max_priority + 1
+										});
+								});
+				});
 			});
 		}
 
-		// Fetch details about the section for the slide inserts
-		dbpromise = dbpromise.then(function() {
-			return Promise.resolve(
-				pg.one("SELECT * FROM sections WHERE foldername = $1;", section.folder)
-			);
-		}).then(function(dbsection) {					// Insert slides
-			var seqpromise = Promise.resolve(true);		// Inserts need to be sequential
-			section.files.forEach(function(slide) {
-				var url = dbsection.url + '/' + path.basename(slide, '.html');
-				seqpromise = seqpromise.then(function() {
-					return Promise.resolve(
-						pg.none("INSERT INTO posts (url, section, slide, filename) "
-								+ "VALUES ($1, $2, (SELECT coalesce(max(slide),0) + 1 FROM posts WHERE section = $2), $3);",
-								[url, dbsection.id, slide])
-					);
+		// Query the DB for the section and add the necessary files
+		sectionPromise = sectionPromise.then(function() {
+			return connections.then(function(collections) {
+				var sections = collections[0];
+				var posts = collections[1];
+
+				// Create variables that need to be filled by promises
+				var dbsection;
+
+				// Create a promise to fetch the section
+				var promise = sections.find({ foldername: section.folder })
+										.next()
+										.then(function(section) {
+											dbsection = section;
+										});
+
+				// Iterate through each of the slides that need to be inserted
+				section.files.forEach(function(slide) {
+					promise = promise.then(function() {
+						return posts.find({ 'section': section.folder })
+									.sort({ 'slide': -1 })
+									.limit(1)
+									.next()
+									.then(function(dbslide) {
+										if (!dbslide) {	// Check if first
+											return 0;
+										}
+										return dbslide.slide;
+									});
+					}).then(function(max_slide) {
+						// Guaranteed to have the section by this point
+						var url = dbsection.url + '/' + path.basename(slide, '.html');
+						var insert_date = new Date();
+						return posts.insertOne({
+							url: url,
+							section: dbsection.foldername,
+							slide: max_slide + 1,
+							filename: slide,
+							created_date: insert_date,
+							updated_date: insert_date
+						});
+					});
 				});
+
+				// Finally return the promise object so that execution completes
+				// only when all promises are fulfilled
+				return promise;
 			});
-
-			return Promise.resolve(seqpromise);
 		});
-
-		promises.push(dbpromise.then(function() { return true; }));
 	});
 
-	// This is resolved only when all the inserts have been run
-	return Promise.resolve(Promise.all(promises));
+	// Add in the section promise as the last element to wait upon
+	return sectionPromise;								// Return when all done
 });
 
 // Logging for the execution of inserts
@@ -242,41 +277,79 @@ execInserts.then(function() { console.log("Inserts Executed"); }, console.error)
 var execDeletes = deletes.then(function(deletes) {
 	var promises = [];									// Holder for promises
 
-	// Process each of the sections asynchronously
 	deletes.forEach(function(section) {
-		var delPromises = [];							// Holder slide deletes
-		section.files.forEach(function(slide) {
-			delPromises.push(pg.none("DELETE FROM posts WHERE filename = $1;", slide));
-		});
-
-		var dbpromise = Promise.all(delPromises);		// Resolve on slide del
-
-		if (!!section.delete_section) {					// Delete section too
-			dbpromise = dbpromise.then(function() {
-				return Promise.resolve(
-					pg.none("DELETE FROM sections WHERE foldername = $1;", section.folder)
-				);
-			});
+		if (!!section.delete_section) {					// Delete the section
+			promises.push(connections.then(function(collections) {
+				var sections = collections[0];
+				return sections.deleteOne({ foldername: section.folder });
+			}));
 		}
 
-		promises.push(dbpromise.then(function() { return true; }));
+		// Delete the posts
+		section.files.forEach(function(slide) {
+			promises.push(connections.then(function(collections) {
+				var posts = collections[1];
+				return posts.deleteOne({ filename: slide });
+			}));
+		});
 	});
-	return Promise.resolve(Promise.all(promises));
+
+	return Promise.all(promises);
 });
 
 // Logging for the execution of deletes
 execDeletes.then(function() { console.log("Deletes Executed"); }, console.error);
 
-// Update Redis with the latest data
-var updateRedis = Promise.all([execInserts, execDeletes]).then(function() {
-	return Promise.resolve(pg2redis());
+// Then make sure the section slide associations get updated
+var sectionsUpdate = Promise.all([execInserts, execDeletes]).then(function() {
+	return connections.then(function(collections) {
+		var sections = collections[0];
+		var posts = collections[1];
+
+		// Set up the DB operations
+		return sections.find({})
+					.toArray()
+					.then(function(sectionObjects) {
+						// Promises to keep track of the posts parsed
+						var postPromises = [];
+
+						sectionObjects.forEach(function(section) {
+							postPromises.push(
+								posts.find({ section: section.foldername })
+									.sort({ 'slide': 1 })
+									.toArray()
+									.then(function(postObjects) {
+										var postUrls = [];
+										postObjects.forEach(function(post) {
+											postUrls.push(post.url);
+										});
+										return postUrls;
+									}).then(function(postUrls) {
+										return sections.findOneAndUpdate(
+											{ foldername: section.foldername },
+											{ $set: { slides: postUrls } }
+										);
+									})
+							);
+						});
+
+						return Promise.all(postPromises).catch(console.error);
+					}).catch(console.error);
+	}).catch(console.error);
 });
 
-// Exit the script once all the promises are done executing
-Promise.all([updateRedis]).then(function() {
+// Logging for the update of sections
+sectionsUpdate.then(function() { console.log("Sections Updated"); }, console.error);
+
+// Finally, when all is done, close the connection to the DB and return success
+// or failed
+Promise.all([sectionsUpdate, mongo]).then(function(results) {
+	var db = results[1];
+	return db.close();
+}).then(function() {
 	console.log("SUCCESS");
-	process.exit(0);
+	return;
 }, function() {
 	console.error("FAILED");
-	process.exit(1);
+	return;
 });
