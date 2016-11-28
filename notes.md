@@ -44,7 +44,7 @@ fi
   - Use a proper cache for posts loaded from disk instead of preloading all posts to memory
   - Use `bluebird`, or something equally performant, for promises
 - Help popup for keyboard shortcuts
-- Configure the docker-compose files necessary to start all the different containers at the same time. Alternately, figure out OpenShift launch using Kubernetes
+- Transition to node:6-alpine as the base image for the container
 - Templating of the HTML stored in the posts
   - Design a syntax set that can be used to add automatic metadata to post HTML
   - Use automated markdown parsing for the posts during the gulp build process

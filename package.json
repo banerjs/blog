@@ -1,6 +1,6 @@
 {
   "name": "blog",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "engines": {
     "node": "6.x",
@@ -8,8 +8,7 @@
   },
   "main": "./bin/www",
   "scripts": {
-    "postinstall": "npm run deploy && npm run sync",
-    "start": "node ./bin/www",
+    "start": "npm run deploy && npm run sync && node ./bin/www",
     "debug": "DEBUG=blog:server NODE_ENV=development nodemon --watch ./build/ --watch ./express.js --watch ./public/js/ -e js,html --delay 3 ./bin/www",
     "watch": "gulp",
     "deploy": "gulp deploy",

@@ -1,5 +1,7 @@
 node_modules/
 *.sublime-*
 public/**
+!public/.keep
 build/**
+!build/.keep
 .env

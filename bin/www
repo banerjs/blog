@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-
-/**
+  /**
  * Module dependencies.
  */
 var express = require('../express');
@@ -10,15 +9,14 @@ var http = require('http');
 /**
  * Get port from environment and store in Express.
  */
-var port = normalizePort(process.env.OPENSHIFT_NODEJS_PORT
-                          || process.env.PORT
+var port = normalizePort(process.env.PORT
                           || '8000');
 express.set('port', port);
 
 /**
  * Get the ip address from the environment and store it in Express too
  */
-var address = process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
+var address = process.env.IP_ADDR || '0.0.0.0';
 express.set('address', address);
 
 /**
