@@ -5,4 +5,4 @@ curl -SL -o oc.tar.gz https://github.com/openshift/origin/releases/download/v1.4
 tar xzf oc.tar.gz
 cd openshift-origin-client-tools*
 oc login --token=${OPENSHIFT_API_TOKEN} --server=https://api.preview.openshift.com
-oc import-image blog
+oc import-image express
